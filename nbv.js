@@ -36,7 +36,7 @@ c(fs.readFileSync(path, "utf-8"))
 
         }else{
             
-            answer = `--${msg.chat.id}:${msg.from.first_name} ${msg.text}`
+            answer = `--${msg.chat.id}:${msg.from.first_name} ${msg.text}\n`
             fs.appendFileSync(path, answer)
 
 c(fs.readFileSync(path, "utf-8"))
