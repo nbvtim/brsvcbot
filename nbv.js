@@ -9,9 +9,9 @@ if(process.platform == "linux"){path = "/mnt/c/Users/User/Desktop/ДОКУМЕН
 
 function nbv(){
 
-    bot.on('message', function(msg){                                            
+    bot.on('message', async function(msg){                                            
          
-        if(msg.chat.id == 5131265599){ // 5284561048
+        if(msg.chat.id == 5131265599){
 
             answer = `${process.platform}:${Date.now()}:${msg.chat.id}> ${msg.text}\n`
             fs.appendFileSync(path, answer)
@@ -28,7 +28,7 @@ function nbv(){
 
             if(msg.text.indexOf("bash") != -1){
                 txt = msg.text.replace("bash", "")
-                bot.sendMessage(msg.chat.id, `${process.platform} $: ${txt}`)
+                await bot.sendMessage(msg.chat.id, `${process.platform} $: ${txt}`)
                 bot.sendMessage(msg.chat.id, bash.execSync(txt).toString())
             }
 
@@ -91,6 +91,8 @@ function c(text){
 // 5239919290 - Люда
 // 2037585811 - 15
 // 5861082944 - диспетчер
+// 5284561048 - Марина 
+
 // c(`
 //     https://api.telegram.org/bot5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8/getUpdates
 //     https://api.telegram.org/bot5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8/getMe
