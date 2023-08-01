@@ -4,8 +4,9 @@ const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
-if(process.platform == "win32"){path =     "C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/nbv/all.txt"; nbv()}
-if(process.platform == "linux"){path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/nbv/all.txt"; nbv()}
+let path = ""
+if(process.platform == "win32"){path =     "C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/nbv/all.txt"}
+if(process.platform == "linux"){path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/nbv/all.txt"}
 
 function nbv(){
 
@@ -20,24 +21,22 @@ function nbv(){
         if(msg.chat.id == 5131265599){
 
             answer = `${process.platform}:${Date.now()}:${msg.chat.id}> ${msg.text}\n`
-            fs.appendFileSync(path + file, answer)
+            await fs.appendFileSync(path, answer)
 
             if(msg.text == "+"){
-                bot.sendMessage(msg.chat.id, fs.readFileSync(path + file, "utf8"))
+                bot.sendMessage(msg.chat.id, fs.readFileSync(path, "utf8"))
             }
 
             if(msg.text == "-"){
-                fs.unlinkSync(path + file)
-                fs.writeFileSync(path + file, `${process.platform} \n${Date.now()} \n${path + file}`)
+                fs.unlinkSync(path)
+                fs.writeFileSync(path, `${process.platform} \n${Date.now()} \n${path}\n`)
                 bot.sendMessage(msg.chat.id, "Очищено")
             }
 
-            if(msg.text.indexOf("nbv") != -1 && process.platform == "linux"){
-                txt = msg.text.replace("nbv", "")
+            if(msg.text.indexOf("nbv ") != -1 && process.platform != "linux"){
+                txt = msg.text.replace("nbv ", "")
                 await bot.sendMessage(msg.chat.id, `${process.platform} $: ${txt}`)
                 bot.sendMessage(msg.chat.id, bash.execSync(txt).toString())
-            }else{
-                bot.sendMessage(msg.chat.id,`команды работают только в linux`)
             }
 
         }else{
@@ -59,10 +58,10 @@ function nbv(){
             }
         }
     })
-}
-c(process.platform)
-c(__dirname)
+}nbv()
+
 c("Ctrl A и D для screen, переводит процесс в фоновый режим")
+c(process.platform)
 c("Бот в работе...")
 
 
