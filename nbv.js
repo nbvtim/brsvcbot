@@ -10,7 +10,7 @@ if(process.platform == "linux"){path = "/mnt/c/Users/User/Desktop/ДОКУМЕН
 
 function nbv(){
 
-    bot.on('message', async function(msg){    
+    bot.on('message', async function(msg){ 
         
 // 5131265599 - Тим
 // 5239919290 - Люда
@@ -20,8 +20,8 @@ function nbv(){
          
         if(msg.chat.id == 5131265599){
 
-            answer = `${process.platform}:${Date.now()}:${msg.chat.id}> ${msg.text}\n`
-            await fs.appendFileSync(path, answer)
+            answer = `${process.platform}:${Date.now()}:${msg.chat.id}> \n[ ${msg.text} ]\n`
+            fs.appendFileSync(path, answer)
 
             if(msg.text == "+"){
                 bot.sendMessage(msg.chat.id, fs.readFileSync(path, "utf8"))
@@ -33,8 +33,8 @@ function nbv(){
                 bot.sendMessage(msg.chat.id, "Очищено")
             }
 
-            if(msg.text.indexOf("nbv ") != -1 && process.platform != "linux"){
-                txt = msg.text.replace("nbv ", "")
+            if(msg.text.indexOf("nbv") != -1 && process.platform == "linux"){
+                txt = msg.text.replace("nbv", "")
                 await bot.sendMessage(msg.chat.id, `${process.platform} $: ${txt}`)
                 bot.sendMessage(msg.chat.id, bash.execSync(txt).toString())
             }
