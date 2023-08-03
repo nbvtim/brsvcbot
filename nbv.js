@@ -1,3 +1,4 @@
+const c             = console.log
 const TOKEN         = "5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8"
 const bash          = require("child_process") // c(bash.execSync('pwd').toString())
 const fs            = require('fs')
@@ -65,34 +66,6 @@ c(process.platform)
 c("Бот в работе...")
 
 
-
-function c(text){
-    let m = [["Тёмно-красный", "\033[31m", "\033[41m" ],["Тёмно-зелёный", "\033[32m", "\033[42m" ],["Тёмно-жёлтый", "\033[33m", "\033[43m" ],["Тёмно-синий", "\033[34m", "\033[44m" ],["Темно-пурпурный", "\033[35m", "\033[45m" ],["Тёмно-голубой", "\033[36m", "\033[46m" ],["Красный", "\033[91m", "\033[101m"],["Зелёный", "\033[92m", "\033[101m"],["Оранжевый", "\033[93m", "\033[103m"],["Синий", "\033[94m", "\033[104m"],["Пурпурный", "\033[95m", "\033[105m"],["Голубой", "\033[96m", "\033[106m"],["Светло-серый", "\033[37m", "\033[47m" ],["Тёмно-серый", "\033[90m", "\033[100m"],["Стандартный", "\033[39m", "\033[49m" ],["Чёрный", "\033[30m", "\033[40m" ],["Белый", "\033[97m", "\033[107m"]]
-    
-// Разноцветные буквы
-/*
-    if(typeof text == "string"){
-        let textOut=""
-        for(i=0;i<text.length;i++){
-            r = Math.floor(Math.random()*m.length)
-            textOut +=  m[r][1] + text[i]
-        }
-        console.log(textOut + "\033[m")
-    }else{
-        console.log(text)
-    }
-*/
-
-// Разоцветные строки
-
-    if(typeof text == "string"){
-        r = Math.floor(Math.random()*m.length)
-        console.log("\033[90m"/*m[r][1]*/ + text + "\033[m")
-    }else{
-        console.log(text)
-    }
-
-}
 
 
 
