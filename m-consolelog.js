@@ -25,7 +25,7 @@ function c(txt){
         console.log( txt )
     }
 }
-c("lkasjd")
+
 module.exports = c
 
 
