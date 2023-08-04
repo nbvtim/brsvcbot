@@ -1,4 +1,4 @@
-const c             = require("./helpers")
+const c             = require("./m-consolelog")
 const TOKEN         = "5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8"
 const bash          = require("child_process") // c(bash.execSync('pwd').toString())
 const fs            = require('fs')
