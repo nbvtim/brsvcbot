@@ -1,6 +1,3 @@
-const os = require("os")
-const osPlatform = os.platform()
-
 function c(txt){
     if(typeof txt == "string"){
         let ms = [ // \033[??m + text + \033[m
@@ -29,10 +26,7 @@ function c(txt){
     }
 }
 
-module.exports = {
-    c,
-    osPlatform
-}
+module.exports = c
 
 
 
