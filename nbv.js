@@ -7,22 +7,22 @@ const bot           = new TelegramApi (TOKEN, {polling: true})
 
 let path = ""
 if(process.platform == "win32"){path =     "C:/Users/User/Desktop/'ДОКУМЕНТЫ/1 смена СВК'/nbv/"}
-if(process.platform == "linux"){path = "/mnt/c/Users/User/Desktop/'ДОКУМЕНТЫ/1 смена СВК'/nbv/"}
+if(process.platform == "linux"){path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/nbv/"}
 
 bot.on('text', async function(msg){
     fs.appendFileSync(`${path}DB.txt`, `${JSON.stringify(msg)}\n`)
-    bot.sendMessage(5131265599, JSON.stringify(msg,null,5))
+    await bot.sendMessage(5131265599, JSON.stringify(msg,null,5))
 
-    if(msg.text == "nbv+" && process.platform == "linux" && msg.chat.id == 5131265599){
+    if(msg.text == "nbv+" && process.platform == "linux" && msg.chat.id == "5131265599"){
         
-        txt = bash.execSync(`cat ${path}DB.txt`).toString()
-        bot.sendMessage(msg.chat.id, txt.match(/"text":".+"\}$/gim).join("\n")) 
+        txt = bash.execSync(`cat /mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/"1 смена СВК"/nbv/DB.txt`).toString()
+        await bot.sendMessage(msg.chat.id, txt.match(/"text":".+"\}$/gim).join("\n")) 
 
     }
-    if(msg.text == "nbv-" && process.platform == "linux" && msg.chat.id == 5131265599){
+    if(msg.text == "nbv-" && process.platform == "linux" && msg.chat.id == "5131265599"){
         
         fs.writeFileSync(`${path}DB.txt`, "NBV")
-        bot.sendMessage(msg.chat.id, "Очищено")
+        await bot.sendMessage(msg.chat.id, "Очищено")
     }
 })
 
