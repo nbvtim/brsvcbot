@@ -11,29 +11,27 @@ if(process.platform == "linux"){path = "/mnt/c/Users/User/Desktop/ДОКУМЕН
 
 bot.on('text', async function(msg){
     
-
     fs.appendFileSync(`${path}DB.txt`, `${JSON.stringify(msg)}\n`)
 // <b>bold</b>, <strong>bold</strong>, <i>italic</i>, <em>italic</em>, <a href="URL">inline URL</a>, <code>inline fixed-width code</code>, <pre>pre-formatted fixed-width code block</pre>
 
-    await bot.sendMessage("5131265599", `<a href="https://nbvtim.github.io/work">Ссылка на сайт</a>\n<pre>${JSON.stringify(msg, null, 4)}</pre>`, {parse_mode:"HTML"})
-
+    await bot.sendMessage("5131265599", `<i>${Date.now()}</i> <b>${msg.chat.id}</b> <code>${msg.message_id}</code> <a href="https://nbvtim.github.io/work/">https://nbvtim.github.io/work/</a>`, {parse_mode:"HTML"})
 
     if(msg.text == "nbv+" && process.platform == "linux" && msg.chat.id == "5131265599"){
         
         txt = bash.execSync(`cat /mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/"1 смена СВК"/nbv/DB.txt`).toString()
-        await bot.sendMessage(msg.chat.id, txt.match(/"text":".+"\}$/gim).join("\n")) 
+        await bot.sendMessage(msg.chat.id, `<b>${txt}</b>`, {parse_mode:"HTML"}) 
 
     }
 
     if(msg.text == "nbv-" && process.platform == "linux" && msg.chat.id == "5131265599"){
-        
-        fs.writeFileSync(`${path}DB.txt`, "NBV")
-        await bot.sendMessage(msg.chat.id, "Очищено")
+
+        fs.writeFileSync(`${path}DB.txt`, "NBV\n")
+        await bot.deleteMessage(msg.chat.id, msg.message_id)
+        await bot.sendMessage(msg.chat.id, "Очищено")     
 
     }
 })
- 
-c("Ctrl A + D (отправляет процесс в фон через screen)")
+
 c("Бот в работе...")
 
 // 5131265599 - Тим
