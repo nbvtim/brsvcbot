@@ -1,3 +1,0 @@
-{"message_id":5755,"from":{"id":5131265599,"is_bot":false,"first_name":"Тим","username":"timnbv","language_code":"ru"},"chat":{"id":5131265599,"first_name":"Тим","username":"timnbv","type":"private"},"date":1692786004,"text":"олл"}
-{"message_id":5756,"from":{"id":5131265599,"is_bot":false,"first_name":"Тим","username":"timnbv","language_code":"ru"},"chat":{"id":5131265599,"first_name":"Тим","username":"timnbv","type":"private"},"date":1692786010,"text":"олл"}
-{"message_id":5757,"from":{"id":5131265599,"is_bot":false,"first_name":"Тим","username":"timnbv","language_code":"ru"},"chat":{"id":5131265599,"first_name":"Тим","username":"timnbv","type":"private"},"date":1692786017,"text":"оьдд"}
