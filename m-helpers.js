@@ -1,5 +1,3 @@
-//require("request")("https://nbvtim.github.io/work/db.json").then(r => console.log(r)).catch(e => console.log(e))
-
 
 /*
     5131265599 - Тим
