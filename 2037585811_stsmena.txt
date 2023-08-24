@@ -1,9 +1,0 @@
-{"message_id":5830,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1692913522,"text":"Cmd"}
-{"message_id":5831,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1692914495,"text":"Cmd"}
-{"message_id":5830,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1692913522,"text":"Cmd"}
-{"message_id":5831,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1692914495,"text":"Cmd"}
-{"message_id":5830,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1692913522,"text":"Cmd"}
-{"message_id":5831,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1692914495,"text":"Cmd"}
-{"message_id":5832,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1692914709,"text":"Cmd"}
-{"message_id":5833,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1692914736,"text":"Cmdpwd"}
-{"message_id":5834,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1692914768,"text":"Cmdpwd"}
