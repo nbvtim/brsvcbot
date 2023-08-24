@@ -1,6 +1,6 @@
 const c             = require("./m-helpers")
 const TOKEN         = "5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8"
-const bash         = require("child_process") // c(bash.execSync('pwd').toString())
+const { exec }      = require('child_process')
 const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
@@ -26,16 +26,24 @@ bot.on('message', async function(msg){
 
 })
 
-if(process.platform == "android"){
-    bot.onText(/cmd/i, async function(msg){
-        
-            txt = msg.text.replace(/cmd/ig, "")
-            c(txt)
-            c(bash.execSync(txt).toString())
-            c(bash)
-
-    })
-}
+bot.onText(/cmd/i, async function(msg){
+    
+    txt = msg.text.replace(/cmd/ig, "")
+    c(txt)
+    exec(txt, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`error: ${error.message}`);
+          return
+        }
+      
+        if (stderr) {
+          console.error(`stderr: ${stderr}`);
+          return
+        }
+      
+        console.log(`stdout:\n${stdout}`);
+      })
+})
 
 c("Бот в работе...")
 bot.getMe().then(r => console.log(r)).catch(e => console.log(e))
