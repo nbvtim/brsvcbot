@@ -1,30 +1,38 @@
 const c             = require("./m-helpers")
 const TOKEN         = "5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8"
-const bash          = require("child_process") // c(bash.execSync('pwd').toString())
+const linux         = require("child_process") // c(linux.execSync('pwd').toString())
 const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
+
+
 bot.on('message', async function(msg){
-    
-    fs.appendFileSync(`${__dirname}\\DB.txt`, `${JSON.stringify(msg)}\n`)
 
-    if(msg.text == "nbv" && msg.chat.id == "5131265599"){
+    file = `${__dirname}/${msg.chat.id}_${msg.from.first_name}`
+    fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
 
-        await bot.deleteMessage(msg.chat.id, msg.message_id)
-        txt = bash.execSync(`cat /mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/"1 смена СВК"/nbv/DB.txt`).toString()
+    if(msg.text == "nbv"){
+
+        txt = fs.readFileSync(file, "utf-8")
         await bot.sendMessage(msg.chat.id, `<b>${txt.match(/"text":"([^"]+)"/gim).join("\n")}</b>`, {parse_mode:"HTML"}) 
 
     }
 
-    if(msg.text == "nbvdell" && msg.chat.id == "5131265599"){
+    if(msg.text == "nbvdell"){
 
-        await bot.deleteMessage(msg.chat.id, msg.message_id)
-        fs.writeFileSync(`${__dirname}\\DB.txt`, "")
+        fs.writeFileSync(file, "")
         await bot.sendMessage(msg.chat.id, "Очищено")     
 
     }
 
+})
+
+bot.onText(/cmd/i, async function(msg){
+    if(process.platform == ""){
+        txt = msg.text.replace(/cmd/ig, "")
+        c(txt)
+    }
 })
 
 c("Бот в работе...")
