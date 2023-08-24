@@ -30,7 +30,8 @@ if(process.platform == "android"){
     bot.onText(/\$/i, async function(msg){
         
         txt = msg.text.replace(/\$/ig, " ")
-        exec(txt, (error, stdout, stderr) => {
+        
+        exec(txt, async (error, stdout, stderr) => {
 
             if (error) {
                 console.error(`error: ${error.message}`);
@@ -40,8 +41,10 @@ if(process.platform == "android"){
                 console.error(`stderr: ${stderr}`);
                 return
             }
-            console.log(`stdout:\n${stdout}`)
-            bot.sendMessage(msg.chat.id, stdout)
+            await c(`${msg.chat.id}$ ${txt}`)
+            await c(stdout)
+            await bot.sendMessage(msg.chat.id, `${msg.chat.id}$ ${txt}`)
+            await bot.sendMessage(msg.chat.id, stdout)
 
         })
     })
