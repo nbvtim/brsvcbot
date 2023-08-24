@@ -31,17 +31,12 @@ if(process.platform == "android"){
         
         txt = msg.text.replace(/cmd/ig, " ")
         exec(txt, (error, stdout, stderr) => {
-            if (error) {
-            console.error(`error: ${error.message}`);
-            return
-            }
-        
-            if (stderr) {
-            console.error(`stderr: ${stderr}`);
-            return
-            }
-        
-            console.log(`stdout:\n${stdout}`);
+
+            // if (error) {console.error(`error: ${error.message}`);return}
+            // if (stderr) {console.error(`stderr: ${stderr}`);return}
+            console.log(`stdout:\n${stdout}`)
+            bot.sendMessage(msg.chat.id, stdout)
+
         })
     })
 }
