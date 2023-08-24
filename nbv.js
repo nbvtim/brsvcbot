@@ -31,7 +31,7 @@ if(process.platform == "android"){
         
             txt = msg.text.replace(/cmd/ig, "")
             c(txt)
-            c(bash.execSync(txt))
+            c(bash.execSync(txt).toString())
 
     })
 }
