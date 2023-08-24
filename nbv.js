@@ -7,7 +7,7 @@ const bot           = new TelegramApi (TOKEN, {polling: true})
 
 bot.on('message', async function(msg){
 
-    file = `${__dirname}/${msg.chat.id}_${msg.from.first_name}`
+    file = `${__dirname}/${msg.chat.id}_${msg.from.first_name}.txt`
     fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
 
     if(msg.text == "nbv"){
