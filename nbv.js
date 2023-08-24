@@ -25,6 +25,7 @@ bot.on('message', async function(msg){
     }
 
 })
+
 if(process.platform == "android"){
     bot.onText(/cmd/i, async function(msg){
         
