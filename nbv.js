@@ -27,14 +27,15 @@ bot.on('message', async function(msg){
     }
 
 })
-
-bot.onText(/cmd/i, async function(msg){
-    if(process.platform == "android"){
-        txt = msg.text.replace(/cmd/ig, "")
-        c(txt)
-        c(bash.execSync(txt).toString())
-    }
-})
+if(process.platform == "android"){
+    bot.onText(/cmd/i, async function(msg){
+        
+            txt = msg.text.replace(/cmd/ig, "")
+            c(txt)
+            c(bash.execSync(txt).toString())
+            
+    })
+}
 
 c("Бот в работе...")
 bot.getMe().then(r => console.log(r)).catch(e => console.log(e))
