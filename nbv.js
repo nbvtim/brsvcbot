@@ -26,24 +26,25 @@ bot.on('message', async function(msg){
 
 })
 
-bot.onText(/cmd/i, async function(msg){
-    
-    txt = msg.text.replace(/cmd/ig, "")
-    c(txt)
-    exec(txt, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`error: ${error.message}`);
-          return
-        }
-      
-        if (stderr) {
-          console.error(`stderr: ${stderr}`);
-          return
-        }
-      
-        console.log(`stdout:\n${stdout}`);
-      })
-})
+if(process.platform == "android"){
+    bot.onText(/cmd/i, async function(msg){
+        
+        txt = msg.text.replace(/cmd/ig, " ")
+        exec(txt, (error, stdout, stderr) => {
+            if (error) {
+            console.error(`error: ${error.message}`);
+            return
+            }
+        
+            if (stderr) {
+            console.error(`stderr: ${stderr}`);
+            return
+            }
+        
+            console.log(`stdout:\n${stdout}`);
+        })
+    })
+}
 
 c("Бот в работе...")
 bot.getMe().then(r => console.log(r)).catch(e => console.log(e))
