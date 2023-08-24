@@ -5,8 +5,6 @@ const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
-c(process)
-
 bot.on('message', async function(msg){
 
     file = `${__dirname}/${msg.chat.id}_${msg.from.first_name}`
@@ -32,8 +30,8 @@ if(process.platform == "android"){
         
             txt = msg.text.replace(/cmd/ig, "")
             c(txt)
-            c(bash.execSync(txt).toString())
-            
+            c(bash.execSync(`${txt} > 1`).toString())
+
     })
 }
 
