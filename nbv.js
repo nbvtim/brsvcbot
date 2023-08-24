@@ -27,9 +27,9 @@ bot.on('message', async function(msg){
 })
 
 if(process.platform == "android"){
-    bot.onText(/\//i, async function(msg){
+    bot.onText(/\$/i, async function(msg){
         
-        txt = msg.text.replace(/\//ig, " ")
+        txt = msg.text.replace(/\$/ig, " ")
         exec(txt, (error, stdout, stderr) => {
 
             if (error) {
