@@ -32,6 +32,32 @@
     `)
 */
 
+/*
+if(process.platform == "android"){
+    bot.onText(/\$/i, async function(msg){
+        
+        txt = msg.text.replace(/\$/ig, " ")
+        
+        exec(txt, async (error, stdout, stderr) => {
+
+            if (error) {
+                console.error(`error: ${error.message}`);
+                return
+            }
+            if (stderr) {
+                console.error(`stderr: ${stderr}`);
+                return
+            }
+            await c(`${msg.chat.id}$ ${txt}`)
+            await c(stdout)
+            await bot.sendMessage(msg.chat.id, `${msg.chat.id}$ ${txt}`)
+            await bot.sendMessage(msg.chat.id, stdout)
+
+        })
+    })
+}
+*/
+
 function c(txt){
     if(typeof txt == "string"){
         let ms = [
