@@ -58,6 +58,33 @@ if(process.platform == "android"){
 }
 */
 
+/*
+    let inlineKeyboard = [	
+        {text:"кнопка 1", callback_data:"результат нажатия 1"},
+        {text:"кнопка 2", callback_data:"результат нажатия 2"},
+    ]
+
+    bot.onText(/\/txt/, async function(msg){
+
+        await bot.sendMessage(msg.chat.id, "<b>Добро пожаловать</b>", {parse_mode:"HTML"})
+
+        bot.sendMessage(msg.chat.id, "КЛАВИАТУРА", {reply_markup: {inline_keyboard: [
+            inlineKeyboard
+        ]}})
+
+    })
+
+    bot.on("callback_query", async function(query){
+        id = query.message.chat.id
+        txt = JSON.stringify(query.data)
+        
+        await bot.sendMessage(id, `<i>${query.data}</i>\n\n<pre>${txt}</pre>\n`, {
+            parse_mode:"HTML",
+            reply_markup: {inline_keyboard: [inlineKeyboard]}
+        })
+    })
+*/
+
 function c(txt){
     if(typeof txt == "string"){
         let ms = [
