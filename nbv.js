@@ -5,25 +5,27 @@ const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
 bot.on('message', async function(msg){
-    c(`${msg.chat.id} > ${msg.text}`)
-    if(process.platform == "android"){
-        file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
-    }else{
-        file = `${__dirname}/${msg.chat.id}_${msg.from.first_name}.txt`
-    }
     
-    if(msg.text != "ls"){
+    file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
+
+    if(msg.text != "ls" && msg.text != "rm"){
         fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
-    }        
+    }else{
+        await bot.sendMessage(msg.chat.id, "Нет данных")
+    }
+        
 
     if(msg.text == "ls"){
         txt = fs.readFileSync(file, "utf-8")
         await bot.sendMessage(msg.chat.id, `<b>${txt.match(/"text":"([^"]+)"/gim).join("\n")}</b>`, {parse_mode:"HTML"}) 
+
     }
 
     if(msg.text == "rm"){
-        fs.writeFileSync(file, `"text":"${Date.now()}"\n`)
+
+        fs.writeFileSync(file, "")
         await bot.sendMessage(msg.chat.id, "Очищено")     
+
     }
 
 })
@@ -38,3 +40,4 @@ c({
     dir: __dirname,
     token: "5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8"
 })
+
