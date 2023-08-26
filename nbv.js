@@ -10,7 +10,8 @@ bot.on('message', async function(msg){
 
     if(msg.text != "ls" && msg.text != "rm"){
         fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
-        c("adsd")
+    }else{
+        await bot.sendMessage(msg.chat.id, "Нет данных")
     }
         
 
