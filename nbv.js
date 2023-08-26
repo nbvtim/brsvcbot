@@ -15,14 +15,14 @@ bot.on('message', async function(msg){
     if(msg.text == "ls"){
 
         txt = fs.readFileSync(file, "utf-8")
-        await bot.sendMessage(msg.chat.id, `<b>${txt.match(/"text":"([^"]+)"/gim).join("\n")}</b>`, {parse_mode:"HTML"}) 
+        await bot.sendMessage(msg.chat.id, `<b>${txt.match(/"text":"([^"]+)"/gim).join("\n")}</b>`, {parse_mode:"HTML"})
 
     }
 
     if(msg.text == "rm"){
 
         fs.writeFileSync(file, "")
-        await bot.sendMessage(msg.chat.id, "Очищено")     
+        await bot.sendMessage(msg.chat.id, "Очищено")
 
     }
 
@@ -43,7 +43,7 @@ c({
 
 
 /*
-    let inlineKeyboard = [	
+    let inlineKeyboard = [
         {text:"кнопка 1", callback_data:"результат нажатия 1"},
         {text:"кнопка 2", callback_data:"результат нажатия 2"},
     ]
@@ -61,7 +61,7 @@ c({
     bot.on("callback_query", async function(query){
         id = query.message.chat.id
         txt = JSON.stringify(query.data)
-        
+
         await bot.sendMessage(id, `<i>${query.data}</i>\n\n<pre>${txt}</pre>\n`, {
             parse_mode:"HTML",
             reply_markup: {inline_keyboard: [inlineKeyboard]}
