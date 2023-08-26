@@ -5,15 +5,16 @@ const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
 bot.on('message', async function(msg){
-    
-    file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
-
-    if(msg.text != "ls" && msg.text != "rm"){
-        fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
+    c(`${msg.chat.id} > ${msg.text}`)
+    if(process.platform == "android"){
+        file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
     }else{
-        await bot.sendMessage(msg.chat.id, "Нет данных")
+        file = `${__dirname}/${msg.chat.id}_${msg.from.first_name}.txt`
     }
-        
+    
+    if(msg.text != "ls"){
+        fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
+    }        
 
     if(msg.text == "ls"){
         txt = fs.readFileSync(file, "utf-8")
@@ -23,7 +24,7 @@ bot.on('message', async function(msg){
 
     if(msg.text == "rm"){
 
-        fs.writeFileSync(file, "")
+        fs.writeFileSync(file, `"text":"${Date.now()}"`)
         await bot.sendMessage(msg.chat.id, "Очищено")     
 
     }
