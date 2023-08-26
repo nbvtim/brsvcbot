@@ -6,7 +6,7 @@ const bot           = new TelegramApi (TOKEN, {polling: true})
 
 bot.on('message', async function(msg){
     
-    file = `${__dirname}/tg/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
+    file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
     fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
 
     if(msg.text == "ls"){
