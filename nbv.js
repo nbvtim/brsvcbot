@@ -24,7 +24,7 @@ bot.on('message', async function(msg){
 
     if(msg.text == "rm"){
 
-        fs.writeFileSync(file, `"text":"${Date.now()}"`)
+        fs.writeFileSync(file, `"text":"${Date.now()}"\n`)
         await bot.sendMessage(msg.chat.id, "Очищено")     
 
     }
