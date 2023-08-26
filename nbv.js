@@ -7,9 +7,10 @@ const bot           = new TelegramApi (TOKEN, {polling: true})
 bot.on('message', async function(msg){
     
     file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
-    
-    if(msg.text != "ls" || msg.text != "rm"){
+
+    if(msg.text != "ls" && msg.text != "rm"){
         fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
+        c("adsd")
     }
         
 
