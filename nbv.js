@@ -24,8 +24,10 @@ bot.on('message', async function(msg){
     }else{file = `${__dirname}\\${msg.chat.id}_${msg.from.first_name}.txt`}
 
     if(fs.existsSync(file)){
-        fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)}
-        else{fs.writeFileSync(file, `"text":"${Date.now()}"\n`)}
+        fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
+    }else{
+        fs.writeFileSync(file, `"text":"${Date.now()}"\n`)
+    }
 
     if(msg.text == "/start"){
         await bot.sendMessage(msg.chat.id, `<i>Привет <b>${msg.from.first_name}</b> !!!</i>`, {parse_mode:"HTML"})
@@ -36,7 +38,8 @@ bot.on('message', async function(msg){
     
     if(msg.text == "/ls"){
         txt = fs.readFileSync(file, "utf-8").match(/"text":"([^"]+)"/gim).join("\n").replace(/"text":/g, '')
-        await bot.sendMessage(msg.chat.id, `lenth: <b>${txt.length}</b> max: <b>4096</b>\n<i>${txt}</i>`, {parse_mode:"HTML"}) 
+        await bot.sendMessage(msg.chat.id, `lenth: <b>${txt.length}</b> max: <b>4096</b>`, {parse_mode:"HTML"})
+        await bot.sendMessage(msg.chat.id, `<i>${txt}</i>`, {parse_mode:"HTML"}) 
     }
 
     if(msg.text == "/rm"){
