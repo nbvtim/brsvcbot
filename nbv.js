@@ -42,11 +42,11 @@ bot.on('message', async function(msg){
         number = Math.floor(Math.random()*10)
         await bot.sendMessage(msg.chat.id, `<tg-spoiler>Цифра ${number}</tg-spoiler>`, {parse_mode:"HTML"})
     }
-    
+
     if(msg.text == "/list"){
         txt = fs.readFileSync(file, "utf-8").match(/"text":"([^"]+)"/gim).join("\n").replace(/"text":/g, '')
         await bot.sendMessage(msg.chat.id, `lenth: <b>${txt.length}</b> max: <b>4096</b>`, {parse_mode:"HTML"})
-        await bot.sendMessage(msg.chat.id, `<i>${txt}</i>`, {parse_mode:"HTML"}) 
+        await bot.sendMessage(msg.chat.id, `<i>${txt}</i>`, {parse_mode:"HTML"})
     }
 
     if(msg.text == "/dellfile"){
