@@ -50,6 +50,7 @@ bot.on('message', async function(msg){
     
     if(msg.text == "/settings"){
         mass = fs.readFileSync(file, "utf-8").match(/^.+/gim)
+
         for(i in mass){
             txt = JSON.parse(mass[i]).text
             await bot.sendMessage(msg.chat.id, txt, {parse_mode:"HTML"})
