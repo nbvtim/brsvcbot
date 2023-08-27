@@ -8,12 +8,10 @@ bot.setMyCommands([
     {
         command:"start",
         description:"Старт"
-    },
-    {
+    },{
         command:"ls",
         description:"Показать записи"
-    },
-    {
+    },{
         command:"rm",
         description:"Удалить файл"
     }
@@ -37,8 +35,8 @@ bot.on('message', async function(msg){
     }
     
     if(msg.text == "/ls"){
-        txt = fs.readFileSync(file, "utf-8")
-        await bot.sendMessage(msg.chat.id, `<b>${txt.match(/"text":"([^"]+)"/gim).join("\n")}</b>`, {parse_mode:"HTML"}) 
+        txt = fs.readFileSync(file, "utf-8").match(/"text":"([^"]+)"/gim).join("\n").replace(/"text":/g, '')
+        await bot.sendMessage(msg.chat.id, `lenth: <b>${txt.length}</b> max: <b>4096</b>\n<i>${txt}</i>`, {parse_mode:"HTML"}) 
     }
 
     if(msg.text == "/rm"){
@@ -57,4 +55,3 @@ c({
     os : process.platform,
     dir: __dirname,
 })
-
