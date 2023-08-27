@@ -22,7 +22,7 @@ bot.setMyCommands([
         description:"Удалить файл"
     }
 ])
-
+bot.getMyCommands()
 bot.on('message', async function(msg){
 
     c(`${msg.chat.id} > ${msg.text}`)
