@@ -25,14 +25,14 @@ bot.setMyCommands([ // В command не применять заглавные б�
 
 bot.on('message', async function(msg){
 
-    c(`${msg.chat.id} > ${msg.text}`)
+    // c(`${msg.chat.id} > ${msg.text}`)
     if(process.platform == "android"){file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
     }else{file = `${__dirname}\\${msg.chat.id}_${msg.from.first_name}.txt`}
 
     if(fs.existsSync(file)){
         fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
     }else{
-        fs.writeFileSync(file, `"text":"${Date.now()}"\n`)
+        fs.writeFileSync(file, `{"text":"${Date.now()}"}\n`)
     }
 
     if(msg.text == "/start"){
@@ -41,6 +41,20 @@ bot.on('message', async function(msg){
         await bot.sendMessage(msg.chat.id, "Отгадайте число от 0 до 9 ", {parse_mode:"HTML"})
         number = Math.floor(Math.random()*10)
         await bot.sendMessage(msg.chat.id, `<tg-spoiler>Цифра ${number}</tg-spoiler>`, {parse_mode:"HTML"})
+    }
+
+    if(msg.text == "/help"){
+        txt = `<pre>${JSON.stringify(msg,null,4)}</pre>`
+        await bot.sendMessage(msg.chat.id, txt, {parse_mode:"HTML"})
+    }
+    
+    if(msg.text == "/settings"){
+        mass = fs.readFileSync(file, "utf-8").match(/^.+/gim)
+        for(i in mass){
+            txt = JSON.parse(mass[i]).text
+            await bot.sendMessage(msg.chat.id, txt, {parse_mode:"HTML"})
+        }
+        
     }
 
     if(msg.text == "/list"){
