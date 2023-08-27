@@ -3,8 +3,7 @@ const TOKEN         = "5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8"
 const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
-
-
+    
 bot.setMyCommands([ // В command не применять заглавные буквы
     {
         command:"start",
