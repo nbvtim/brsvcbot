@@ -9,10 +9,16 @@ bot.setMyCommands([
         command:"start",
         description:"Старт"
     },{
-        command:"ls",
+        command:"help",
+        description:"Помощь"
+    },{
+        command:"settings",
+        description:"Настройки"
+    },{
+        command:"listInput",
         description:"Показать записи"
     },{
-        command:"rm",
+        command:"dellFile",
         description:"Удалить файл"
     }
 ])
@@ -36,13 +42,13 @@ bot.on('message', async function(msg){
         await bot.sendMessage(msg.chat.id, `<tg-spoiler>Цифра ${number}</tg-spoiler>`, {parse_mode:"HTML"})
     }
     
-    if(msg.text == "/ls"){
+    if(msg.text == "/listInput"){
         txt = fs.readFileSync(file, "utf-8").match(/"text":"([^"]+)"/gim).join("\n").replace(/"text":/g, '')
         await bot.sendMessage(msg.chat.id, `lenth: <b>${txt.length}</b> max: <b>4096</b>`, {parse_mode:"HTML"})
         await bot.sendMessage(msg.chat.id, `<i>${txt}</i>`, {parse_mode:"HTML"}) 
     }
 
-    if(msg.text == "/rm"){
+    if(msg.text == "/dellFile"){
         fs.unlinkSync(file)
         await bot.sendMessage(msg.chat.id, "Файл удален")
     }
