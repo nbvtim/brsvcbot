@@ -1,5 +1,6 @@
 const c             = require("./m-helpers")
 const TOKEN         = "5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8"
+const req           = require("request")
 const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
@@ -20,6 +21,9 @@ bot.setMyCommands([ // В command не применять заглавные б�
     },{
         command:"dellfile",
         description:"Удалить файл"
+    },{
+        command:"gitdb",
+        description:"db.json"
     }
 ])
 
@@ -67,6 +71,16 @@ bot.on('message', async function(msg){
     if(msg.text == "/dellfile"){
         fs.unlinkSync(file)
         await bot.sendMessage(msg.chat.id, "Файл удален")
+    }
+
+    if(msg.text == "/gitdb"){
+        req('https://nbvtim.github.io/work/db.json', function (error, response, body) {
+            // console.error('error:', error)
+            // console.log('statusCode:', response && response.statusCode)
+            txt = "db.json обновлен: " + new Date(JSON.parse(body)[2]) 
+            bot.sendMessage(msg.chat.id, txt, {parse_mode:"HTML"})
+            
+        })
     }
 
 })
