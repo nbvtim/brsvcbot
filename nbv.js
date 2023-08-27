@@ -2,7 +2,7 @@ const c             = require("./m-helpers")
 const TOKEN         = "5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8"
 const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
-const bot           = new TelegramApi (TOKEN, {polling: true})
+const bot           = new TelegramApi (TOKEN, {polling: false})
 
 bot.setMyCommands([
     {
@@ -14,7 +14,6 @@ bot.setMyCommands([
         description:"Команда"
     }
 ])
-bot.getMyCommands()
 bot.on('message', async function(msg){
     
     // c(`${msg.chat.id} > ${msg.text}`)
