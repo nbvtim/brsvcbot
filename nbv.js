@@ -4,6 +4,7 @@ const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
+
 bot.setMyCommands([ // В command не применять заглавные буквы
     {
         command:"start",
