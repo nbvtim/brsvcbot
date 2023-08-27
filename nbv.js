@@ -16,7 +16,7 @@ bot.setMyCommands([ // В command не применять заглавные б�
         description:"Настройки"
     },{
         command:"listinput",
-        description:"Записи"
+        description:"Список записей"
     },{
         command:"dellfile",
         description:"Удалить файл"
@@ -37,6 +37,7 @@ bot.on('message', async function(msg){
 
     if(msg.text == "/start"){
         await bot.sendMessage(msg.chat.id, `<i>Привет <b>${msg.from.first_name}</b> !!!</i>`, {parse_mode:"HTML"})
+        await bot.sendMessage(msg.chat.id, "<b>Очистите кеш для правильной работы бота !!!</b>", {parse_mode:"HTML"})
         await bot.sendMessage(msg.chat.id, "Отгадайте число от 0 до 9 ", {parse_mode:"HTML"})
         number = Math.floor(Math.random()*10)
         await bot.sendMessage(msg.chat.id, `<tg-spoiler>Цифра ${number}</tg-spoiler>`, {parse_mode:"HTML"})
