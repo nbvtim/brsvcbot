@@ -4,7 +4,7 @@ const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
-bot.setMyCommands([
+bot.setMyCommands([ // В command не применять заглавные буквы
     {
         command:"start",
         description:"Старт"
@@ -15,14 +15,14 @@ bot.setMyCommands([
         command:"settings",
         description:"Настройки"
     },{
-        command:"listInput",
-        description:"Показать записи"
+        command:"listinput",
+        description:"Записи"
     },{
-        command:"dellFile",
+        command:"dellfile",
         description:"Удалить файл"
     }
 ])
-bot.getMyCommands()
+// bot.getMyCommands()
 bot.on('message', async function(msg){
 
     c(`${msg.chat.id} > ${msg.text}`)
@@ -42,13 +42,13 @@ bot.on('message', async function(msg){
         await bot.sendMessage(msg.chat.id, `<tg-spoiler>Цифра ${number}</tg-spoiler>`, {parse_mode:"HTML"})
     }
     
-    if(msg.text == "/listInput"){
+    if(msg.text == "/listinput"){
         txt = fs.readFileSync(file, "utf-8").match(/"text":"([^"]+)"/gim).join("\n").replace(/"text":/g, '')
         await bot.sendMessage(msg.chat.id, `lenth: <b>${txt.length}</b> max: <b>4096</b>`, {parse_mode:"HTML"})
         await bot.sendMessage(msg.chat.id, `<i>${txt}</i>`, {parse_mode:"HTML"}) 
     }
 
-    if(msg.text == "/dellFile"){
+    if(msg.text == "/dellfile"){
         fs.unlinkSync(file)
         await bot.sendMessage(msg.chat.id, "Файл удален")
     }
