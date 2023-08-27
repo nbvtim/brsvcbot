@@ -20,14 +20,21 @@ bot.setMyCommands([
 ])
 
 bot.on('message', async function(msg){
-    
+
     c(`${msg.chat.id} > ${msg.text}`)
     if(process.platform == "android"){file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
     }else{file = `${__dirname}\\${msg.chat.id}_${msg.from.first_name}.txt`}
 
     if(fs.existsSync(file)){
         fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)}
-        else{fs.writeFileSync(file, `"text":"${Date.now()}"\n`)}        
+        else{fs.writeFileSync(file, `"text":"${Date.now()}"\n`)}
+
+    if(msg.text == "/start"){
+        await bot.sendMessage(msg.chat.id, `<i>Привет <b>${msg.from.first_name}</b> !!!</i>`, {parse_mode:"HTML"})
+        await bot.sendMessage(msg.chat.id, "Отгадайте число от 0 до 9 ", {parse_mode:"HTML"})
+        number = Math.floor(Math.random()*10)
+        await bot.sendMessage(msg.chat.id, `<tg-spoiler>Цифра ${number}</tg-spoiler>`, {parse_mode:"HTML"})
+    }
     
     if(msg.text == "/ls"){
         txt = fs.readFileSync(file, "utf-8")
@@ -36,7 +43,7 @@ bot.on('message', async function(msg){
 
     if(msg.text == "/rm"){
         fs.unlinkSync(file)
-        await bot.sendMessage(msg.chat.id, "Файл удален")     
+        await bot.sendMessage(msg.chat.id, "Файл удален")
     }
 
 })
