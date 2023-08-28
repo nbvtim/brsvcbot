@@ -10,77 +10,98 @@ bot.setMyCommands([ // В command не применять заглавные б�
         command:"start",
         description:"Старт"
     },{
-        command:"help",
-        description:"Помощь"
+        command:"auto",
+        description:"Автотранспорт"
+    },{
+        command:"histiry",
+        description:"История"
     },{
         command:"settings",
         description:"Настройки"
     },{
-        command:"list",
-        description:"Список записей"
-    },{
-        command:"dellfile",
-        description:"Удалить файл"
-    },{
-        command:"gitdb",
-        description:"db.json"
+        command:"help",
+        description:"Помощь"
     }
 ])
+
+bot.onText(/^ат\s/i, async function(msgg){
+    
+    req('https://nbvtim.github.io/work/db.json', async function (error, response, body) {
+        db = JSON.parse(body)[0].data
+        input = msgg.text.replace(/ат\s/i, "")
+        for(i in db){
+            indexof = JSON.parse(body)[0].data[ i ].join(", ").toLowerCase().indexOf(input)
+            if(indexof > 0){
+                txt = JSON.parse(body)[0].data[ i ].join("\n")
+                await bot.sendMessage(msgg.chat.id, txt, {parse_mode:"HTML"})
+            }
+        }
+        
+    })
+
+})
 
 bot.on('message', async function(msg){
 
     // c(`${msg.chat.id} > ${msg.text}`)
-    if(process.platform == "android"){file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
-    }else{file = `${__dirname}\\${msg.chat.id}_${msg.from.first_name}.txt`}
+    if(process.platform == "android"){
+        file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
+    }else{
+        file = `${__dirname}\\${msg.chat.id}_${msg.from.first_name}.txt`}
 
     if(fs.existsSync(file)){
         fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
     }else{
-        fs.writeFileSync(file, `{"text":"${Date.now()}"}\n`)
+        fs.writeFileSync(file, `{"text":"${msg.from.first_name}"}\n`)
+        fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
     }
 
     if(msg.text == "/start"){
+
         await bot.sendMessage(msg.chat.id, `<i>Привет <b>${msg.from.first_name}</b> !!!</i>`, {parse_mode:"HTML"})
-        await bot.sendMessage(msg.chat.id, "<b>Очистите кеш для правильной работы бота !!!</b>", {parse_mode:"HTML"})
         await bot.sendMessage(msg.chat.id, "Отгадайте число от 0 до 9 ", {parse_mode:"HTML"})
         number = Math.floor(Math.random()*10)
         await bot.sendMessage(msg.chat.id, `<tg-spoiler>Цифра ${number}</tg-spoiler>`, {parse_mode:"HTML"})
+
     }
 
-    if(msg.text == "/help"){
-        txt = `<pre>${JSON.stringify(msg,null,4)}</pre>`
-        await bot.sendMessage(msg.chat.id, txt, {parse_mode:"HTML"})
+    if(msg.text == "/auto"){
+        bot.sendMessage(msg.chat.id, `<i>чтобы сделать запрос на поиск по автотранспорту наберите:</i> \n<pre>ат запрос</pre>`, {parse_mode:"HTML"})
+    }
+
+    if(msg.text == "/histiry"){
+
+        mass = fs.readFileSync("2037585811_stsmena.txt","utf8").match(/^.+/gim)
+        await bot.sendMessage(msg.chat.id, `-----------------------------------------------------------------------`)
+        for(i in mass){
+            await bot.sendMessage(msg.chat.id, `<i>${JSON.parse( mass[i] ).text}</i>`, {parse_mode:"HTML"})
+        }
+        await bot.sendMessage(msg.chat.id, `-----------------------------------------------------------------------`, {
+            reply_markup:{ inline_keyboard:
+                [
+                    [{text:"очистить историю", callback_data: "clear"}]
+                ]
+            }
+        })
+
     }
     
     if(msg.text == "/settings"){
-        mass = fs.readFileSync(file, "utf-8").match(/^.+/gim)
-
-        for(i in mass){
-            txt = JSON.parse(mass[i]).text
-            await bot.sendMessage(msg.chat.id, txt, {parse_mode:"HTML"})
-        }
-        
+        await bot.sendMessage(msg.chat.id, "<s>данный раздел в разработке</s>", {parse_mode:"HTML"})
+    }
+    
+    if(msg.text == "/help"){
+        await bot.sendMessage(msg.chat.id, "<b>Очистите кеш для правильной работы бота !!!</b>", {parse_mode:"HTML"})
     }
 
-    if(msg.text == "/list"){
-        txt = fs.readFileSync(file, "utf-8").match(/"text":"([^"]+)"/gim).join("\n").replace(/"text":/g, '')
-        await bot.sendMessage(msg.chat.id, `lenth: <b>${txt.length}</b> max: <b>4096</b>`, {parse_mode:"HTML"})
-        await bot.sendMessage(msg.chat.id, `<i>${txt}</i>`, {parse_mode:"HTML"})
-    }
+})
 
-    if(msg.text == "/dellfile"){
-        fs.unlinkSync(file)
-        await bot.sendMessage(msg.chat.id, "Файл удален")
-    }
 
-    if(msg.text == "/gitdb"){
-        req('https://nbvtim.github.io/work/db.json', function (error, response, body) {
-            // console.error('error:', error)
-            // console.log('statusCode:', response && response.statusCode)
-            txt = "db.json обновлен: " + new Date(JSON.parse(body)[2]) 
-            bot.sendMessage(msg.chat.id, txt, {parse_mode:"HTML"})
-            
-        })
+bot.on("callback_query", async function(query){
+    
+    if(query.data == "clear"){
+        await bot.sendMessage(query.message.chat.id, `<u>История очищена</u>`, {parse_mode:"HTML"})
+        fs.writeFileSync(file, `{"text":"${query.message.chat.first_name}"}\n`)
     }
 
 })

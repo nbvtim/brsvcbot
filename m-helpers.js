@@ -17,14 +17,6 @@
 */
 
 /*
-    fetch("https://nbvtim.github.io/work/db.json")
-    .then(response => response.json()) // response.text()  response.json()
-    .then(value => {
-        c(value)
-    })
-*/
-
-/*
     c(`
         https://api.telegram.org/bot5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8/getUpdates
         https://api.telegram.org/bot5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8/getMe
@@ -33,44 +25,17 @@
 */
 
 /*
-if(process.platform == "android"){
-    bot.onText(/\$/i, async function(msg){
-        
-        txt = msg.text.replace(/\$/ig, " ")
-        
-        exec(txt, async (error, stdout, stderr) => {
-
-            if (error) {
-                console.error(`error: ${error.message}`);
-                return
-            }
-            if (stderr) {
-                console.error(`stderr: ${stderr}`);
-                return
-            }
-            await c(`${msg.chat.id}$ ${txt}`)
-            await c(stdout)
-            await bot.sendMessage(msg.chat.id, `${msg.chat.id}$ ${txt}`)
-            await bot.sendMessage(msg.chat.id, stdout)
-
-        })
-    })
-}
-*/
-
-/*
-    let inlineKeyboard = [	
-        {text:"кнопка 1", callback_data:"результат нажатия 1"},
-        {text:"кнопка 2", callback_data:"результат нажатия 2"},
-    ]
-
     bot.onText(/\/txt/, async function(msg){
 
         await bot.sendMessage(msg.chat.id, "<b>Добро пожаловать</b>", {parse_mode:"HTML"})
 
-        bot.sendMessage(msg.chat.id, "КЛАВИАТУРА", {reply_markup: {inline_keyboard: [
-            inlineKeyboard
-        ]}})
+        bot.sendMessage(msg.chat.id, "КЛАВИАТУРА", {reply_markup: {inline_keyboard: 
+                [
+                    [{text:"очистить\nисторию", callback_data: "clear"}],
+                    [{text:"удалить\nфайл", callback_data: "dell"}]
+                ]
+            }
+        })
 
     })
 
@@ -107,7 +72,7 @@ function c(txt){
             ["Чёрный",           "[30m", "[40m" ,"16"],
             ["Белый",            "[97m", "[107m","17"]
         ]
-        console.log( "\033" + ms[12][1] + txt + "\033" + ms[0][1] )
+        console.log( "\033" + ms[0][1] + txt + "\033" + ms[0][1] )
     }else{
         console.log( txt )
     }
