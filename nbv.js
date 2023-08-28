@@ -70,7 +70,7 @@ bot.on('message', async function(msg){      c(`${msg.chat.id} > ${msg.text}`)
 
     if(msg.text == "/histiry"){
 
-        mass = fs.readFileSync("2037585811_stsmena.txt","utf8").match(/^.+/gim)
+        mass = fs.readFileSync(file, "utf8").match(/^.+/gim)
         await bot.sendMessage(msg.chat.id, `-----------------------------------------------`)
         for(i in mass){
             await bot.sendMessage(msg.chat.id, `<i>${JSON.parse( mass[i] ).text}</i>`, {parse_mode:"HTML"})
@@ -104,9 +104,6 @@ bot.on("callback_query", async function(query){
     }
 
 })
-
-
-
 
 c("Бот в работе...")
 bot.getMe().then(r => console.log(r)).catch(e => console.log(e))
