@@ -41,9 +41,8 @@ bot.onText(/^ат\s/i, async function(msgg){
     
 })
 
-bot.on('message', async function(msg){
+bot.on('message', async function(msg){      c(`${msg.chat.id} > ${msg.text}`)
 
-    // c(`${msg.chat.id} > ${msg.text}`)
     if(process.platform == "android"){
         file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
     }else{
