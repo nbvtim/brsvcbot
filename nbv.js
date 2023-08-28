@@ -24,6 +24,7 @@ bot.setMyCommands([ // В command не применять заглавные б�
     }
 ])
 
+
 bot.onText(/^ат\s/i, async function(msgg){
     
     req('https://nbvtim.github.io/work/db.json', async function (error, response, body) {
@@ -71,11 +72,11 @@ bot.on('message', async function(msg){
     if(msg.text == "/histiry"){
 
         mass = fs.readFileSync("2037585811_stsmena.txt","utf8").match(/^.+/gim)
-        await bot.sendMessage(msg.chat.id, `-----------------------------------------------------------------------`)
+        await bot.sendMessage(msg.chat.id, `-----------------------------------------------`)
         for(i in mass){
             await bot.sendMessage(msg.chat.id, `<i>${JSON.parse( mass[i] ).text}</i>`, {parse_mode:"HTML"})
         }
-        await bot.sendMessage(msg.chat.id, `-----------------------------------------------------------------------`, {
+        await bot.sendMessage(msg.chat.id, `-----------------------------------------------`, {
             reply_markup:{ inline_keyboard:
                 [
                     [{text:"очистить историю", callback_data: "clear"}]
