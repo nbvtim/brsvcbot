@@ -36,9 +36,8 @@ bot.onText(/^ат\s/i, async function(msgg){
                 await bot.sendMessage(msgg.chat.id, txt, {parse_mode:"HTML"})
             }
         }
-        
     })
-
+    
 })
 
 bot.on('message', async function(msg){
