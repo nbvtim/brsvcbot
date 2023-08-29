@@ -1,6 +1,6 @@
 const c             = require("./m-helpers")
 const TOKEN         = "5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8"
-const req           = require("request")
+const request       = require("request")
 const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
@@ -24,24 +24,26 @@ bot.setMyCommands([ // В command не применять заглавные б�
     }
 ])
 
-
 bot.onText(/^ат\s/i, async function(msgg){
     
-    req('https://nbvtim.github.io/work/db.json', async function (error, response, body) {
+    request('https://nbvtim.github.io/work/db.json', async function (error, response, body) {
         db = JSON.parse(body)[0].data
         input = msgg.text.replace(/ат\s/i, "")
+        re = new RegExp(input, "gim")
         for(i in db){
-            indexof = JSON.parse(body)[0].data[ i ].join(", ").toLowerCase().indexOf(input)
-            if(indexof > 0){
-                txt = JSON.parse(body)[0].data[ i ].join("\n")
-                await bot.sendMessage(msgg.chat.id, txt, {parse_mode:"HTML"})
+            txt = db[ i ].join("\n")
+            if(txt.match(re)){
+                txt = txt.replace( re, `</i><b>${input}</b><i>`)
+                await bot.sendMessage(msgg.chat.id, `<i>${txt}</i>`, {parse_mode:"HTML"})
             }
         }
     })
     
 })
 
-bot.on('message', async function(msg){      c(`${msg.chat.id} > ${msg.text}`)
+bot.on('message', async function(msg){
+    
+    c(`${msg.chat.id}_${msg.from.first_name} > ${msg.text}`)
 
     if(process.platform == "android"){
         file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
@@ -97,17 +99,15 @@ bot.on('message', async function(msg){      c(`${msg.chat.id} > ${msg.text}`)
 
 
 bot.on("callback_query", async function(query){
-    
     if(query.data == "clear"){
         await bot.sendMessage(query.message.chat.id, `<u>История очищена</u>`, {parse_mode:"HTML"})
         fs.writeFileSync(file, `{"text":"${query.message.chat.first_name}"}\n`)
     }
-
 })
 
 c("Бот в работе...")
-bot.getMe().then(r => console.log(r)).catch(e => console.log(e))
-c({
-    os : process.platform,
-    dir: __dirname,
-})
+// bot.getMe().then(r => console.log(r)).catch(e => console.log(e))
+// c({
+//     os : process.platform,
+//     dir: __dirname,
+// })

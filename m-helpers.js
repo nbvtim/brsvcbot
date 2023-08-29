@@ -72,7 +72,7 @@ function c(txt){
             ["Чёрный",           "[30m", "[40m" ,"16"],
             ["Белый",            "[97m", "[107m","17"]
         ]
-        console.log( "\033" + ms[0][1] + txt + "\033" + ms[0][1] )
+        console.log( "\033" + ms[3][1] + txt + "\033" + ms[0][1] )
     }else{
         console.log( txt )
     }
