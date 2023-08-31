@@ -60,7 +60,7 @@ bot.on('message', async function(msg){
 `, {parse_mode:"HTML"})
     }
 
-    if(msg.text.match(/^ат\s/i)){
+    if(msg.text.match(/^ат\s/i)){// 
         t = msg.text.replace(/^ат\s/igm, "")
         re = RegExp(t, "i")
         counter = 0
@@ -77,7 +77,6 @@ bot.on('message', async function(msg){
     if(msg.text == "/history"){
         mass = fs.readFileSync(file, "utf8").match(/^.+/gim)
         counter = 0
-        await bot.sendMessage(msg.chat.id, `---------${mass.length}---------`)
         for(i = mass.length-1; i >= 0; i--){
             if(counter < 10){
                 await bot.sendMessage(msg.chat.id, `<i>${mass[i]}</i>`, {parse_mode:"HTML"})
