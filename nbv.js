@@ -30,15 +30,15 @@ bot.setMyCommands([ // В command не применять заглавные б�
 ])
 
 bot.on('message', async function(msg){
-    
+
     c(`${msg.chat.id}_${msg.from.first_name} > ${msg.text}`)
     file = `${__dirname}/${msg.chat.id}_${msg.from.first_name}.txt`
 
     if(fs.existsSync(file)){
-        fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
+        fs.appendFileSync(file, `${msg.chat.id}_${msg.chat.username}_${msg.chat.first_name} > ${msg.text}\n`)
     }else{
         fs.writeFileSync(file, `{"text":"${msg.from.first_name}"}\n`)
-        fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
+        fs.appendFileSync(file, `${msg.chat.id}_${msg.chat.username}_${msg.chat.first_name} > ${msg.text}\n`)
     }
 
     if(msg.text == "/start"){
@@ -47,8 +47,7 @@ bot.on('message', async function(msg){
 <i>Привет <b>${msg.from.first_name}</b> !!!</i>
 Отгадайте число от 0 до 9
 <tg-spoiler>${number} - угадали?</tg-spoiler>
-`, {parse_mode:"HTML"})
-    }
+`, {parse_mode:"HTML"})}
 
     if(msg.text == "/auto"){
         bot.sendMessage(msg.chat.id, `<i>чтобы сделать запрос на поиск по автотранспорту наберите:</i> \n<pre>ат запрос</pre>`, {parse_mode:"HTML"})
@@ -84,7 +83,7 @@ bot.on('message', async function(msg){
 bot.on("callback_query", async function(query){
     if(query.data == "clear"){
         await bot.sendMessage(query.message.chat.id, `<u>История очищена</u>`, {parse_mode:"HTML"})
-        fs.writeFileSync(file, `{"text":"${query.message.chat.first_name}"}\n`)
+        c(`{"text":"${query.message.chat.first_name}"}`)
     }
 })
 
