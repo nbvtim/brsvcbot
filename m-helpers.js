@@ -72,7 +72,12 @@ function c(txt){
             ["Чёрный",           "[30m", "[40m" ,"16"],
             ["Белый",            "[97m", "[107m","17"]
         ]
-        console.log( "\033" + ms[3][1] + txt + "\033" + ms[0][1] )
+        for(i in txt){
+            m = Math.floor(Math.random()*17)
+            c(m)
+            console.log( "\033" + ms[3][1] + txt + "\033" + ms[0][1] )
+        }
+        
     }else{
         console.log( txt )
     }

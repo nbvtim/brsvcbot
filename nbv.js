@@ -1,10 +1,15 @@
 const c             = require("./m-helpers")
+const xlsx          = require('node-xlsx').default
 const TOKEN         = "5965701331:AAG21HoAObaJtCGqB-KeVNx1hlabD8e8TB8"
-const request       = require("request")
 const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
+if(process.platform == "win32"){
+    fs.copyFileSync("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx", "all.xlsx")
+}
+let xlsdb = xlsx.parse(`${__dirname}/all.xlsx`)
+// c(xlsdb[0].data)
 bot.setMyCommands([ // В command не применять заглавные буквы
     {
         command:"start",
@@ -24,31 +29,10 @@ bot.setMyCommands([ // В command не применять заглавные б�
     }
 ])
 
-bot.onText(/^ат\s/i, async function(msgg){
-    
-    request('https://nbvtim.github.io/work/db.json', async function (error, response, body) {
-        db = JSON.parse(body)[0].data
-        input = msgg.text.replace(/ат\s/i, "")
-        re = new RegExp(input, "gim")
-        for(i in db){
-            txt = db[ i ].join("\n")
-            if(txt.match(re)){
-                txt = txt.replace( re, `</i><b>${input}</b><i>`)
-                await bot.sendMessage(msgg.chat.id, `<i>${txt}</i>`, {parse_mode:"HTML"})
-            }
-        }
-    })
-    
-})
-
 bot.on('message', async function(msg){
     
     c(`${msg.chat.id}_${msg.from.first_name} > ${msg.text}`)
-
-    if(process.platform == "android"){
-        file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
-    }else{
-        file = `${__dirname}\\${msg.chat.id}_${msg.from.first_name}.txt`}
+    file = `${__dirname}/${msg.chat.id}_${msg.from.first_name}.txt`
 
     if(fs.existsSync(file)){
         fs.appendFileSync(file, `${JSON.stringify(msg)}\n`)
@@ -58,10 +42,10 @@ bot.on('message', async function(msg){
     }
 
     if(msg.text == "/start"){
-
+        number = Math.floor(Math.random()*10)
         await bot.sendMessage(msg.chat.id, `<i>Привет <b>${msg.from.first_name}</b> !!!</i>`, {parse_mode:"HTML"})
         await bot.sendMessage(msg.chat.id, "Отгадайте число от 0 до 9 ", {parse_mode:"HTML"})
-        number = Math.floor(Math.random()*10)
+        
         await bot.sendMessage(msg.chat.id, `<tg-spoiler>Цифра ${number}</tg-spoiler>`, {parse_mode:"HTML"})
 
     }
@@ -97,7 +81,6 @@ bot.on('message', async function(msg){
 
 })
 
-
 bot.on("callback_query", async function(query){
     if(query.data == "clear"){
         await bot.sendMessage(query.message.chat.id, `<u>История очищена</u>`, {parse_mode:"HTML"})
@@ -105,9 +88,8 @@ bot.on("callback_query", async function(query){
     }
 })
 
-c("Бот в работе...")
-// bot.getMe().then(r => console.log(r)).catch(e => console.log(e))
-// c({
-//     os : process.platform,
-//     dir: __dirname,
-// })
+bot.getMe().then(function(r){
+    console.log(`Бот ${r.username} в работе...`) 
+}).catch(function(e){
+    console.log(e)
+})
