@@ -100,8 +100,6 @@ bot.on('message', async function(msg){
     }
 })
 
-
-
 bot.on("callback_query", async function(query){
     if(query.data == "clear"){
         await bot.sendMessage(query.message.chat.id, `<u>История очищена</u> \n/history`, {parse_mode:"HTML"})
@@ -110,8 +108,6 @@ bot.on("callback_query", async function(query){
         fs.writeFileSync(file, txt)
     }
 })
-
-
 
 bot.getMe().then(function(r){
     c(`Бот ${r.username} в работе...`) 
