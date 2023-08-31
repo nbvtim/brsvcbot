@@ -37,7 +37,7 @@ bot.on('message', async function(msg){
     if(fs.existsSync(file)){
         fs.appendFileSync(file, `${msg.chat.id}_${msg.chat.username}_${msg.chat.first_name} > ${msg.text}\n`)
     }else{
-        fs.writeFileSync(file, `${msg.from.first_name}\n`)
+        fs.writeFileSync(file, `\n`)
         fs.appendFileSync(file, `${msg.chat.id}_${msg.chat.username}_${msg.chat.first_name} > ${msg.text}\n`)
     }
 
@@ -87,7 +87,7 @@ bot.on("callback_query", async function(query){
     if(query.data == "clear"){
         await bot.sendMessage(query.message.chat.id, `<u>История очищена</u>`, {parse_mode:"HTML"})
         file = `${__dirname}/${query.message.chat.id}_${query.message.chat.first_name}.txt`
-        txt = `${query.message.chat.first_name}\n`
+        txt = `\n`
         fs.writeFileSync(file, txt)
     }
 })
