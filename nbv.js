@@ -32,6 +32,8 @@ bot.setMyCommands([ // В command не применять заглавные б�
 bot.on('message', async function(msg){
 
     c(`${msg.chat.id}_${msg.from.first_name} > ${msg.text}`)
+
+
     file = `${__dirname}/${msg.chat.id}_${msg.from.first_name}.txt`
 
     if(fs.existsSync(file)){
@@ -52,8 +54,10 @@ bot.on('message', async function(msg){
     if(msg.text == "/auto"){
         bot.sendMessage(msg.chat.id, `
 <i>чтобы сделать запрос на поиск по автотранспорту наберите:</i>
-<pre>ат запрос</pre>`, {parse_mode:"HTML"})
+<pre>ат запрос</pre>
+`, {parse_mode:"HTML"})
     }
+
     if(msg.text.match(/^ат\s/i)){
         t = msg.text.replace(/^ат\s/igm, "")
         re = RegExp(t, "i")
@@ -69,7 +73,6 @@ bot.on('message', async function(msg){
     
 
     if(msg.text == "/history"){
-
         mass = fs.readFileSync(file, "utf8").match(/^.+/gim)
         counter = 0
         await bot.sendMessage(msg.chat.id, `---------${mass.length}---------`)
@@ -95,8 +98,9 @@ bot.on('message', async function(msg){
     if(msg.text == "/help"){
         await bot.sendMessage(msg.chat.id, "<b>Очистите кеш для правильной работы бота !!!</b>", {parse_mode:"HTML"})
     }
-
 })
+
+
 
 bot.on("callback_query", async function(query){
     if(query.data == "clear"){
@@ -107,8 +111,10 @@ bot.on("callback_query", async function(query){
     }
 })
 
+
+
 bot.getMe().then(function(r){
     c(`Бот ${r.username} в работе...`) 
 }).catch(function(e){
-    c(e)
+    console.error(e)
 })
