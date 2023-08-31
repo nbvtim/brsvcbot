@@ -18,7 +18,7 @@ bot.setMyCommands([ // В command не применять заглавные б�
         command:"auto",
         description:"Автотранспорт"
     },{
-        command:"histiry",
+        command:"history",
         description:"История"
     },{
         command:"settings",
@@ -50,10 +50,25 @@ bot.on('message', async function(msg){
 `, {parse_mode:"HTML"})}
 
     if(msg.text == "/auto"){
-        bot.sendMessage(msg.chat.id, `<i>чтобы сделать запрос на поиск по автотранспорту наберите:</i> \n<pre>ат запрос</pre>`, {parse_mode:"HTML"})
+        bot.sendMessage(msg.chat.id, `
+<i>чтобы сделать запрос на поиск по автотранспорту наберите:</i>
+<pre>ат запрос</pre>`, {parse_mode:"HTML"})
     }
+    if(msg.text.match(/^ат\s/i)){
+        t = msg.text.replace(/^ат\s/igm, "")
+        re = RegExp(t, "i")
+        counter = 0
+        for(i in xlsdb){
+            if(xlsdb[i].join(", ").toLowerCase().match(re) && counter < 10){
+                await bot.sendMessage(msg.chat.id, xlsdb[i].join("\n"))
+                counter++
+            }
+        }
+        await bot.sendMessage(msg.chat.id, `<i>Выведено ответов ${counter}</i>`, {parse_mode:"HTML"})
+    }
+    
 
-    if(msg.text == "/histiry"){
+    if(msg.text == "/history"){
 
         mass = fs.readFileSync(file, "utf8").match(/^.+/gim)
         counter = 0
@@ -85,7 +100,7 @@ bot.on('message', async function(msg){
 
 bot.on("callback_query", async function(query){
     if(query.data == "clear"){
-        await bot.sendMessage(query.message.chat.id, `<u>История очищена</u>`, {parse_mode:"HTML"})
+        await bot.sendMessage(query.message.chat.id, `<u>История очищена</u> \n/history`, {parse_mode:"HTML"})
         file = `${__dirname}/${query.message.chat.id}_${query.message.chat.first_name}.txt`
         txt = `\n`
         fs.writeFileSync(file, txt)
