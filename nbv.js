@@ -8,8 +8,8 @@ const bot           = new TelegramApi (TOKEN, {polling: true})
 if(process.platform == "win32"){
     fs.copyFileSync("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx", "all.xlsx")
 }
-let xlsdb = xlsx.parse(`${__dirname}/all.xlsx`)
-// c(xlsdb[0].data)
+let xlsdb = xlsx.parse(`${__dirname}/all.xlsx`)[0].data
+
 bot.setMyCommands([ // В command не применять заглавные буквы
     {
         command:"start",
@@ -43,11 +43,11 @@ bot.on('message', async function(msg){
 
     if(msg.text == "/start"){
         number = Math.floor(Math.random()*10)
-        await bot.sendMessage(msg.chat.id, `<i>Привет <b>${msg.from.first_name}</b> !!!</i>`, {parse_mode:"HTML"})
-        await bot.sendMessage(msg.chat.id, "Отгадайте число от 0 до 9 ", {parse_mode:"HTML"})
-        
-        await bot.sendMessage(msg.chat.id, `<tg-spoiler>Цифра ${number}</tg-spoiler>`, {parse_mode:"HTML"})
-
+        await bot.sendMessage(msg.chat.id, `
+<i>Привет <b>${msg.from.first_name}</b> !!!</i>
+Отгадайте число от 0 до 9
+<tg-spoiler>${number} - угадали?</tg-spoiler>
+`, {parse_mode:"HTML"})
     }
 
     if(msg.text == "/auto"){
@@ -89,7 +89,7 @@ bot.on("callback_query", async function(query){
 })
 
 bot.getMe().then(function(r){
-    console.log(`Бот ${r.username} в работе...`) 
+    c(`Бот ${r.username} в работе...`) 
 }).catch(function(e){
-    console.log(e)
+    c(e)
 })

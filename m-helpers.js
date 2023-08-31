@@ -52,7 +52,7 @@
 
 function c(txt){
     if(typeof txt == "string"){
-        let ms = [
+        ms = [
             ["Сброс цветов",     "[m"           ,"0"],
             ["Тёмно-красный",    "[31m", "[41m" ,"1"],
             ["Тёмно-зелёный",    "[32m", "[42m" ,"2"],
@@ -72,12 +72,12 @@ function c(txt){
             ["Чёрный",           "[30m", "[40m" ,"16"],
             ["Белый",            "[97m", "[107m","17"]
         ]
+        t = ""
         for(i in txt){
-            m = Math.floor(Math.random()*17)
-            c(m)
-            console.log( "\033" + ms[3][1] + txt + "\033" + ms[0][1] )
+            m = Math.floor(Math.random()*18)
+            t += "\033" + ms[m][1] + txt[i] + "\033" + ms[0][1]
         }
-        
+        console.log( t )
     }else{
         console.log( txt )
     }
