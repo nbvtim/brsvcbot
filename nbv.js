@@ -10,6 +10,7 @@ const bot           = new TelegramApi (TOKEN, {polling: true})
 if(process.platform == "win32"){
     fs.copyFileSync("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx", "all.xlsx")
 }
+    
 let xlsdb = xlsx.parse(`${__dirname}/all.xlsx`)[0].data
 
 bot.setMyCommands([ // В command не применять заглавные буквы
@@ -35,8 +36,12 @@ bot.on('message', async function(msg){
 
     c(`${msg.chat.id}_${msg.from.first_name} > ${msg.text}`)
 
-
-    file = `${__dirname}/${msg.chat.id}_${msg.from.first_name}.txt`
+    if(process.platform == "win32"){
+        file = `${__dirname}/${msg.chat.id}_${msg.from.first_name}.txt`
+    }
+    if(process.platform == "android"){
+        file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
+    }
 
     if(fs.existsSync(file)){
         fs.appendFileSync(file, `${msg.chat.id}_${msg.chat.username}_${msg.chat.first_name} > ${msg.text}\n`)
