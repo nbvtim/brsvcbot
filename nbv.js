@@ -108,7 +108,12 @@ bot.on('message', async function(msg){
 bot.on("callback_query", async function(query){
     if(query.data == "clear"){
         await bot.sendMessage(query.message.chat.id, `<u>История очищена</u> \n/history`, {parse_mode:"HTML"})
-        file = `${__dirname}/${query.message.chat.id}_${query.message.chat.first_name}.txt`
+        if(process.platform == "win32"){
+            file = `${__dirname}/${query.message.chat.id}_${query.message.chat.first_name}.txt`
+        }
+        if(process.platform == "android"){
+            file = `${__dirname}/../storage/downloads/${query.message.chat.id}_${query.message.chat.first_name}.txt`
+        }
         txt = `\n`
         fs.writeFileSync(file, txt)
     }
