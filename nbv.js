@@ -78,7 +78,6 @@ bot.on('message', async function(msg){
         await bot.sendMessage(msg.chat.id, `<i>Выведено ответов ${counter}</i>`, {parse_mode:"HTML"})
     }
     
-
     if(msg.text == "/history"){
         mass = fs.readFileSync(file, "utf8").match(/^.+/gim)
         counter = 0
@@ -88,7 +87,7 @@ bot.on('message', async function(msg){
                 counter++
             }
         }
-        await bot.sendMessage(msg.chat.id, `---------${mass.length}---------`, {
+        await bot.sendMessage(msg.chat.id, `В истории ${mass.length} записей`, {
             reply_markup:{ inline_keyboard:
                 [
                     [{text:"очистить историю", callback_data: "clear"}]
