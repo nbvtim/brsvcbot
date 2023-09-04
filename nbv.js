@@ -65,8 +65,8 @@ bot.on('message', async function(msg){
 `, {parse_mode:"HTML"})
     }
 
-    if(msg.text.match(/^ат\s/i)){// 
-        t = msg.text.replace(/^ат\s/igm, "")
+    if( typeof msg.text == "string" && msg.text.match(/^ат\s/i) ){// 
+        t = msg.text.replace(/^ат\s/i, "")
         re = RegExp(t, "i")
         counter = 0
         for(i in xlsdb){
