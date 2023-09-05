@@ -1,5 +1,3 @@
-// 10е 11е 14е 15е 18е 19е Товкун
-
 const c             = require("./m-helpers")
 const xlsx          = require('node-xlsx').default
 const TOKEN         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
