@@ -100,6 +100,8 @@ bot.on('message', async function(msg){
     
     if(msg.text == "/help"){
         await bot.sendMessage(msg.chat.id, "<b>Очистите кеш для правильной работы бота !!!</b>", {parse_mode:"HTML"})
+        await bot.sendMessage(msg.chat.id, "https://wiki.termux.com/wiki/Termux:API", {parse_mode:"HTML"})
+        
     }
 })
 
