@@ -31,33 +31,34 @@ bot.setMyCommands([ // В command не применять заглавные б�
 ])
 
 bot.on('message', async function(msg){
-
-    c(`${msg.chat.id}_${msg.from.first_name} > ${msg.text}`)
+id = msg.chat.id
+if( id == "5131265599" || id == "2037585811"){
+    c(`${id}_${msg.from.first_name} > ${msg.text}`)
 
     if(process.platform == "win32"){
-        file = `${__dirname}/${msg.chat.id}_${msg.from.first_name}.txt`
+        file = `${__dirname}/${id}_${msg.from.first_name}.txt`
     }
     if(process.platform == "android"){
-        file = `${__dirname}/../storage/downloads/${msg.chat.id}_${msg.from.first_name}.txt`
+        file = `${__dirname}/../storage/downloads/${id}_${msg.from.first_name}.txt`
     }
 
     if(fs.existsSync(file)){
-        fs.appendFileSync(file, `${msg.chat.id}_${msg.chat.username}_${msg.chat.first_name} > ${msg.text}\n`)
+        fs.appendFileSync(file, `${id}_${msg.chat.username}_${msg.chat.first_name} > ${msg.text}\n`)
     }else{
         fs.writeFileSync(file, `\n`)
-        fs.appendFileSync(file, `${msg.chat.id}_${msg.chat.username}_${msg.chat.first_name} > ${msg.text}\n`)
+        fs.appendFileSync(file, `${id}_${msg.chat.username}_${msg.chat.first_name} > ${msg.text}\n`)
     }
 
     if(msg.text == "/start"){
         number = Math.floor(Math.random()*10)
-        await bot.sendMessage(msg.chat.id, `
+        await bot.sendMessage(id, `
 <i>Привет <b>${msg.from.first_name}</b> !!!</i>
 Отгадайте число от 0 до 9
 <tg-spoiler>${number} - угадали?</tg-spoiler>
 `, {parse_mode:"HTML"})}
 
     if(msg.text == "/auto"){
-        bot.sendMessage(msg.chat.id, `
+        bot.sendMessage(id, `
 <i>чтобы сделать запрос на поиск по автотранспорту наберите:</i>
 <pre>ат запрос</pre>
 `, {parse_mode:"HTML"})
@@ -69,11 +70,11 @@ bot.on('message', async function(msg){
         counter = 0
         for(i in xlsdb){
             if(xlsdb[i].join(", ").toLowerCase().match(re) && counter < 10){
-                await bot.sendMessage(msg.chat.id, xlsdb[i].join("\n"))
+                await bot.sendMessage(id, xlsdb[i].join("\n"))
                 counter++
             }
         }
-        await bot.sendMessage(msg.chat.id, `<i>Выведено ответов ${counter}</i>`, {parse_mode:"HTML"})
+        await bot.sendMessage(id, `<i>Выведено ответов ${counter}</i>`, {parse_mode:"HTML"})
     }
     
     if(msg.text == "/history"){
@@ -81,11 +82,11 @@ bot.on('message', async function(msg){
         counter = 0
         for(i = mass.length-1; i >= 0; i--){
             if(counter < 10){
-                await bot.sendMessage(msg.chat.id, `<i>${mass[i]}</i>`, {parse_mode:"HTML"})
+                await bot.sendMessage(id, `<i>${mass[i]}</i>`, {parse_mode:"HTML"})
                 counter++
             }
         }
-        await bot.sendMessage(msg.chat.id, `В истории ${mass.length} записей`, {
+        await bot.sendMessage(id, `В истории ${mass.length} записей`, {
             reply_markup:{ inline_keyboard:
                 [
                     [{text:"очистить историю", callback_data: "clear"}]
@@ -95,14 +96,16 @@ bot.on('message', async function(msg){
     }
     
     if(msg.text == "/settings"){
-        await bot.sendMessage(msg.chat.id, "<s>данный раздел в разработке</s>", {parse_mode:"HTML"})
+        await bot.sendMessage(id, "<s>данный раздел в разработке</s>", {parse_mode:"HTML"})
     }
     
     if(msg.text == "/help"){
-        await bot.sendMessage(msg.chat.id, "<b>Очистите кеш для правильной работы бота !!!</b>", {parse_mode:"HTML"})
-        await bot.sendMessage(msg.chat.id, "https://wiki.termux.com/wiki/Termux:API", {parse_mode:"HTML"})
+        await bot.sendMessage(id, "<b>Очистите кеш для правильной работы бота !!!</b>", {parse_mode:"HTML"})
+        await bot.sendMessage(id, "https://wiki.termux.com/wiki/Termux:API", {parse_mode:"HTML"})
         
     }
+
+}else{await bot.sendMessage(id, "У вас нет доступа", {parse_mode:"HTML"})}
 })
 
 bot.on("callback_query", async function(query){
