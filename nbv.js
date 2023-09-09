@@ -137,7 +137,7 @@ bot.on("callback_query", async function(query){
     }
     if(process.platform == "android"){
         file = `${__dirname}/../storage/downloads/${query.message.chat.id}_${query.message.chat.first_name}.txt`
-        fileUser = `${__dirname}../storage/downloads/user`
+        fileUser = `${__dirname}/../storage/downloads/user`
     }
 
     if(query.data == "clear"){
