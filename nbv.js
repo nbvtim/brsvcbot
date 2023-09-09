@@ -32,13 +32,19 @@ bot.setMyCommands([ // В command не применять заглавные б�
 
 bot.on('message', async function(msg){
     id = msg.chat.id
-    c(`${id}_${msg.from.first_name} > ${msg.text}`)
+    // c(`${id}_${msg.from.first_name} > ${msg.text}`)
 
     if(process.platform == "win32"){
         file = `${__dirname}/${id}_${msg.from.first_name}.txt`
+        fileUsers = `${__dirname}/users`
+        fs.writeFileSync(fileUsers, "true")
     }
     if(process.platform == "android"){
         file = `${__dirname}/../storage/downloads/${id}_${msg.from.first_name}.txt`
+        fileUsers = `${__dirname}/../storage/downloads/users`
+
+        dostup = fs.readFileSync(fileUsers,"utf-8").match(id)
+        c(dostup)
     }
 
     if(fs.existsSync(file)){
@@ -48,60 +54,67 @@ bot.on('message', async function(msg){
         fs.appendFileSync(file, `${id}_${msg.chat.username}_${msg.chat.first_name} > ${msg.text}\n`)
     }
 
-    if(msg.text == "/start"){
-        number = Math.floor(Math.random()*10)
-        await bot.sendMessage(id, `
-<i>Привет <b>${msg.from.first_name}</b> !!!</i>
-Отгадайте число от 0 до 9
-<tg-spoiler>${number} - угадали?</tg-spoiler>
-`, {parse_mode:"HTML"})}
+    
 
-    if(msg.text == "/auto"){
-        bot.sendMessage(id, `
-<i>чтобы сделать запрос на поиск по автотранспорту наберите:</i>
-<pre>ат запрос</pre>
-`, {parse_mode:"HTML"})
-    }
+    if(true){//dostup != null
 
-    if( typeof msg.text == "string" && msg.text.match(/^ат\s/i) ){// 
-        t = msg.text.replace(/^ат\s/i, "")
-        re = RegExp(t, "i")
-        counter = 0
-        for(i in xlsdb){
-            if(xlsdb[i].join(", ").toLowerCase().match(re) && counter < 10){
-                await bot.sendMessage(id, xlsdb[i].join("\n"))
-                counter++
-            }
+        if(msg.text == "/start"){
+            number = Math.floor(Math.random()*10)
+            await bot.sendMessage(id, `
+    <i>Привет <b>${msg.from.first_name}</b> !!!</i>
+    Отгадайте число от 0 до 9
+    <tg-spoiler>${number} - угадали?</tg-spoiler>
+    `, {parse_mode:"HTML"})}
+
+        if(msg.text == "/auto"){
+            bot.sendMessage(id, `
+    <i>чтобы сделать запрос на поиск по автотранспорту наберите:</i>
+    <pre>ат запрос</pre>
+    `, {parse_mode:"HTML"})
         }
-        await bot.sendMessage(id, `<i>Выведено ответов ${counter}</i>`, {parse_mode:"HTML"})
-    }
-    
-    if(msg.text == "/history"){
-        mass = fs.readFileSync(file, "utf8").match(/^.+/gim)
-        counter = 0
-        for(i = mass.length-1; i >= 0; i--){
-            if(counter < 10){
-                await bot.sendMessage(id, `<i>${mass[i]}</i>`, {parse_mode:"HTML"})
-                counter++
+
+        if( typeof msg.text == "string" && msg.text.match(/^ат\s/i) ){// 
+            t = msg.text.replace(/^ат\s/i, "")
+            re = RegExp(t, "i")
+            counter = 0
+            for(i in xlsdb){
+                if(xlsdb[i].join(", ").toLowerCase().match(re) && counter < 10){
+                    await bot.sendMessage(id, xlsdb[i].join("\n"))
+                    counter++
+                }
             }
+            await bot.sendMessage(id, `<i>Выведено ответов ${counter}</i>`, {parse_mode:"HTML"})
         }
-        await bot.sendMessage(id, `В истории ${mass.length} записей`, {
-            reply_markup:{ inline_keyboard:
-                [
-                    [{text:"очистить историю", callback_data: "clear"}]
-                ]
-            }
-        })
-    }
-    
-    if(msg.text == "/settings"){
-        await bot.sendMessage(id, "<s>данный раздел в разработке</s>", {parse_mode:"HTML"})
-    }
-    
-    if(msg.text == "/help"){
-        await bot.sendMessage(id, "<b>Очистите кеш для правильной работы бота !!!</b>", {parse_mode:"HTML"})
-        await bot.sendMessage(id, "https://wiki.termux.com/wiki/Termux:API", {parse_mode:"HTML"})
         
+        if(msg.text == "/history"){
+            mass = fs.readFileSync(file, "utf8").match(/^.+/gim)
+            counter = 0
+            for(i = mass.length-1; i >= 0; i--){
+                if(counter < 10){
+                    await bot.sendMessage(id, `<i>${mass[i]}</i>`, {parse_mode:"HTML"})
+                    counter++
+                }
+            }
+            await bot.sendMessage(id, `В истории ${mass.length} записей`, {
+                reply_markup:{ inline_keyboard:
+                    [
+                        [{text:"очистить историю", callback_data: "clear"}]
+                    ]
+                }
+            })
+        }
+        
+        if(msg.text == "/settings"){
+            await bot.sendMessage(id, "<s>данный раздел в разработке</s>", {parse_mode:"HTML"})
+        }
+        
+        if(msg.text == "/help"){
+            await bot.sendMessage(id, "<b>Очистите кеш для правильной работы бота !!!</b>", {parse_mode:"HTML"})
+            await bot.sendMessage(id, "https://wiki.termux.com/wiki/Termux:API", {parse_mode:"HTML"})
+            
+        }
+    }else{
+
     }
 
 })
@@ -115,8 +128,7 @@ bot.on("callback_query", async function(query){
         if(process.platform == "android"){
             file = `${__dirname}/../storage/downloads/${query.message.chat.id}_${query.message.chat.first_name}.txt`
         }
-        txt = `\n`
-        fs.writeFileSync(file, txt)
+        fs.writeFileSync(file, `\n`)
     }
 })
 
