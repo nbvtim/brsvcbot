@@ -45,7 +45,7 @@ bot.on('message', async function(msg){
     if(process.platform == "android"){
         file = `${__dirname}/../storage/downloads/${id}_${msg.from.first_name}.txt`
 
-        fileUser = `${__dirname}../storage/downloads/user`
+        fileUser = `${__dirname}/../storage/downloads/user`
         re = RegExp(`${id}`,"g")
         access = fs.readFileSync(fileUser,"utf8").match(re)
     }
