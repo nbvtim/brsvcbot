@@ -32,19 +32,22 @@ bot.setMyCommands([ // В command не применять заглавные б�
 
 bot.on('message', async function(msg){
     id = msg.chat.id
-    // c(`${id}_${msg.from.first_name} > ${msg.text}`)
+    c(`${id}_${msg.from.first_name} > ${msg.text}`)
 
     if(process.platform == "win32"){
         file = `${__dirname}/${id}_${msg.from.first_name}.txt`
-        fileUsers = `${__dirname}/users`
-        fs.writeFileSync(fileUsers, "true")
+
+        fileUser = `${__dirname}/user`
+        // fs.writeFileSync(fileUser, `${id}\n`)
+        re = RegExp(`${id}`,"g")
+        access = fs.readFileSync(fileUser,"utf8").match(re)
     }
     if(process.platform == "android"){
         file = `${__dirname}/../storage/downloads/${id}_${msg.from.first_name}.txt`
-        fileUsers = `${__dirname}/../storage/downloads/users`
 
-        dostup = fs.readFileSync(fileUsers,"utf-8").match(id)
-        c(dostup)
+        fileUser = `${__dirname}../storage/downloads/user`
+        re = RegExp(`${id}`,"g")
+        access = fs.readFileSync(fileUser,"utf8").match(re)
     }
 
     if(fs.existsSync(file)){
@@ -56,21 +59,21 @@ bot.on('message', async function(msg){
 
     
 
-    if(true){//dostup != null
+    if( access != null ){//dostup != null
 
         if(msg.text == "/start"){
             number = Math.floor(Math.random()*10)
             await bot.sendMessage(id, `
-    <i>Привет <b>${msg.from.first_name}</b> !!!</i>
-    Отгадайте число от 0 до 9
-    <tg-spoiler>${number} - угадали?</tg-spoiler>
-    `, {parse_mode:"HTML"})}
+<i>Привет <b>${msg.from.first_name}</b> !!!</i>
+Отгадайте число от 0 до 9
+<tg-spoiler>${number} - угадали?</tg-spoiler>
+`, {parse_mode:"HTML"})}
 
         if(msg.text == "/auto"){
             bot.sendMessage(id, `
-    <i>чтобы сделать запрос на поиск по автотранспорту наберите:</i>
-    <pre>ат запрос</pre>
-    `, {parse_mode:"HTML"})
+<i>чтобы сделать запрос на поиск по автотранспорту наберите:</i>
+<pre>ат запрос</pre>
+`, {parse_mode:"HTML"})
         }
 
         if( typeof msg.text == "string" && msg.text.match(/^ат\s/i) ){// 
@@ -114,22 +117,46 @@ bot.on('message', async function(msg){
             
         }
     }else{
-
+        await bot.sendMessage(id, "Доступ ограничен")
+        await bot.sendMessage(id, "Для рассмотрения заявки напишите мне @timnbv")
+        await bot.sendMessage(5131265599, `Пользователь: ${id}_${msg.from.first_name}`, {
+            reply_markup:{ inline_keyboard:
+                [
+                    [{text:"Добавить ?", callback_data: `userAdd_${id}`},{text:"Отказать", callback_data: `userDell_${id}`}]
+                ]
+            }
+        })
     }
 
 })
 
 bot.on("callback_query", async function(query){
+    if(process.platform == "win32"){
+        file = `${__dirname}/${query.message.chat.id}_${query.message.chat.first_name}.txt`
+        fileUser = `${__dirname}/user`
+    }
+    if(process.platform == "android"){
+        file = `${__dirname}/../storage/downloads/${query.message.chat.id}_${query.message.chat.first_name}.txt`
+        fileUser = `${__dirname}../storage/downloads/user`
+    }
+
     if(query.data == "clear"){
-        await bot.sendMessage(query.message.chat.id, `<u>История очищена</u> \n/history`, {parse_mode:"HTML"})
-        if(process.platform == "win32"){
-            file = `${__dirname}/${query.message.chat.id}_${query.message.chat.first_name}.txt`
-        }
-        if(process.platform == "android"){
-            file = `${__dirname}/../storage/downloads/${query.message.chat.id}_${query.message.chat.first_name}.txt`
-        }
+        await bot.sendMessage(query.message.chat.id, `<u>История очищена</u>`, {parse_mode:"HTML"})
         fs.writeFileSync(file, `\n`)
     }
+    if(query.data.match(/userAdd/) != null){
+        id = query.data.match(/\d+/)[0]
+        fs.appendFileSync(fileUser , `${id}\n`)
+        await bot.sendMessage(query.message.chat.id, `Пользователь добавлен`)
+        await bot.sendMessage(id, `Регистрация прошла успешно`)
+    }
+    if(query.data.match(/userDell/) != null){
+        id = query.data.match(/\d+/)[0]
+        await bot.sendMessage(query.message.chat.id, `Отказано`)
+        await bot.sendMessage(id, `Отказано`)
+    }
+
+
 })
 
 bot.getMe().then(function(r){
