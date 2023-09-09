@@ -31,8 +31,7 @@ bot.setMyCommands([ // В command не применять заглавные б�
 ])
 
 bot.on('message', async function(msg){
-id = msg.chat.id
-if( id == "5131265599" || id == "2037585811"){
+    id = msg.chat.id
     c(`${id}_${msg.from.first_name} > ${msg.text}`)
 
     if(process.platform == "win32"){
@@ -105,7 +104,6 @@ if( id == "5131265599" || id == "2037585811"){
         
     }
 
-}else{await bot.sendMessage(id, "У вас нет доступа", {parse_mode:"HTML"})}
 })
 
 bot.on("callback_query", async function(query){
