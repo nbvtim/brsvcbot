@@ -159,6 +159,5 @@ bot.on("callback_query", async function(query){
 })
 
 bot.getMe().then(function(data){ c(`Бот ${data.username} в работе...`) })
-
-} catch (error) { c("TRY ERROR") }
+} catch (error) { c(`TRY ERROR: \n\n\n${error}`) }
 
