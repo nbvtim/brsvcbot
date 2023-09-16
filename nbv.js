@@ -5,8 +5,12 @@ const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
+if(fs.existsSync("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")){
+    fs.writeFileSync("all.JSON", JSON.stringify(xlsx.parse("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"), null, 5))
+}
+let xlsdb = JSON.parse(fs.readFileSync(`${__dirname}/all.JSON`, "utf8"))[0].data
+
 try {
-let xlsdb = xlsx.parse(`${__dirname}/all.xlsx`)[0].data
 
 bot.setMyCommands([ // В command не применять заглавные буквы
     {
@@ -159,5 +163,10 @@ bot.on("callback_query", async function(query){
 })
 
 bot.getMe().then(function(data){ c(`Бот ${data.username} в работе...`) })
-} catch (error) { c(`TRY ERROR: \n\n\n${error}`) }
+
+
+} catch (error) {
+    c(`TRY ERROR: \n\n\n${error}`)
+    bot.sendMessage(5131265599, "TRY ERROR")
+}
 
