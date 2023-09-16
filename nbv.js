@@ -5,36 +5,6 @@ const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const path = require("path")
 const bot           = new TelegramApi (TOKEN, {polling: true})
-
-function nbv(){
-
-    if(fs.existsSync("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")){
-        fs.copyFileSync("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx", "all.xlsx")
-        c("all.xlsx - скопирован с рабочего ПК")
-    }else{
-        c("all.xlsx - не копирован, используется файл приложения")
-    }
-    
-    pathDir     = ""
-    fileUser    = ""
-    access      = false
-
-    if(process.platform === "android"){
-        pathDir     = `${__dirname}/../storage/downloads/`
-        fileUser    = `${__dirname}/../storage/downloads/user.txt`
-    }else{
-        pathDir     = `${__dirname}/`
-        fileUser    = `${__dirname}/user.txt`
-    }
-
-    if(fs.existsSync(fileUser)){
-        c(fs.readFileSync(fileUser, "utf8"))
-    }else{
-        fs.writeFileSync(fileUser, "")
-        c(`${fileUser} - создан`)
-    }
-}
-
     
 let xlsdb = xlsx.parse(`${__dirname}/all.xlsx`)[0].data
 
@@ -60,7 +30,7 @@ bot.setMyCommands([ // В command не применять заглавные б�
 bot.on('message', async function(msg){
 
     id = msg.chat.id
-    // c(`${id}_${msg.from.first_name} > ${msg.text}`)
+    c(`${id}_${msg.from.first_name} > ${msg.text}`)
 
     if(process.platform == "win32"){
         file = `${__dirname}/${id}_${msg.from.first_name}.txt`
@@ -188,5 +158,4 @@ bot.on("callback_query", async function(query){
 
 })
 
-bot.getMe().then(function(r){ c(`Бот ${r.username} в работе...`) })
-bot.getMe().then(function(r){ c(r) })
+bot.getMe().then(function(data){ c(`Бот ${data.username} в работе...`) })
