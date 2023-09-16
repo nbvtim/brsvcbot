@@ -3,7 +3,6 @@ const xlsx          = require('node-xlsx').default
 const TOKEN         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
-const path = require("path")
 const bot           = new TelegramApi (TOKEN, {polling: true})
     
 let xlsdb = xlsx.parse(`${__dirname}/all.xlsx`)[0].data
