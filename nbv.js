@@ -3,11 +3,38 @@ const xlsx          = require('node-xlsx').default
 const TOKEN         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
+const path = require("path")
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
-if(process.platform == "win32"){
-    fs.copyFileSync("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx", "all.xlsx")
+function nbv(){
+
+    if(fs.existsSync("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")){
+        fs.copyFileSync("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx", "all.xlsx")
+        c("all.xlsx - скопирован с рабочего ПК")
+    }else{
+        c("all.xlsx - не копирован, используется файл приложения")
+    }
+    
+    pathDir     = ""
+    fileUser    = ""
+    access      = false
+
+    if(process.platform === "android"){
+        pathDir     = `${__dirname}/../storage/downloads/`
+        fileUser    = `${__dirname}/../storage/downloads/user.txt`
+    }else{
+        pathDir     = `${__dirname}/`
+        fileUser    = `${__dirname}/user.txt`
+    }
+
+    if(fs.existsSync(fileUser)){
+        c(fs.readFileSync(fileUser, "utf8"))
+    }else{
+        fs.writeFileSync(fileUser, "")
+        c(`${fileUser} - создан`)
+    }
 }
+
     
 let xlsdb = xlsx.parse(`${__dirname}/all.xlsx`)[0].data
 
@@ -31,8 +58,9 @@ bot.setMyCommands([ // В command не применять заглавные б�
 ])
 
 bot.on('message', async function(msg){
+
     id = msg.chat.id
-    c(`${id}_${msg.from.first_name} > ${msg.text}`)
+    // c(`${id}_${msg.from.first_name} > ${msg.text}`)
 
     if(process.platform == "win32"){
         file = `${__dirname}/${id}_${msg.from.first_name}.txt`
@@ -58,8 +86,7 @@ bot.on('message', async function(msg){
     }
 
     
-
-    if( access != null ){//dostup != null
+    if( access != null ){
 
         if(msg.text == "/start"){
             number = Math.floor(Math.random()*10)
@@ -120,11 +147,12 @@ bot.on('message', async function(msg){
     }else{
 
         await bot.sendMessage(id, `<b>${msg.from.first_name}</b> доступ ограничен !!!\nДля рассмотрения заявки напишите мне @timnbv`, {parse_mode:"HTML"})
-        await bot.sendMessage(5131265599, `Пользователь: ${id}_${msg.from.first_name}`, {
+        await bot.sendMessage(5131265599, `Пользователь ${id}_${msg.from.first_name} подал заявку на добавление`, {
             reply_markup:{ inline_keyboard:
                 [
                     [{text:"Добавить ?", callback_data: `userAdd_${id}`},{text:"Отказать", callback_data: `userDell_${id}`}]
                 ]}})
+        await bot.sendMessage(5131265599, `${JSON.stringify(msg, null, 5)}`, {parse_mode:"HTML"})
     }
 
 })
@@ -161,3 +189,4 @@ bot.on("callback_query", async function(query){
 })
 
 bot.getMe().then(function(r){ c(`Бот ${r.username} в работе...`) })
+bot.getMe().then(function(r){ c(r) })

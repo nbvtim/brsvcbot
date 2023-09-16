@@ -1,7 +1,3 @@
-const nbv = {
-    file:       function () {},
-    fileUser:   function () {}
-}
 /*
     5131265599 - Тим
     5239919290 - Люда
