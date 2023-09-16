@@ -34,7 +34,7 @@ bot.on('message', async function(msg){
     if(process.platform == "win32"){
         file = `${__dirname}/${id}_${msg.from.first_name}.txt`
 
-        fileUser = `${__dirname}/user`
+        fileUser = `${__dirname}/user.txt`
         fs.writeFileSync(fileUser, `${id}\n`)
         re = RegExp(`${id}`,"g")
         access = fs.readFileSync(fileUser,"utf8").match(re)
@@ -42,7 +42,7 @@ bot.on('message', async function(msg){
     if(process.platform == "android"){
         file = `${__dirname}/../storage/downloads/${id}_${msg.from.first_name}.txt`
 
-        fileUser = `${__dirname}/../storage/downloads/user`
+        fileUser = `${__dirname}/../storage/downloads/user.txt`
         re = RegExp(`${id}`,"g")
         access = fs.readFileSync(fileUser,"utf8").match(re)
     }
@@ -129,11 +129,11 @@ bot.on('message', async function(msg){
 bot.on("callback_query", async function(query){
     if(process.platform == "win32"){
         file = `${__dirname}/${query.message.chat.id}_${query.message.chat.first_name}.txt`
-        fileUser = `${__dirname}/user`
+        fileUser = `${__dirname}/user.txt`
     }
     if(process.platform == "android"){
         file = `${__dirname}/../storage/downloads/${query.message.chat.id}_${query.message.chat.first_name}.txt`
-        fileUser = `${__dirname}/../storage/downloads/user`
+        fileUser = `${__dirname}/../storage/downloads/user.txt`
     }
 
 
