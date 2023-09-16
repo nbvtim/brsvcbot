@@ -1,4 +1,4 @@
-const c             = require("./m-helpers")
+const c             = require("./h")
 const xlsx          = require('node-xlsx').default
 const TOKEN         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const fs            = require('fs')
@@ -38,7 +38,7 @@ bot.on('message', async function(msg){
         file = `${__dirname}/${id}_${msg.from.first_name}.txt`
 
         fileUser = `${__dirname}/user`
-        // fs.writeFileSync(fileUser, `${id}\n`)
+        fs.writeFileSync(fileUser, `${id}\n`)
         re = RegExp(`${id}`,"g")
         access = fs.readFileSync(fileUser,"utf8").match(re)
     }
@@ -51,10 +51,10 @@ bot.on('message', async function(msg){
     }
 
     if(fs.existsSync(file)){
-        fs.appendFileSync(file, `${id}_${msg.chat.username}_${msg.chat.first_name} > ${msg.text}\n`)
+        fs.appendFileSync(file, `${id}_${msg.chat.first_name} > ${msg.text}\n`)
     }else{
         fs.writeFileSync(file, `\n`)
-        fs.appendFileSync(file, `${id}_${msg.chat.username}_${msg.chat.first_name} > ${msg.text}\n`)
+        fs.appendFileSync(file, `${id}_${msg.chat.first_name} > ${msg.text}\n`)
     }
 
     
@@ -92,6 +92,7 @@ bot.on('message', async function(msg){
         if(msg.text == "/history"){
             mass = fs.readFileSync(file, "utf8").match(/^.+/gim)
             counter = 0
+            txt = ""
             for(i = mass.length-1; i >= 0; i--){
                 if(counter < 10){
                     await bot.sendMessage(id, `<i>${mass[i]}</i>`, {parse_mode:"HTML"})
@@ -113,19 +114,17 @@ bot.on('message', async function(msg){
         
         if(msg.text == "/help"){
             await bot.sendMessage(id, "<b>Очистите кеш для правильной работы бота !!!</b>", {parse_mode:"HTML"})
-            await bot.sendMessage(id, "https://wiki.termux.com/wiki/Termux:API", {parse_mode:"HTML"})
             
         }
+
     }else{
-        await bot.sendMessage(id, "Доступ ограничен")
-        await bot.sendMessage(id, "Для рассмотрения заявки напишите мне @timnbv")
+
+        await bot.sendMessage(id, `<b>${msg.from.first_name}</b> доступ ограничен !!!\nДля рассмотрения заявки напишите мне @timnbv`, {parse_mode:"HTML"})
         await bot.sendMessage(5131265599, `Пользователь: ${id}_${msg.from.first_name}`, {
             reply_markup:{ inline_keyboard:
                 [
                     [{text:"Добавить ?", callback_data: `userAdd_${id}`},{text:"Отказать", callback_data: `userDell_${id}`}]
-                ]
-            }
-        })
+                ]}})
     }
 
 })
@@ -139,6 +138,8 @@ bot.on("callback_query", async function(query){
         file = `${__dirname}/../storage/downloads/${query.message.chat.id}_${query.message.chat.first_name}.txt`
         fileUser = `${__dirname}/../storage/downloads/user`
     }
+
+
 
     if(query.data == "clear"){
         await bot.sendMessage(query.message.chat.id, `<u>История очищена</u>`, {parse_mode:"HTML"})
@@ -159,8 +160,4 @@ bot.on("callback_query", async function(query){
 
 })
 
-bot.getMe().then(function(r){
-    c(`Бот ${r.username} в работе...`) 
-}).catch(function(e){
-    console.error(e)
-})
+bot.getMe().then(function(r){ c(`Бот ${r.username} в работе...`) })
