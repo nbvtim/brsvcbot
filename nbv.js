@@ -70,10 +70,10 @@ bot.on('message', async function(msg){
                 parse_mode:"HTML",
                 reply_markup:{
                     inline_keyboard:[
-                        [{text:"1", callback_data:"1"},{text:"2", callback_data:"2"},{text:"3", callback_data:"3"}],
-                        [{text:"4", callback_data:"4"},{text:"5", callback_data:"5"},{text:"6", callback_data:"6"}],
-                        [{text:"7", callback_data:"7"},{text:"8", callback_data:"8"},{text:"9", callback_data:"9"}],
-                        [{text:"0", callback_data:"0"}]
+                        [{text:"1", callback_data:"start_1"},{text:"2", callback_data:"start_2"},{text:"3", callback_data:"start_3"}],
+                        [{text:"4", callback_data:"start_4"},{text:"5", callback_data:"start_5"},{text:"6", callback_data:"start_6"}],
+                        [{text:"7", callback_data:"start_7"},{text:"8", callback_data:"start_8"},{text:"9", callback_data:"start_9"}],
+                        [{text:"0", callback_data:"start_0"}]
                     ]
                 }
             })
