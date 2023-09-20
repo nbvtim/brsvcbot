@@ -1,15 +1,20 @@
 const c             = require("./h")
 const xlsx          = require('node-xlsx').default
+const spawn         = require("child_process").spawn
 const TOKEN         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
+
+
+try{ // ------------------------------------------------------------------
 if(process.platform == "win32"){
-    arr = xlsx.parse("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
-    fs.writeFileSync(`${__dirname}/all`, JSON.stringify(arr, null, 4))
+    allarr = xlsx.parse("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
+    fs.writeFileSync(`${__dirname}/all`, JSON.stringify(allarr, null, 4))
     c("Данные обновлены !!!")
 }
+
 let xlsdb = JSON.parse(fs.readFileSync(`${__dirname}/all`, "utf8"))[0].data
 
 bot.setMyCommands([ // В command не применять заглавные буквы
@@ -59,7 +64,6 @@ bot.on('message', async function(msg){
         fs.appendFileSync(file, `${id}_${msg.chat.first_name} > ${msg.text}\n`)
     }
 
-    
     if( access != null ){
 
         if(msg.text == "/start"){
@@ -111,11 +115,15 @@ bot.on('message', async function(msg){
         
         if(msg.text == "/settings"){
             await bot.sendMessage(id, "<s>данный раздел в разработке</s>", {parse_mode:"HTML"})
+            
+            const termux_battery_status = spawn("termux-battery-status")
+            termux_battery_status.stdout.on("data", data => {
+                bot.sendMessage(id, `Заряд батареи ${JSON.parse(data).percentage}%`)
+            })
         }
         
         if(msg.text == "/help"){
             await bot.sendMessage(id, "<b>Очистите кеш для правильной работы бота !!!</b>", {parse_mode:"HTML"})
-            
         }
 
     }else{
@@ -142,7 +150,6 @@ bot.on("callback_query", async function(query){
     }
 
 
-
     if(query.data == "clear"){
         await bot.sendMessage(query.message.chat.id, `<u>История очищена</u>`, {parse_mode:"HTML"})
         fs.writeFileSync(file, `\n`)
@@ -163,3 +170,9 @@ bot.on("callback_query", async function(query){
 })
 
 bot.getMe().then(function(data){ c(`Бот ${data.username} в работе...`) })
+
+
+}catch(err){ // ------------------------------------------------------------------
+    bot.sendMessage(5131265599, `Ошибка TRY CATCH`)
+    c(`Ошибка TRY CATCH`)
+}
