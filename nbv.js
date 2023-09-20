@@ -149,33 +149,37 @@ bot.on('message', async function(msg){
 })
 
 bot.on("callback_query", async function(query){
-    c(query)
-    if(process.platform == "win32"){
-        file = `${__dirname}/${query.message.chat.id}_${query.message.chat.first_name}.txt`
-        fileUser = `${__dirname}/user.txt`
-    }
-    if(process.platform == "android"){
-        file = `${__dirname}/../storage/downloads/${query.message.chat.id}_${query.message.chat.first_name}.txt`
-        fileUser = `${__dirname}/../storage/downloads/user.txt`
-    }
+    id = query.message.chat.id
+    qd = query.data
 
-
-    if(query.data == "clear"){
+    if(query.data == "clear"){ // история 
         await bot.sendMessage(query.message.chat.id, `<u>История очищена</u>`, {parse_mode:"HTML"})
         fs.writeFileSync(file, `\n`)
     }
-    if(query.data.match(/userAdd/) != null){
+
+    if(process.platform == "win32"){ // регистрация - создание файла win32
+        file = `${__dirname}/${query.message.chat.id}_${query.message.chat.first_name}.txt`
+        fileUser = `${__dirname}/user.txt`
+    }
+    if(process.platform == "android"){ // регистрация - создание файла android
+        file = `${__dirname}/../storage/downloads/${query.message.chat.id}_${query.message.chat.first_name}.txt`
+        fileUser = `${__dirname}/../storage/downloads/user.txt`
+    }
+    if(query.data.match(/userAdd/) != null){ // регистрация
         id = query.data.match(/\d+/)[0]
         fs.appendFileSync(fileUser , `${id}\n`)
         await bot.sendMessage(query.message.chat.id, `Пользователь добавлен`)
         await bot.sendMessage(id, `Регистрация прошла успешно`)
     }
-    if(query.data.match(/userDell/) != null){
+    if(query.data.match(/userDell/) != null){ // отмена регистрации
         id = query.data.match(/\d+/)[0]
         await bot.sendMessage(query.message.chat.id, `Отказано`)
         await bot.sendMessage(id, `Отказано`)
     }
 
+    if(query.data){ // старт
+        c(id,qd)
+    }
 
 })
 
