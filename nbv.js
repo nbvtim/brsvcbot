@@ -176,7 +176,7 @@ bot.on("callback_query", async function(query){
         await bot.sendMessage(id, `Отказано`)
     }
 
-    if(query.data){ // старт
+    if(typeof qdata == "string" && qdata.match(/^start_/i)){ // старт
         number = Math.floor(Math.random()*10)
         await bot.sendMessage(qid, `${qid} > ${qdata} (${number})`)
     }
