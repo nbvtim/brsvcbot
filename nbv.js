@@ -118,7 +118,12 @@ bot.on('message', async function(msg){
             termux_battery_status.stdout.on("data", data => {
                 bot.sendMessage(id, `Заряд батареи <b>${JSON.parse(data).percentage}</b>%`,{
                     parse_mode: "HTML",
-                    
+                    reply_markup:{
+                        inline_keyboard:[
+                            [{text:"кнопка_1", callback_data:"out_1"},{text:"кнопка_2", callback_data:"out_2"}],
+                            [{text:"кнопка_3", callback_data:"out_3"},{text:"кнопка_4", callback_data:"out_4"}]
+                        ]
+                    }
                 })
             })
         }
