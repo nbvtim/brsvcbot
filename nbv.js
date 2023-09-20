@@ -65,7 +65,6 @@ bot.on('message', async function(msg){
     if( access != null ){
 
         if(msg.text == "/start"){ // 
-            number = Math.floor(Math.random()*10)
             await bot.sendMessage(id, `<i>Привет <b>${msg.from.first_name}</b> !!!</i>\nОтгадайте число от 0 до 9`, {
                 parse_mode:"HTML",
                 reply_markup:{
@@ -149,8 +148,8 @@ bot.on('message', async function(msg){
 })
 
 bot.on("callback_query", async function(query){
-    id = query.message.chat.id
-    qd = query.data
+    qid = query.message.chat.id
+    qdata = query.data
 
     if(query.data == "clear"){ // история 
         await bot.sendMessage(query.message.chat.id, `<u>История очищена</u>`, {parse_mode:"HTML"})
@@ -178,7 +177,8 @@ bot.on("callback_query", async function(query){
     }
 
     if(query.data){ // старт
-        c(id,qd)
+        number = Math.floor(Math.random()*10)
+        await bot.sendMessage(qid, `${qid} > ${qdata} (${number})`)
     }
 
 })
