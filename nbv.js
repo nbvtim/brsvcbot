@@ -7,7 +7,7 @@ const bot           = new TelegramApi (TOKEN, {polling: true})
 
 if(process.platform == "win32"){
     arr = xlsx.parse("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
-    fs.writeFileSync(`${__dirname}/all`, JSON.stringify(arr))
+    fs.writeFileSync(`${__dirname}/all`, JSON.stringify(arr, null, 4))
     c("Данные обновлены !!!")
 }
 let xlsdb = JSON.parse(fs.readFileSync(`${__dirname}/all`, "utf8"))[0].data
