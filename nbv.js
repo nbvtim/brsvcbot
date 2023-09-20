@@ -6,9 +6,8 @@ const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
-
-
 try{ // ------------------------------------------------------------------
+
 if(process.platform == "win32"){
     allarr = xlsx.parse("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
     fs.writeFileSync(`${__dirname}/all`, JSON.stringify(allarr, null, 4))
@@ -39,7 +38,6 @@ bot.setMyCommands([ // В command не применять заглавные б�
 bot.on('message', async function(msg){
 
     id = msg.chat.id
-    c(`${id}_${msg.from.first_name} > ${msg.text}`)
 
     if(process.platform == "win32"){
         file = `${__dirname}/${id}_${msg.from.first_name}.txt`
@@ -66,22 +64,25 @@ bot.on('message', async function(msg){
 
     if( access != null ){
 
-        if(msg.text == "/start"){
+        if(msg.text == "/start"){ // 
             number = Math.floor(Math.random()*10)
-            await bot.sendMessage(id, `
-<i>Привет <b>${msg.from.first_name}</b> !!!</i>
-Отгадайте число от 0 до 9
-<tg-spoiler>${number} - угадали?</tg-spoiler>
-`, {parse_mode:"HTML"})}
-
-        if(msg.text == "/auto"){
-            bot.sendMessage(id, `
-<i>чтобы сделать запрос на поиск по автотранспорту наберите:</i>
-<pre>ат запрос</pre>
-`, {parse_mode:"HTML"})
+            await bot.sendMessage(id, `<i>Привет <b>${msg.from.first_name}</b> !!!</i>\nОтгадайте число от 0 до 9`, {
+                parse_mode:"HTML",
+                reply_markup:{
+                    inline_keyboard:[
+                        [{text:"1"},{text:"2"},{text:"3"}],
+                        [{text:"4"},{text:"5"},{text:"6"}],
+                        [{text:"7"},{text:"8"},{text:"9"}],
+                        [{text:"0"}]
+                    ]
+                }
+            })
         }
 
-        if( typeof msg.text == "string" && msg.text.match(/^ат\s/i) ){// 
+        if(msg.text == "/auto"){ // 
+            bot.sendMessage(id, `<i>Чтобы сделать запрос на поиск по автотранспорту наберите:\n</i><pre>ат запрос</pre>`, {parse_mode:"HTML"})
+        }
+        if( typeof msg.text == "string" && msg.text.match(/^ат\s/i) ){
             t = msg.text.replace(/^ат\s/i, "")
             re = RegExp(t, "i")
             counter = 0
@@ -94,7 +95,7 @@ bot.on('message', async function(msg){
             await bot.sendMessage(id, `<i>Выведено ответов ${counter}</i>`, {parse_mode:"HTML"})
         }
         
-        if(msg.text == "/history"){
+        if(msg.text == "/history"){ // 
             mass = fs.readFileSync(file, "utf8").match(/^.+/gim)
             counter = 0
             txt = ""
@@ -113,7 +114,7 @@ bot.on('message', async function(msg){
             })
         }
         
-        if(msg.text == "/settings"){            
+        if(msg.text == "/settings"){ //    
             const termux_battery_status = spawn("termux-battery-status")
             termux_battery_status.stdout.on("data", data => {
                 bot.sendMessage(id, `Заряд батареи <b>${JSON.parse(data).percentage}</b>%`,{
@@ -128,9 +129,11 @@ bot.on('message', async function(msg){
             })
         }
         
-        if(msg.text == "/help"){
+        if(msg.text == "/help"){ //
             await bot.sendMessage(id, "<b>Очистите кеш для правильной работы бота !!!</b>", {parse_mode:"HTML"})
         }
+
+
 
     }else{
 
