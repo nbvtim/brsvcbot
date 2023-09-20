@@ -113,12 +113,13 @@ bot.on('message', async function(msg){
             })
         }
         
-        if(msg.text == "/settings"){
-            await bot.sendMessage(id, "<s>данный раздел в разработке</s>", {parse_mode:"HTML"})
-            
+        if(msg.text == "/settings"){            
             const termux_battery_status = spawn("termux-battery-status")
             termux_battery_status.stdout.on("data", data => {
-                bot.sendMessage(id, `Заряд батареи ${JSON.parse(data).percentage}%`)
+                bot.sendMessage(id, `Заряд батареи <b>${JSON.parse(data).percentage}</b>%`,{
+                    parse_mode: "HTML",
+                    
+                })
             })
         }
         
