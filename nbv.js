@@ -149,6 +149,7 @@ bot.on('message', async function(msg){
 })
 
 bot.on("callback_query", async function(query){
+    c(query)
     if(process.platform == "win32"){
         file = `${__dirname}/${query.message.chat.id}_${query.message.chat.first_name}.txt`
         fileUser = `${__dirname}/user.txt`
