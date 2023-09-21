@@ -1,192 +1,62 @@
-const c             = require("./h")
-const xlsx          = require('node-xlsx').default
-const spawn         = require("child_process").spawn
+const c             = console.log
 const TOKEN         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const fs            = require('fs')
+const xlsx          = require('node-xlsx').default
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
-try{ // ------------------------------------------------------------------
-
-if(process.platform == "win32"){
-    allarr = xlsx.parse("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
-    fs.writeFileSync(`${__dirname}/all`, JSON.stringify(allarr, null, 4))
-    c("Данные обновлены !!!")
-}
-
-let xlsdb = JSON.parse(fs.readFileSync(`${__dirname}/all`, "utf8"))[0].data
-
-bot.setMyCommands([ // В command не применять заглавные буквы
-    {
-        command:"start",
-        description:"Старт"
-    },{
-        command:"auto",
-        description:"Автотранспорт"
-    },{
-        command:"history",
-        description:"История"
-    },{
-        command:"settings",
-        description:"Настройки"
-    },{
-        command:"help",
-        description:"Помощь"
-    }
-])
-
-bot.on('message', async function(msg){
-
-    id = msg.chat.id
-
-    if(process.platform == "win32"){
-        file = `${__dirname}/${id}_${msg.from.first_name}.txt`
-
-        fileUser = `${__dirname}/user.txt`
-        fs.writeFileSync(fileUser, `${id}\n`)
-        re = RegExp(`${id}`,"g")
-        access = fs.readFileSync(fileUser,"utf8").match(re)
-    }
-    if(process.platform == "android"){
-        file = `${__dirname}/../storage/downloads/${id}_${msg.from.first_name}.txt`
-
-        fileUser = `${__dirname}/../storage/downloads/user.txt`
-        re = RegExp(`${id}`,"g")
-        access = fs.readFileSync(fileUser,"utf8").match(re)
-    }
-
-    if(fs.existsSync(file)){
-        fs.appendFileSync(file, `${id}_${msg.chat.first_name} > ${msg.text}\n`)
+try{ 
+    
+    if(fs.existsSync("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")){
+        fs.writeFileSync(`${__dirname}/#all`, JSON.stringify(xlsx.parse("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"), null, 4),)
+        bd = JSON.parse(fs.readFileSync(`${__dirname}/#all`, "utf8"))
+        bdAT = bd[0].data
     }else{
-        fs.writeFileSync(file, `\n`)
-        fs.appendFileSync(file, `${id}_${msg.chat.first_name} > ${msg.text}\n`)
+        bd = JSON.parse(fs.readFileSync(`${__dirname}/#all`, "utf8"))
+        bdAT = bd[0].data
     }
 
-    if( access != null ){
+    bot.on("message", async msg=>{
 
-        if(msg.text == "/start"){ // 
-            await bot.sendMessage(id, `<i>Привет <b>${msg.from.first_name}</b> !!!</i>\nОтгадайте число от 0 до 9`, {
-                parse_mode:"HTML",
+        mid = msg.chat.id
+        txt = msg.text
+
+        fs.appendFileSync(`${__dirname}/#log`, JSON.stringify(msg)+"\n")
+
+        if( (fs.readFileSync(`${__dirname}/#users`,"utf8")).match(mid) ){
+
+            re = RegExp(txt, "i")
+            counter = 0
+            for(i in bdAT){
+                str = bdAT[i].join("").replace(/ /g,"").toLowerCase().match(re)
+                if(str != null && counter < 10){
+                    counter++
+                    t = JSON.stringify(bdAT[i], null, 4)
+                    await bot.sendMessage(mid, t)
+                }
+            }
+            await bot.sendMessage(mid, `Выведено записей: ${counter}`)
+
+        }else{
+
+            await bot.sendMessage(5131265599, JSON.stringify(msg), {
                 reply_markup:{
                     inline_keyboard:[
-                        [{text:"1", callback_data:"start_1"},{text:"2", callback_data:"start_2"},{text:"3", callback_data:"start_3"}],
-                        [{text:"4", callback_data:"start_4"},{text:"5", callback_data:"start_5"},{text:"6", callback_data:"start_6"}],
-                        [{text:"7", callback_data:"start_7"},{text:"8", callback_data:"start_8"},{text:"9", callback_data:"start_9"}],
-                        [{text:"0", callback_data:"start_0"}]
+                        [{text: "добавить", callback_data: mid+"_yes"}, {text: "отказать", callback_data: mid+"_no"}]
                     ]
                 }
             })
         }
+    })
 
-        if(msg.text == "/auto"){ // 
-            bot.sendMessage(id, `<i>Чтобы сделать запрос на поиск по автотранспорту наберите:\n</i><pre>ат запрос</pre>`, {parse_mode:"HTML"})
+    bot.on("callback_query", async query=>{
+        m = query.data.split("_")
+        if(m[1] === "yes"){
+            fs.appendFileSync(`${__dirname}/#users`, `${m[0]}\n`)
+            await bot.deleteMessage(query.from.id, query.message.message_id)
         }
-        if( typeof msg.text == "string" && msg.text.match(/^ат\s/i) ){
-            t = msg.text.replace(/^ат\s/i, "")
-            re = RegExp(t, "i")
-            counter = 0
-            for(i in xlsdb){
-                if(xlsdb[i].join(", ").toLowerCase().match(re) && counter < 10){
-                    await bot.sendMessage(id, xlsdb[i].join("\n"))
-                    counter++
-                }
-            }
-            await bot.sendMessage(id, `<i>Выведено ответов ${counter}</i>`, {parse_mode:"HTML"})
-        }
-        
-        if(msg.text == "/history"){ // 
-            mass = fs.readFileSync(file, "utf8").match(/^.+/gim)
-            counter = 0
-            txt = ""
-            for(i = mass.length-1; i >= 0; i--){
-                if(counter < 10){
-                    await bot.sendMessage(id, `<i>${mass[i]}</i>`, {parse_mode:"HTML"})
-                    counter++
-                }
-            }
-            await bot.sendMessage(id, `В истории ${mass.length} записей`, {
-                reply_markup:{ inline_keyboard:
-                    [
-                        [{text:"очистить историю", callback_data: "clear"}]
-                    ]
-                }
-            })
-        }
-        
-        if(msg.text == "/settings"){ //    
-            const termux_battery_status = spawn("termux-battery-status")
-            termux_battery_status.stdout.on("data", data => {
-                bot.sendMessage(id, `Заряд батареи <b>${JSON.parse(data).percentage}</b>%`,{
-                    parse_mode: "HTML",
-                    reply_markup:{
-                        inline_keyboard:[
-                            [{text:"кнопка_1", callback_data:"out_1"},{text:"кнопка_2", callback_data:"out_2"}],
-                            [{text:"кнопка_3", callback_data:"out_3"},{text:"кнопка_4", callback_data:"out_4"}]
-                        ]
-                    }
-                })
-            })
-        }
-        
-        if(msg.text == "/help"){ //
-            await bot.sendMessage(id, "<b>Очистите кеш для правильной работы бота !!!</b>", {parse_mode:"HTML"})
-        }
+    })
 
-
-
-    }else{
-
-        await bot.sendMessage(id, `<b>${msg.from.first_name}</b> доступ ограничен !!!\nДля рассмотрения заявки напишите мне @timnbv`, {parse_mode:"HTML"})
-        await bot.sendMessage(5131265599, `Пользователь ${id}_${msg.from.first_name} подал заявку на добавление`, {
-            reply_markup:{ inline_keyboard:
-                [
-                    [{text:"Добавить ?", callback_data: `userAdd_${id}`},{text:"Отказать", callback_data: `userDell_${id}`}]
-                ]}})
-        await bot.sendMessage(5131265599, `${JSON.stringify(msg, null, 5)}`, {parse_mode:"HTML"})
-    }
-
-})
-
-bot.on("callback_query", async function(query){
-    qid = query.message.chat.id
-    qdata = query.data
-
-    if(query.data == "clear"){ // история 
-        await bot.sendMessage(query.message.chat.id, `<u>История очищена</u>`, {parse_mode:"HTML"})
-        fs.writeFileSync(file, `\n`)
-    }
-
-    if(process.platform == "win32"){ // регистрация - создание файла win32
-        file = `${__dirname}/${query.message.chat.id}_${query.message.chat.first_name}.txt`
-        fileUser = `${__dirname}/user.txt`
-    }
-    if(process.platform == "android"){ // регистрация - создание файла android
-        file = `${__dirname}/../storage/downloads/${query.message.chat.id}_${query.message.chat.first_name}.txt`
-        fileUser = `${__dirname}/../storage/downloads/user.txt`
-    }
-    if(query.data.match(/userAdd/) != null){ // регистрация
-        id = query.data.match(/\d+/)[0]
-        fs.appendFileSync(fileUser , `${id}\n`)
-        await bot.sendMessage(query.message.chat.id, `Пользователь добавлен`)
-        await bot.sendMessage(id, `Регистрация прошла успешно`)
-    }
-    if(query.data.match(/userDell/) != null){ // отмена регистрации
-        id = query.data.match(/\d+/)[0]
-        await bot.sendMessage(query.message.chat.id, `Отказано`)
-        await bot.sendMessage(id, `Отказано`)
-    }
-
-    if(typeof qdata == "string" && qdata.match(/^start_/i)){ // старт
-        number = Math.floor(Math.random()*10)
-        await bot.sendMessage(qid, `${qid} > ${qdata} (${number})`)
-    }
-
-})
-
-bot.getMe().then(function(data){ c(`Бот ${data.username} в работе...`) })
-
-
-}catch(err){ // ------------------------------------------------------------------
-    bot.sendMessage(5131265599, `Ошибка TRY CATCH`)
-    c(`Ошибка TRY CATCH`)
+}catch(err){
+    c("_____________________ TRY ERROR _____________________")
 }
