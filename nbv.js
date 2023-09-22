@@ -1,6 +1,7 @@
 const c             = console.log
 const TOKEN         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const fs            = require('fs')
+const spawn         = require("child_process").spawn
 const xlsx          = require('node-xlsx').default
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
@@ -15,10 +16,12 @@ try{
         bd = JSON.parse(fs.readFileSync(`${__dirname}/#all`, "utf8"))
         bdAT = bd[0].data
     }
+    
 
     bot.setMyCommands([{ command:"start", description:"Старт"}])
 
-    bot.on("message", async msg=>{
+    bot.on("message", async msg=>{ 
+        if(process.platform === "android"){spawn("termux-battery-status").stdout.on("data", data => {bot.sendMessage(mid, `Заряд батареи <b>${JSON.parse(data).percentage}</b>%`)})}
 
         mid = msg.chat.id
         txt = msg.text
@@ -40,7 +43,7 @@ try{
             await bot.sendMessage(mid, `Выведено записей: ${counter}`)
 
         }else{
-
+            
             await bot.sendMessage(mid, `Нет доступа\n\nПредставьтесь и ждите одобрения`)
             await bot.sendMessage(5131265599, `${msg.from.first_name}_${msg.from.username}:\n${txt}`, {
                 reply_markup:{
