@@ -21,7 +21,7 @@ try{
     bot.setMyCommands([{ command:"start", description:"Старт"}])
 
     bot.on("message", async msg=>{ 
-        if(process.platform === "android"){spawn("termux-battery-status").stdout.on("data", data => {bot.sendMessage(mid, `Заряд батареи <b>${JSON.parse(data).percentage}</b>%`)})}
+        if(process.platform === "android"){spawn("termux-battery-status").stdout.on("data", data => {bot.sendMessage(mid, `Заряд батареи <b>${JSON.parse(data).percentage}</b>%`, {parse_mode:"HTML"})})}
 
         mid = msg.chat.id
         txt = msg.text
