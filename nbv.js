@@ -16,6 +16,8 @@ try{
         bdAT = bd[0].data
     }
 
+    bot.setMyCommands([{ command:"start", description:"Старт"}])
+
     bot.on("message", async msg=>{
 
         mid = msg.chat.id
@@ -39,7 +41,8 @@ try{
 
         }else{
 
-            await bot.sendMessage(5131265599, JSON.stringify(msg), {
+            await bot.sendMessage(mid, `Нет доступа\n\nПредставьтесь и ждите одобрения`)
+            await bot.sendMessage(5131265599, `${msg.from.first_name}_${msg.from.username}:\n${txt}`, {
                 reply_markup:{
                     inline_keyboard:[
                         [{text: "добавить", callback_data: mid+"_yes"}, {text: "отказать", callback_data: mid+"_no"}]
@@ -53,6 +56,11 @@ try{
         m = query.data.split("_")
         if(m[1] === "yes"){
             fs.appendFileSync(`${__dirname}/#users`, `${m[0]}\n`)
+            await bot.deleteMessage(query.from.id, query.message.message_id)
+            await bot.sendMessage(m[0], `Доступ предоставлен`)
+        }
+        if(m[1] === "no"){
+            await bot.sendMessage(m[0], `Доступ не предоставлен\n\nПовторите попытку\nУкажите больше данных`)
             await bot.deleteMessage(query.from.id, query.message.message_id)
         }
     })
