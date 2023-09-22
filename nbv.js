@@ -24,7 +24,7 @@ try{
         mid = msg.chat.id
         txt = msg.text
         if(process.platform === "android" && txt === "/start" && mid === 5131265599){spawn("termux-battery-status").stdout.on("data", data => {
-            bot.sendMessage(mid, `Заряд батареи <b>${JSON.parse(data).percentage}</b> %`, {parse_mode:"HTML"})})}
+        bot.sendMessage(mid, `Заряд батареи <b>${JSON.parse(data).percentage}</b> %`, {parse_mode:"HTML"})})}
         fs.appendFileSync(`${__dirname}/#log`, JSON.stringify(msg)+"\n")
 
         if( (fs.readFileSync(`${__dirname}/#users`,"utf8")).match(mid) ){
