@@ -27,7 +27,7 @@ try{
         bot.sendMessage(mid, `Заряд батареи: <b>${JSON.parse(data).percentage}</b> %\nТемпература: <b>${Math.round(JSON.parse(data).temperature)}</b> °C`, {parse_mode:"HTML"})})}
         fs.appendFileSync(`${__dirname}/#log`, JSON.stringify(msg)+"\n")
 
-        if( (fs.readFileSync(`${__dirname}/#users`,"utf8")).match(mid) ){
+        if( (fs.readFileSync(`${__dirname}/#users`,"utf8") ).match(mid) ){
 
             re = RegExp(txt, "i")
             counter = 0
@@ -71,4 +71,6 @@ try{
     c("_____________________ TRY ERROR _____________________")
 }
 
-bot.getMe().then(t=>{c("\033[94m" + t.username.toUpperCase() + " в работе ...")})
+bot.getMe().then(t=>{c("\033[93m" + `
+${t.username.toUpperCase()} в работе ...\nЗапущен на платформе ${process.platform.toUpperCase()}
+` + "\033[m")})
