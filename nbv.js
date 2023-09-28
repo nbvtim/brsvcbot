@@ -22,6 +22,7 @@ try{
     bot.on("message", async msg=>{ 
         mid = msg.chat.id
         txt = msg.text
+        
         fs.appendFileSync(`${__dirname}/#log`, JSON.stringify(msg)+"\n")
 
         if( (fs.readFileSync(`${__dirname}/#users`,"utf8") ).match(mid) ){
