@@ -1,7 +1,6 @@
 const c             = console.log
 const TOKEN         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const fs            = require('fs')
-const spawn         = require("child_process").spawn
 const xlsx          = require('node-xlsx').default
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
@@ -23,8 +22,6 @@ try{
     bot.on("message", async msg=>{ 
         mid = msg.chat.id
         txt = msg.text
-        if(process.platform === "android" && txt === "/start" && mid === 5131265599){spawn("termux-battery-status").stdout.on("data", data => {
-        bot.sendMessage(mid, `Заряд батареи: <b>${JSON.parse(data).percentage}</b> %\nТемпература: <b>${Math.round(JSON.parse(data).temperature)}</b> °C`, {parse_mode:"HTML"})})}
         fs.appendFileSync(`${__dirname}/#log`, JSON.stringify(msg)+"\n")
 
         if( (fs.readFileSync(`${__dirname}/#users`,"utf8") ).match(mid) ){
@@ -68,7 +65,9 @@ try{
     })
 
 }catch(err){
+
     c("_____________________ TRY ERROR _____________________")
+
 }
 
 bot.getMe().then(t=>{c("\033[93m" + `
