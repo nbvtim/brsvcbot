@@ -44,7 +44,7 @@ try{
                     }
                 }
             }
-            await bot.sendMessage(mid, `По запросу: ${msg.text}\nНайдено записей: ${counter} `)
+            await bot.sendMessage(mid, `> По запросу: ${msg.text}\n> Найдено записей: ${counter} `)
 
         }else if(txt !== undefined){
             
