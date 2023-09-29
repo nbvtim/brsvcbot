@@ -39,7 +39,7 @@ try{
                 if(str != null){
                     counter++
                     if(counter <= 7){
-                        t = JSON.stringify(bdAT[i], null, 4)
+                        t = JSON.stringify(bdAT[i], null, 4).join("\n")
                         await bot.sendMessage(mid, t)
                     }
                 }
