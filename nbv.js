@@ -23,7 +23,7 @@ try{
         mid = msg.chat.id
         txt = msg.text
         
-        if(msg.text.match(/\//) === null){
+        if(msg.text !== undefined && msg.text.match(/\//) === null){
             fs.appendFileSync(`${__dirname}/#longLog`, JSON.stringify(msg)+"\n")
             fs.appendFileSync(`${__dirname}/#log`, `${msg.from.id}_${msg.from.first_name} > ${msg.chat.id}_${msg.chat.first_name} (${msg.message_id}, ${msg.date}): ${msg.text}\n`)
         }
