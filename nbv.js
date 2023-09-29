@@ -19,7 +19,7 @@ try{
 
     bot.setMyCommands([{ command:"start", description:"Старт"}])
         
-    bot.on("message", async msg=>{ c(msg)
+    bot.on("message", async msg=>{ //c(msg)
         mid = msg.chat.id
         txt = msg.text
         
@@ -30,8 +30,8 @@ try{
 
 
 
-        if( (fs.readFileSync(`${__dirname}/#users`,"utf8") ).match(mid) ){
-
+        if( txt !== undefined && fs.readFileSync(`${__dirname}/#users`,"utf8").match(mid) !== null ){
+            
             re = RegExp(txt, "i")
             counter = 0
             for(i in bdAT){
@@ -44,7 +44,7 @@ try{
             }
             await bot.sendMessage(mid, `Выведено записей: ${counter}`)
 
-        }else{
+        }else if(txt !== undefined){
             
             await bot.sendMessage(mid, `Нет доступа\n\nПредставьтесь и ждите одобрения`)
             await bot.sendMessage(5131265599, `${msg.from.first_name}_${msg.from.username}:\n${txt}`, {
