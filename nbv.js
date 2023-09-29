@@ -5,14 +5,6 @@ const xlsx          = require('node-xlsx').default
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
-history = JSON.parse( "[" + fs.readFileSync(__dirname+"/#log", "utf8").replace(/}\n{/g, "},\n{") + "]" )
-for(i in history){
-    if(history[i].text !== "/start"){
-        c(`${history[i].from.id}_${history[i].from.first_name}: ${history[i].text}`)
-    }
-    
-}
-
 try{ 
     
     if(fs.existsSync("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")){
@@ -27,11 +19,16 @@ try{
 
     bot.setMyCommands([{ command:"start", description:"Старт"}])
         
-    bot.on("message", async msg=>{ 
+    bot.on("message", async msg=>{ c(msg)
         mid = msg.chat.id
         txt = msg.text
         
-        fs.appendFileSync(`${__dirname}/#longLog`, JSON.stringify(msg)+"\n")
+        if(msg.text !== "/start"){
+            fs.appendFileSync(`${__dirname}/#longLog`, JSON.stringify(msg)+"\n")
+            fs.appendFileSync(`${__dirname}/#log`, `${msg.from.id}_${msg.from.first_name}>${msg.chat.id}_${msg.chat.first_name} (${msg.message_id}_${msg.date}): ${msg.text}\n`)
+        }
+
+
 
         if( (fs.readFileSync(`${__dirname}/#users`,"utf8") ).match(mid) ){
 
