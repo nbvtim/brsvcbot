@@ -35,14 +35,16 @@ try{
             re = RegExp(txt, "i")
             counter = 0
             for(i in bdAT){
-                str = bdAT[i].join("").replace(/ /g,"").toLowerCase().match(re)
-                if(str != null && counter < 10){
+                str = bdAT[i].join("").replace(/ /g, "").toLowerCase().match(re)
+                if(str != null){
                     counter++
-                    t = JSON.stringify(bdAT[i], null, 4)
-                    await bot.sendMessage(mid, t)
+                    if(counter <= 7){
+                        t = JSON.stringify(bdAT[i], null, 4)
+                        await bot.sendMessage(mid, t)
+                    }
                 }
             }
-            await bot.sendMessage(mid, `Выведено записей: ${counter}`)
+            await bot.sendMessage(mid, `По запросу: ${msg.text}\nНайдено: ${counter}`)
 
         }else if(txt !== undefined){
             
