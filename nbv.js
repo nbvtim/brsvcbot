@@ -7,27 +7,10 @@ const bot           = new TelegramApi (TOKEN, {polling: true})
 
 try{ 
     
-    if(fs.existsSync("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")){
-        fs.writeFileSync(`${__dirname}/#all.json`, JSON.stringify(xlsx.parse("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"), null, 4),)
-        bd = JSON.parse(fs.readFileSync(`${__dirname}/#all.json`, "utf8"))
-        bdAT = bd[0].data
-    }else{
-        bd = JSON.parse(fs.readFileSync(`${__dirname}/#all.json`, "utf8"))
-        bdAT = bd[0].data
-    }
-    
-////////////////////////////////////////////////
-// возвращяет true если команда существует
-    function commands(){
-        bot.setMyCommands([
-            { command:"start", description:"Старт" },
-            { command:"setings", description:"Настройки" },
-            { command:"help", description:"Помощь" }
-        ])
-        
-    }
-
-////////////////////////////////////////////////    
+    c(__dirname)
+    fs.writeFileSync( `${__dirname}/#all`, JSON.stringify( xlsx.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx") , null, 4) )
+    bd = JSON.parse(fs.readFileSync(`${__dirname}/#all`, "utf8"))
+    bdAT = bd[0].data    
         
     bot.on("message", async msg=>{ //c(msg)
         mid = msg.chat.id
@@ -81,13 +64,12 @@ try{
             await bot.deleteMessage(query.from.id, query.message.message_id)
         }
     })
+    
+    bot.getMe().then(t=>{c("\033[93m" + `${t.username.toUpperCase()} в работе ...\nЗапущен на платформе ${process.platform.toUpperCase()}` + "\033[m")})
 
 }catch(err){
 
     c("_____________________ TRY ERROR _____________________")
+    c(err)
 
 }
-
-bot.getMe().then(t=>{c("\033[93m" + `
-${t.username.toUpperCase()} в работе ...\nЗапущен на платформе ${process.platform.toUpperCase()}
-` + "\033[m")})
