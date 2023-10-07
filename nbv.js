@@ -16,7 +16,7 @@ try{
         txt = msg.text
         
         if(msg.text !== undefined && msg.text.match(/\//) === null){
-            fs.appendFileSync(`${__dirname}/#logLong`, JSON.stringify(msg)+"\n")
+            fs.appendFileSync(`${__dirname}/#log`, JSON.stringify(msg)+"\n")
             fs.appendFileSync(`${__dirname}/#logText`, `${msg.text}\n`)
         }
 
