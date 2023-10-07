@@ -16,8 +16,19 @@ try{
         bdAT = bd[0].data
     }
     
+////////////////////////////////////////////////
 
-    bot.setMyCommands([{ command:"start", description:"Старт"}])
+    commandsMass = [
+        { command:"start", description:"Старт"},
+        { command:"setings", description:"Настройки"},
+        { command:"help", description:"Помощь"}
+    ]
+    function commands(commandsMass){
+        bot.setMyCommands(commandsMass)
+        for(i in commandsMass){}
+    }
+
+////////////////////////////////////////////////    
         
     bot.on("message", async msg=>{ //c(msg)
         mid = msg.chat.id
