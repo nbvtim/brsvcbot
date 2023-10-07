@@ -8,11 +8,11 @@ const bot           = new TelegramApi (TOKEN, {polling: true})
 try{ 
     
     if(fs.existsSync("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")){
-        fs.writeFileSync(`${__dirname}/#all`, JSON.stringify(xlsx.parse("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"), null, 4),)
-        bd = JSON.parse(fs.readFileSync(`${__dirname}/#all`, "utf8"))
+        fs.writeFileSync(`${__dirname}/#all.json`, JSON.stringify(xlsx.parse("C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"), null, 4),)
+        bd = JSON.parse(fs.readFileSync(`${__dirname}/#all.json`, "utf8"))
         bdAT = bd[0].data
     }else{
-        bd = JSON.parse(fs.readFileSync(`${__dirname}/#all`, "utf8"))
+        bd = JSON.parse(fs.readFileSync(`${__dirname}/#all.json`, "utf8"))
         bdAT = bd[0].data
     }
     
