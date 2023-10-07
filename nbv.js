@@ -17,15 +17,14 @@ try{
     }
     
 ////////////////////////////////////////////////
-
-    commandsMass = [
-        { command:"start", description:"Старт"},
-        { command:"setings", description:"Настройки"},
-        { command:"help", description:"Помощь"}
-    ]
-    function commands(commandsMass){
-        bot.setMyCommands(commandsMass)
-        for(i in commandsMass){}
+// возвращяет true если команда существует
+    function commands(){
+        bot.setMyCommands([
+            { command:"start", description:"Старт" },
+            { command:"setings", description:"Настройки" },
+            { command:"help", description:"Помощь" }
+        ])
+        
     }
 
 ////////////////////////////////////////////////    
