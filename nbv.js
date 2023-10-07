@@ -7,7 +7,6 @@ const bot           = new TelegramApi (TOKEN, {polling: true})
 
 try{ 
     
-    c(__dirname)
     fs.writeFileSync( `${__dirname}/#all`, JSON.stringify( xlsx.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx") , null, 4) )
     bd = JSON.parse(fs.readFileSync(`${__dirname}/#all`, "utf8"))
     bdAT = bd[0].data    
