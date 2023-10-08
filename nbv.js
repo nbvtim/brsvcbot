@@ -5,13 +5,19 @@ const xlsx          = require('node-xlsx').default
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
-try{ 
-    
-    fs.writeFileSync( `${__dirname}/#all`, JSON.stringify( xlsx.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx") , null, 4) )
+try{
+
+    function pathFile(){
+        if(process.platform === "win32")    {return     "C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"}
+        if(process.platform === "linux")    {return "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"}
+        if(process.platform === "android")  {return "запиши путь для android"}
+    }
+    c("\033[93m"+`${pathFile()}  =  ${fs.existsSync(pathFile())}`+"\033[m")
+    fs.writeFileSync( `${__dirname}/#all`, JSON.stringify( xlsx.parse(pathFile()) , null, 4) )
     bd = JSON.parse(fs.readFileSync(`${__dirname}/#all`, "utf8"))
     bdAT = bd[0].data    
         
-    bot.on("message", async msg=>{ //c(msg)
+    bot.on("message", async msg=>{ c( JSON.stringify(msg.text) )
         mid = msg.chat.id
         txt = msg.text
         
@@ -69,6 +75,5 @@ try{
 }catch(err){
 
     c("_____________________ TRY ERROR _____________________")
-    c(err)
 
 }
