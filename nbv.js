@@ -11,22 +11,20 @@ try{
         if(process.platform === "win32")    {return     "C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"}
         if(process.platform === "linux")    {return "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"}
         if(process.platform === "android")  {return "запиши путь для android"}
-    }
-    c("\033[93m"+`${pathFile()}  =  ${fs.existsSync(pathFile())}`+"\033[m")
+    }       c("\033[93m"+`${pathFile()}  =  ${fs.existsSync(pathFile())}`+"\033[m")
+
     fs.writeFileSync( `${__dirname}/SOURSE/all`, JSON.stringify( xlsx.parse(pathFile()) , null, 4) )
     bd = JSON.parse(fs.readFileSync(`${__dirname}/SOURSE/all`, "utf8"))
     bdAT = bd[0].data    
         
-    bot.on("message", async msg=>{ c( JSON.stringify(msg.text) )
+    bot.on("message", async msg=>{ c(msg)
         mid = msg.chat.id
         txt = msg.text
         
         if(msg.text !== undefined && msg.text.match(/\//) === null){
             fs.appendFileSync(`${__dirname}/SOURSE/log`, JSON.stringify(msg)+"\n")
-            fs.appendFileSync(`${__dirname}/SOURSE/logText`, `${msg.text}\n`)
+            fs.appendFileSync(`${__dirname}/SOURSE/logText`, `${msg.date}_${mid}_${msg.chat.first_name} >>> ${txt}\n`)
         }
-
-
 
         if( txt !== undefined && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(mid) !== null ){
             
