@@ -13,8 +13,8 @@ try{
         if(process.platform === "android")  {return "запиши путь для android"}
     }
     c("\033[93m"+`${pathFile()}  =  ${fs.existsSync(pathFile())}`+"\033[m")
-    fs.writeFileSync( `${__dirname}/#all`, JSON.stringify( xlsx.parse(pathFile()) , null, 4) )
-    bd = JSON.parse(fs.readFileSync(`${__dirname}/#all`, "utf8"))
+    fs.writeFileSync( `${__dirname}/SOURSE/all`, JSON.stringify( xlsx.parse(pathFile()) , null, 4) )
+    bd = JSON.parse(fs.readFileSync(`${__dirname}/SOURSE/all`, "utf8"))
     bdAT = bd[0].data    
         
     bot.on("message", async msg=>{ c( JSON.stringify(msg.text) )
@@ -22,13 +22,13 @@ try{
         txt = msg.text
         
         if(msg.text !== undefined && msg.text.match(/\//) === null){
-            fs.appendFileSync(`${__dirname}/#log`, JSON.stringify(msg)+"\n")
-            fs.appendFileSync(`${__dirname}/#logText`, `${msg.text}\n`)
+            fs.appendFileSync(`${__dirname}/SOURSE/log`, JSON.stringify(msg)+"\n")
+            fs.appendFileSync(`${__dirname}/SOURSE/logText`, `${msg.text}\n`)
         }
 
 
 
-        if( txt !== undefined && fs.readFileSync(`${__dirname}/#users`,"utf8").match(mid) !== null ){
+        if( txt !== undefined && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(mid) !== null ){
             
             re = RegExp(txt, "i")
             counter = 0
@@ -60,7 +60,7 @@ try{
     bot.on("callback_query", async query=>{
         m = query.data.split("_")
         if(m[1] === "yes"){
-            fs.appendFileSync(`${__dirname}/#users`, `${m[0]}\n`)
+            fs.appendFileSync(`${__dirname}/SOURSE/users`, `${m[0]}\n`)
             await bot.deleteMessage(query.from.id, query.message.message_id)
             await bot.sendMessage(m[0], `Доступ предоставлен`)
         }
