@@ -17,9 +17,7 @@ try{
     bd = JSON.parse(fs.readFileSync(`${__dirname}/SOURSE/all`, "utf8"))
     bdAT = bd[0].data    
     
-    // bot.setMyCommands([
-    //     {command:"start",description:"Старт"}
-    // ])
+    // bot.setMyCommands([ {command:"start",description:"Старт"} ])
     // bot.getMyCommands().then(t=>c(t))
     // bot.deleteMyCommands()
     bot.on("message", async msg=>{ c(msg)
