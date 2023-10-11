@@ -47,7 +47,7 @@ try{
 
         }else if(txt !== undefined){
             
-            await bot.sendMessage(mid, `Нет доступа\n\nПредставьтесь и ждите одобрения`)
+            await bot.sendMessage(mid, `Нет доступа\nПредставьтесь и ждите одобрения`)
             await bot.sendMessage(5131265599, `${msg.from.first_name}_${msg.from.username}:\n${txt}`, {
                 reply_markup:{
                     inline_keyboard:[
