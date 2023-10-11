@@ -16,7 +16,8 @@ try{
     fs.writeFileSync( `${__dirname}/SOURSE/all`, JSON.stringify( xlsx.parse(pathFile()) , null, 4) )
     bd = JSON.parse(fs.readFileSync(`${__dirname}/SOURSE/all`, "utf8"))
     bdAT = bd[0].data    
-        
+    
+    bot.deleteMyCommands()
     bot.on("message", async msg=>{ c(msg)
         mid = msg.chat.id
         txt = msg.text
