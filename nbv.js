@@ -29,7 +29,7 @@ try{
             fs.appendFileSync(`${__dirname}/SOURSE/logText`, `${msg.date}_${mid}_${msg.chat.first_name} >>> ${txt}\n`)
         }
 
-        if( txt !== undefined && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(mid) !== null ){
+        if( txt !== undefined && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(mid, "gm") ) !== null ){
             
             re = RegExp(txt, "i")
             counter = 0
