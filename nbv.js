@@ -15,48 +15,68 @@ try{
 
     fs.writeFileSync( `${__dirname}/SOURSE/all`, JSON.stringify( xlsx.parse(pathFile()) , null, 4) )
     bd = JSON.parse(fs.readFileSync(`${__dirname}/SOURSE/all`, "utf8"))
-    bdAT = bd[0].data    
-    
-    // bot.setMyCommands([ {command:"start",description:"Старт"} ])
-    // bot.getMyCommands().then(t=>c(t))
+    bdAT = bd[0].data
+
     // bot.deleteMyCommands()
-    bot.on("message", async msg=>{ c(msg)
+    bot.setMyCommands([ 
+        {command:"start",description:"Старт"},
+        {command:"setings",description:"Настройки"},
+        {command:"help",description:"Помощь"}
+    ])
+    // bot.getMyCommands().then(t=>c(t))
+    
+    bot.on("message", async msg=>{ //c(msg)
         mid = msg.chat.id
         txt = msg.text
-        
-        if(txt !== undefined){
-            fs.appendFileSync(`${__dirname}/SOURSE/log`, JSON.stringify(msg)+"\n")
-            fs.appendFileSync(`${__dirname}/SOURSE/logText`, `${msg.date}_${mid}_${msg.chat.first_name} >>> ${txt}\n`)
-        }
 
-        if( txt !== undefined && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(mid, "gm") ) !== null ){
+        if(msg.text[0] !== "/"){
             
-            re = RegExp(txt, "i")
-            counter = 0
-            for(i in bdAT){
-                str = bdAT[i].join("").replace(/ /g, "").toLowerCase().match(re)
-                if(str != null){
-                    counter++
-                    if(counter <= 7){
-                        t = bdAT[i].join("\n")
-                        await bot.sendMessage(mid, t)
+            if(txt !== undefined){
+                fs.appendFileSync(`${__dirname}/SOURSE/log`, JSON.stringify(msg)+"\n")
+                fs.appendFileSync(`${__dirname}/SOURSE/logText`, `${msg.date}_${mid}_${msg.chat.first_name} >>> ${txt}\n`)
+            }
+
+            if( txt !== undefined && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(mid, "gm") ) !== null ){
+                
+                re = RegExp(txt, "i")
+                counter = 0
+                for(i in bdAT){
+                    str = bdAT[i].join("").replace(/ /g, "").toLowerCase().match(re)
+                    if(str != null){
+                        counter++
+                        if(counter <= 7){
+                            t = bdAT[i].join("\n")
+                            await bot.sendMessage(mid, t)
+                        }
                     }
                 }
-            }
-            await bot.sendMessage(mid, `> По запросу: ${msg.text}\n> Найдено записей: ${counter} `)
+                await bot.sendMessage(mid, `> По запросу: ${msg.text}\n> Найдено записей: ${counter} `)
 
-        }else if(txt !== undefined){
+            }else if(txt !== undefined){
+                
+                await bot.sendMessage(mid, `Нет доступа\nПредставьтесь и ждите одобрения`)
+                await bot.sendMessage(5131265599, `${msg.from.first_name}_${msg.from.username}:\n${txt}`, {
+                    reply_markup:{
+                        inline_keyboard:[
+                            [{text: "добавить", callback_data: mid+"_yes"}, {text: "отказать", callback_data: mid+"_no"}]
+                        ]
+                    }
+                })
             
-            await bot.sendMessage(mid, `Нет доступа\nПредставьтесь и ждите одобрения`)
-            await bot.sendMessage(5131265599, `${msg.from.first_name}_${msg.from.username}:\n${txt}`, {
-                reply_markup:{
-                    inline_keyboard:[
-                        [{text: "добавить", callback_data: mid+"_yes"}, {text: "отказать", callback_data: mid+"_no"}]
-                    ]
-                }
-            })
-            
+            }
+
+        }else{
+            if(txt === "/start"){
+                bot.sendMessage(mid, "<pre>В разработке</pre>", {parse_mode: "HTML"})
+            }
+            if(txt === "/setings"){
+                bot.sendMessage(mid, "<pre>В разработке</pre>", {parse_mode: "HTML"})
+            }
+            if(txt === "/help"){
+                bot.sendMessage(mid, "<pre>В разработке</pre>", {parse_mode: "HTML"})
+            }
         }
+
     })
 
     bot.on("callback_query", async query=>{
@@ -72,7 +92,7 @@ try{
         }
     })
     
-    bot.getMe().then(t=>{c("\033[93m" + `${t.username.toUpperCase()} в работе ...\nЗапущен на платформе ${process.platform.toUpperCase()}` + "\033[m")})
+    bot.getMe().then(t=>{c("\033[93m" + `${t.username.toUpperCase()} запущен на платформе ${process.platform.toUpperCase()}` + "\033[m")})
 
 }catch(err){
 
