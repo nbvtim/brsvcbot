@@ -20,7 +20,7 @@ try{
     // bot.deleteMyCommands()
     bot.setMyCommands([ 
         {command:"start",description:"Старт"},
-        {command:"setings",description:"Настройки"},
+        {command:"settings",description:"Настройки"},
         {command:"help",description:"Помощь"}
     ])
     // bot.getMyCommands().then(t=>c(t))
@@ -69,7 +69,7 @@ try{
             if(txt === "/start"){
                 bot.sendMessage(mid, "<pre>В разработке</pre>", {parse_mode: "HTML"})
             }
-            if(txt === "/setings"){
+            if(txt === "/settings"){
                 bot.sendMessage(mid, "<pre>В разработке</pre>", {parse_mode: "HTML"})
             }
             if(txt === "/help"){
