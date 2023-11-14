@@ -25,7 +25,7 @@ try{
     ])
     // bot.getMyCommands().then(t=>c(t))
     
-    bot.on("message", async msg=>{ c(msg.chat.id)
+    bot.on("message", async msg=>{ // c(msg.chat.id)
         mid = msg.chat.id
         txt = msg.text
 
@@ -74,7 +74,7 @@ try{
                     parse_mode: "HTML",
                     reply_markup:{
                         inline_keyboard:[
-                            [{text: "Tmate start", callback_data: "fff"}]
+                            [{text: "Tmate start", callback_data: "tmate_start"}]
                         ]
                     }
                 })
@@ -86,7 +86,7 @@ try{
 
     })
 
-    bot.on("callback_query", async query=>{
+    bot.on("callback_query", async query=>{ // c(query.data)
         m = query.data.split("_")
         if(m[1] === "yes"){
             fs.appendFileSync(`${__dirname}/SOURSE/users`, `${m[0]}\n`)
@@ -96,6 +96,9 @@ try{
         if(m[1] === "no"){
             await bot.sendMessage(m[0], `Доступ не предоставлен\n\nПовторите попытку\nУкажите больше данных`)
             await bot.deleteMessage(query.from.id, query.message.message_id)
+        }
+        if(query.data === "tmate_start"){
+            bot.sendMessage(query.from.id, "В разработке")
         }
     })
     

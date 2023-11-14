@@ -79,3 +79,7 @@
 {"message_id":6061,"from":{"id":5131265599,"is_bot":false,"first_name":"Тим","username":"timnbv","language_code":"ru"},"chat":{"id":5131265599,"first_name":"Тим","username":"timnbv","type":"private"},"date":1699942449,"text":"проо"}
 {"message_id":6063,"from":{"id":5131265599,"is_bot":false,"first_name":"Тим","username":"timnbv","language_code":"ru"},"chat":{"id":5131265599,"first_name":"Тим","username":"timnbv","type":"private"},"date":1699942591,"text":"тсьа"}
 {"message_id":6102,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1699950056,"text":"sfdff"}
+{"message_id":6135,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1699950888,"text":"добавить"}
+{"message_id":6137,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1699950897,"text":"добавить"}
+{"message_id":6139,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1699950906,"text":"добавить"}
+{"message_id":6146,"from":{"id":2037585811,"is_bot":false,"first_name":"stsmena","language_code":"ru"},"chat":{"id":2037585811,"first_name":"stsmena","type":"private"},"date":1699950953,"text":"отказать"}
