@@ -11,7 +11,8 @@ try{
         if(process.platform === "win32")    {return     "C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"}
         if(process.platform === "linux")    {return "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"}
         if(process.platform === "android")  {return "запиши путь для android"}
-    }       c("\033[93m"+`${pathFile()}  =  ${fs.existsSync(pathFile())}`+"\033[m")
+    }       
+    c("\033[93m"+`${pathFile()}  =  ${fs.existsSync(pathFile())}`+"\033[m")
 
     fs.writeFileSync( `${__dirname}/SOURSE/all`, JSON.stringify( xlsx.parse(pathFile()) , null, 4) )
     bd = JSON.parse(fs.readFileSync(`${__dirname}/SOURSE/all`, "utf8"))
