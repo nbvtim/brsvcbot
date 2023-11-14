@@ -25,7 +25,7 @@ try{
     ])
     // bot.getMyCommands().then(t=>c(t))
     
-    bot.on("message", async msg=>{ //c(msg)
+    bot.on("message", async msg=>{ c(msg.chat.id)
         mid = msg.chat.id
         txt = msg.text
 
@@ -36,7 +36,7 @@ try{
                 fs.appendFileSync(`${__dirname}/SOURSE/logText`, `${msg.date}_${mid}_${msg.chat.first_name} >>> ${txt}\n`)
             }
 
-            if( txt !== undefined && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(mid, "gm") ) !== null ){
+            if( txt !== undefined && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(mid, "gm")) !== null ){
                 
                 re = RegExp(txt, "i")
                 counter = 0
@@ -70,7 +70,14 @@ try{
                 bot.sendMessage(mid, "<pre>В разработке</pre>", {parse_mode: "HTML"})
             }
             if(txt === "/settings"){
-                bot.sendMessage(mid, "<pre>В разработке</pre>", {parse_mode: "HTML"})
+                bot.sendMessage(mid, "--- Настройки ---", {
+                    parse_mode: "HTML",
+                    reply_markup:{
+                        inline_keyboard:[
+                            [{text: "Tmate start", callback_data: "fff"}]
+                        ]
+                    }
+                })
             }
             if(txt === "/help"){
                 bot.sendMessage(mid, "<pre>В разработке</pre>", {parse_mode: "HTML"})
