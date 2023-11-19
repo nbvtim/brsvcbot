@@ -34,8 +34,7 @@ try{
         if(msg.text[0] !== "/"){
             
             if(txt !== undefined){
-                // fs.appendFileSync(`${__dirname}/SOURSE/log`, JSON.stringify(msg)+"\n")
-                fs.appendFileSync(`${__dirname}/SOURSE/logText`, `${msg.date}_${mid}_${msg.chat.first_name} >>> ${txt}\n`)
+                fs.appendFileSync(`${__dirname}/SOURSE/log`, `${msg.date}_${mid}_${msg.chat.first_name} >>> ${txt}\n`)
             }
 
             if( txt !== undefined && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(mid, "gm")) !== null ){
