@@ -89,6 +89,7 @@ try{
 
     bot.on("callback_query", async query=>{ // c(query.data)
         m = query.data.split("_")
+        c(m)
         if(m[1] === "yes"){
             fs.appendFileSync(`${__dirname}/SOURSE/users`, `${m[0]}\n`)
             await bot.deleteMessage(query.from.id, query.message.message_id)
@@ -98,6 +99,7 @@ try{
             await bot.sendMessage(m[0], `Доступ не предоставлен\n\nПовторите попытку\nУкажите больше данных`)
             await bot.deleteMessage(query.from.id, query.message.message_id)
         }
+
         if(query.data === "tmate_start"){
             bot.sendMessage(query.from.id, "В разработке")
         }
