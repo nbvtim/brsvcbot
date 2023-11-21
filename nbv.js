@@ -62,11 +62,6 @@ try{
         }else{
             bot.sendMessage(msg.chat.id, `<b><i>Нет доступа ... </i></b> <tg-spoiler> ${msg.chat.id} </tg-spoiler>`,{parse_mode:"HTML"})
         }
-
-
-        
-    
-
     })
 
     bot.on("callback_query", async query=>{ 
