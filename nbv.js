@@ -1,6 +1,7 @@
 // /mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1\ смена\ СВК/nbv/brsvcbot
 const c             = console.log
 const TOKEN         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
+const cp            = require('child_process')
 const fs            = require('fs')
 const xlsx          = require('node-xlsx').default
 const TelegramApi   = require('node-telegram-bot-api')
@@ -20,88 +21,61 @@ try{
     bdAT = bd[0].data
 
     // bot.deleteMyCommands()
-    bot.setMyCommands([ 
-        {command:"start",description:"Старт"},
-        {command:"settings",description:"Настройки"},
-        {command:"help",description:"Помощь"}
-    ])
+    // bot.setMyCommands([ 
+        // {command:"start",description:"Старт"},
+        // {command:"settings",description:"Настройки"},
+        // {command:"help",description:"Помощь"}
+    // ])
     // bot.getMyCommands().then(t=>c(t))
     
     bot.on("message", async msg=>{ // c(msg.chat.id)
-        mid = msg.chat.id
-        txt = msg.text
+        
+        if(msg.text !== undefined){
+            fs.appendFileSync(`${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n`)
+        }
 
-        if(msg.text[0] !== "/"){
-            
-            if(txt !== undefined){
-                fs.appendFileSync(`${__dirname}/SOURSE/log`, `${msg.date}_${mid}_${msg.chat.first_name} >>> ${txt}\n`)
-            }
+        if(msg.text !== undefined && msg.text !== "/" && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(msg.chat.id, "gm")) !== null){
 
-            if( txt !== undefined && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(mid, "gm")) !== null ){
-                
-                re = RegExp(txt, "i")
-                counter = 0
-                for(i in bdAT){
-                    str = bdAT[i].join("").replace(/ /g, "").toLowerCase().match(re)
-                    if(str != null){
+            re = RegExp(msg.text, "i")
+            counter = 0
+            for(i in bdAT){
+                str = bdAT[i].join("").replace(/ /g, "").toLowerCase().match(re)
+                if(str != null){
+                    if(counter < 5){
                         counter++
-                        if(counter <= 7){
-                            t = bdAT[i].join("\n")
-                            await bot.sendMessage(mid, t)
-                        }
+                        t = bdAT[i].join("\n")
+                        await bot.sendMessage(msg.chat.id, t)
                     }
                 }
-                await bot.sendMessage(mid, `> По запросу: ${msg.text}\n> Найдено записей: ${counter} `)
-
-            }else if(txt !== undefined){
-                
-                await bot.sendMessage(mid, `Нет доступа\nПредставьтесь и ждите одобрения`)
-                await bot.sendMessage(5131265599, `${msg.from.first_name}_${msg.from.username}:\n${txt}`, {
-                    reply_markup:{
-                        inline_keyboard:[
-                            [{text: "добавить", callback_data: mid+"_yes"}, {text: "отказать", callback_data: mid+"_no"}]
-                        ]
-                    }
-                })
-            
             }
-
+            await bot.sendMessage(msg.chat.id, `<b><i>Найдено записей: ${counter}</i></b>`,{parse_mode:"HTML"})
+        }else if(msg.text === "/" && msg.chat.id == 5131265599){
+            bot.sendMessage(msg.chat.id, "<b> 🛠 НАСТРОЙКИ 🛠 </b>", {
+                parse_mode: "HTML",
+                reply_markup:{
+                    inline_keyboard:[
+                        [{text: "▶ Tmate старт", callback_data: "t"}, {text: "⏹ Tmate стоп", callback_data: "pkill tmate"}],
+                        [{text: "🔄 Перезапустить бота", callback_data: "./tg"}]
+                    ]
+                }
+            })
         }else{
-            if(txt === "/start"){
-                bot.sendMessage(mid, "<pre>В разработке</pre>", {parse_mode: "HTML"})
-            }
-            if(txt === "/settings"){
-                bot.sendMessage(mid, "--- Настройки ---", {
-                    parse_mode: "HTML",
-                    reply_markup:{
-                        inline_keyboard:[
-                            [{text: "Tmate start", callback_data: "tmate_start"}]
-                        ]
-                    }
-                })
-            }
-            if(txt === "/help"){
-                bot.sendMessage(mid, "<pre>В разработке</pre>", {parse_mode: "HTML"})
-            }
+            bot.sendMessage(msg.chat.id, `<b><i>Нет доступа ... </i></b> <tg-spoiler> ${msg.chat.id} </tg-spoiler>`,{parse_mode:"HTML"})
         }
+
+
+        
+    
 
     })
 
-    bot.on("callback_query", async query=>{ // c(query.data)
-        m = query.data.split("_")
-        c(m)
-        if(m[1] === "yes"){
-            fs.appendFileSync(`${__dirname}/SOURSE/users`, `${m[0]}\n`)
-            await bot.deleteMessage(query.from.id, query.message.message_id)
-            await bot.sendMessage(m[0], `Доступ предоставлен`)
+    bot.on("callback_query", async query=>{ 
+        
+        if(query.data === "t"){            
+            cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F > ./SOURSE/1")
         }
-        if(m[1] === "no"){
-            await bot.sendMessage(m[0], `Доступ не предоставлен\n\nПовторите попытку\nУкажите больше данных`)
-            await bot.deleteMessage(query.from.id, query.message.message_id)
-        }
-
-        if(query.data === "tmate_start"){
-            bot.sendMessage(query.from.id, "В разработке")
+        if(query.data === "pkill tmate"){
+            cp.spawnSync('pkill', ['tmate'])
         }
     })
     
