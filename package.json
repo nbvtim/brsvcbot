@@ -5,7 +5,7 @@
   "main": "./nbv.js",
   "scripts": {
     "start": "node nbv",
-    "dev": "nodemon nbv"
+    "dev": "pkill screen | nodemon nbv"
   },
   "keywords": [],
   "author": "",

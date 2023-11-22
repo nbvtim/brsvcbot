@@ -1,5 +1,6 @@
 // /mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1\ смена\ СВК/nbv/brsvcbot
-const c             = require("./h").c
+const h             = require("./h")
+const c             = h.c
 const TOKEN         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const cp            = require('child_process')
 const fs            = require('fs')
