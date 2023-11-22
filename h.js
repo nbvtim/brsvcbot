@@ -18,8 +18,29 @@ function c(data){
 }
 module.exports = {c: c}
 
+/*
+bot.sendMessage(id, `Сообщение 1`).then(()=>{
+    // bot.sendMessage, это промис
+    // исполнится после завершения, например после загрузки большого видео
+    c("Видео загружено")
+}).catch(err=>{
+    // обработка ошибок
+    console.error(err)
+})
+*/
 
-
+/*
+bot.onText(/\/start/, msg=>{ // обработка команд
+    const { id } = msg.chat
+    bot.sendMessage(id, JSON.stringify( msg ,null,4))
+})
+bot.onText(/\/help (.+)/, (msg, arr)=>{
+    const { id } = msg.chat 
+    bot.sendMessage(id, JSON.stringify( arr ,null,4))
+    let [sourse, match] = arr
+    bot.sendMessage(id, JSON.stringify( match ,null,4))
+})
+*/
 
 /*
 ms = [
@@ -71,7 +92,7 @@ ms = [
     bot.setMyCommands([{command:"start", description:"Старт"}])
     bot.on("message", async function(msg){ ... })
     bot.on("callback_query", async function(query){  })
-    bot.onText(/txt/gi, async function(msg){ ... })
+    bot.onText(/txt/gi, async function(msg){ ... }) 
     bot.getMe().then(v=>{c( `Бот ${v.username} в работе ...\nOS: ${process.platform}` )})
     bot.getMyCommands().then(v=>{c(v)})
     bot.getWebHookInfo().then(v=>{c(v)})
