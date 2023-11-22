@@ -16,7 +16,8 @@ function c(data){
     }
        
 }
-module.exports = c
+module.exports = {c: c}
+
 
 
 
