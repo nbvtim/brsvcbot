@@ -1,5 +1,5 @@
 // /mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1\ смена\ СВК/nbv/brsvcbot
-const c             = console.log
+const c             = require("./#Разное/tg/h")
 const TOKEN         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const cp            = require('child_process')
 const fs            = require('fs')
@@ -14,7 +14,7 @@ try{
         if(process.platform === "linux")    {return "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"}
         if(process.platform === "android")  {return "запиши путь для android"}
     }       
-    c("\033[93m"+`${pathFile()}  =  ${fs.existsSync(pathFile())}`+"\033[m")
+    c(`${pathFile()}  =  ${fs.existsSync(pathFile())}`)
 
     fs.writeFileSync( `${__dirname}/SOURSE/all`, JSON.stringify( xlsx.parse(pathFile()) , null, 4) )
     bd = JSON.parse(fs.readFileSync(`${__dirname}/SOURSE/all`, "utf8"))
@@ -74,7 +74,7 @@ try{
         }
     })
     
-    bot.getMe().then(t=>{c("\033[93m" + `${t.username.toUpperCase()} запущен на платформе ${process.platform.toUpperCase()}` + "\033[m")})
+    bot.getMe().then(t=>{c(`${t.username.toUpperCase()} запущен на платформе ${process.platform.toUpperCase()}`)})
 
 }catch(err){
 
