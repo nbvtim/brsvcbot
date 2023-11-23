@@ -8,6 +8,19 @@ const xlsx          = require('node-xlsx').default
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (TOKEN, {polling: true})
 
+// bot.on("message", async msg=>{ 
+//     bot.sendMessage(msg.chat.id,"КЛАВИАТУРА", {
+//         reply_markup:{
+//             keyboard:[
+//                 ["1", "2"],
+//                 ["3"],
+//                 ["4", "5", "6"]
+//             ]
+//         }
+//     })
+    
+// })
+
 try{
 
     function pathFile(){

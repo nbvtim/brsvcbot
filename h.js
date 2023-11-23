@@ -17,7 +17,7 @@ function c(data){
        
 }
 module.exports = {c: c}
-
+// --------------------------------------------------------------------------------------------------
 /*
 bot.sendMessage(id, `Сообщение 1`).then(()=>{
     // bot.sendMessage, это промис
@@ -41,6 +41,33 @@ bot.onText(/\/help (.+)/, (msg, arr)=>{
     bot.sendMessage(id, JSON.stringify( match ,null,4))
 })
 */
+
+/*
+bot.on("message", async msg=>{ // MarkdownV2
+    bot.sendMessage(msg.chat.id,`
+*adsad* _asdasd_ ||asdasd|| ~asdasd~ \`asdasd\` __asdasd__ 
+[inline URL](http://www.example.com/)
+[inline mention of a user](tg://user?id=5131265599)
+![👍](tg://emoji?id=5368324170671202286)
+\`inline fixed-width code\``, {parse_mode:"MarkdownV2"})
+})
+*/
+
+/*
+// disable_web_page_preview
+// disable_notification
+bot.on("message", async msg=>{ 
+    bot.sendMessage(msg.chat.id,"https://core.telegram.org/bots/api#formatting-options")
+    setTimeout(()=>{
+        bot.sendMessage(msg.chat.id,"https://core.telegram.org/bots/api#formatting-options",{
+            disable_web_page_preview: true,
+            disable_notification: true
+        })
+    },4000)
+})
+*/
+
+//-------------------------------------------------------------------------------------
 
 /*
 ms = [
