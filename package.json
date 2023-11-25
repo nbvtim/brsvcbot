@@ -5,7 +5,8 @@
   "main": "./nbv.js",
   "scripts": {
     "start": "node nbv",
-    "dev": "pkill screen | nodemon nbv"
+    "dev": "pkill screen | nodemon nbv",
+    "dev2":"nodemon ./#Разное/ntbabot/nbv"
   },
   "keywords": [],
   "author": "",
