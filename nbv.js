@@ -6,23 +6,8 @@ const fs            = require('fs')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (h.token, {polling: true})
 
-// bot.on("message", async msg=>{ 
-//     bot.sendMessage(msg.chat.id,"КЛАВИАТУРА", {
-//         reply_markup:{
-//             keyboard:[
-//                 ["1", "2"],
-//                 ["3"],
-//                 ["4", "5", "6"]
-//             ]
-//         }
-//     })
-    
-// })
-
 try{
-    
-    bdAT = h.bd_all[0].data
-
+const bdAT = h.bd_all[0].data
 
     // bot.deleteMyCommands()
     // bot.setMyCommands([ 
@@ -78,7 +63,7 @@ try{
         }
     })
     
-    bot.getMe().then(t=>{c(`${t.username.toUpperCase()} запущен на платформе ${process.platform.toUpperCase()}`)})
+    bot.getMe().then(t=>{c(t.first_name.toUpperCase() + " ...")})
 
 }catch(err){
 

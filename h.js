@@ -1,7 +1,9 @@
 const fs            = require('fs')
 const xlsx          = require('node-xlsx').default
 
+// Украсим console.log 
 function c(data){
+    // Триколор Русского флага - только текст
     if(typeof data === "string"){
         color   = [ "\033[97m", "\033[94m", "\033[91m" ]
         newdataLength = data.length - data.length%3
@@ -17,8 +19,8 @@ function c(data){
     }else{
         console.log(data)
     }
-       
 }
+// Путь к файлу all.xlsx
 function pathFile(){
     file = ""
     if(process.platform === "win32")    {file =      "C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"}
@@ -26,6 +28,7 @@ function pathFile(){
     if(process.platform === "android")  {file =  "запиши путь для android"}
     return file
 }
+// База данных при парсинге документа all.xlsx
 function db_all(){
     return xlsx.parse(pathFile())
 }
