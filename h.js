@@ -1,3 +1,6 @@
+const fs            = require('fs')
+const xlsx          = require('node-xlsx').default
+
 function c(data){
     if(typeof data === "string"){
         color   = [ "\033[97m", "\033[94m", "\033[91m" ]
@@ -16,7 +19,25 @@ function c(data){
     }
        
 }
-module.exports = {c: c}
+function pathFile(){
+    file = ""
+    if(process.platform === "win32")    {file =      "C:/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"}
+    if(process.platform === "linux")    {file =  "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"}
+    if(process.platform === "android")  {file =  "запиши путь для android"}
+    return file
+}
+function db_all(){
+    return xlsx.parse(pathFile())
+}
+
+module.exports = {
+    c:          c,
+    pathFile:   pathFile(),
+    bd_all:     db_all(),
+    token:      "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
+}
+
+
 // --------------------------------------------------------------------------------------------------
 /*
 bot.sendMessage(id, `Сообщение 1`).then(()=>{
