@@ -1,6 +1,5 @@
-const fs            = require('fs')
-const xlsx          = require('node-xlsx').default
 
+const xlsx          = require('node-xlsx').default
 // Украсим console.log 
 function c(data){
     // Триколор Русского флага - только текст

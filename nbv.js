@@ -1,9 +1,10 @@
 // /mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1\ смена\ СВК/nbv/brsvcbot
+const fs            = require('fs')
+const cp            = require('child_process')
+const TelegramApi   = require('node-telegram-bot-api')
+
 const h             = require("./h")
 const c             = h.c
-const cp            = require('child_process')
-const fs            = require('fs')
-const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (h.token, {polling: true})
 
 try{
