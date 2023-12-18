@@ -18,8 +18,7 @@ try{
                         res = mass[i].match(RegExp(msg.chat.id))
                         if(res !== null){
                             if(mass[i][10] === "-"){
-                                bot.sendMessage(msg.chat.id, `<b>${msg.chat.first_name}</b>, нет доступа !!!`, {parse_mode:"HTML"})
-                                
+                                bot.sendMessage(msg.chat.id, `<b>${msg.chat.first_name}</b>, нет доступа !!!`, {parse_mode:"HTML"})  
                             }
                         }
                     }
