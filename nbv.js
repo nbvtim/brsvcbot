@@ -25,6 +25,7 @@ const bdAT = h.bd_all[0].data
         }
 
         if(msg.text !== undefined && msg.text !== "/" && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(msg.chat.id, "gm")) !== null){
+            c(fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(msg.chat.id, "gm")))
 
             re = RegExp(msg.text, "i")
             counter = 0
