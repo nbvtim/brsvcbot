@@ -1,4 +1,3 @@
-// /mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1\ смена\ СВК/nbv/brsvcbot
 const c             = console.log
 const xlsx          = require('node-xlsx').default
 const fs            = require('fs')
@@ -24,7 +23,7 @@ try{
         }
 
         if(msg.text !== undefined && msg.text !== "/" && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(msg.chat.id, "gm")) !== null){
-            c(fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(msg.chat.id, "gm")))
+            // c(fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(msg.chat.id, "gm")))
 
             re = RegExp(msg.text, "i")
             counter = 0
@@ -68,7 +67,7 @@ try{
 
 }catch(err){
 
-    c("_____________________ TRY ERROR _____________________")
+    console.error("_____________________ TRY ERROR _____________________")
     c(err)
 
 }
