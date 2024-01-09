@@ -1,14 +1,13 @@
 // /mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1\ смена\ СВК/nbv/brsvcbot
+const c             = console.log
+const xlsx          = require('node-xlsx').default
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
-
-const h             = require("./h")
-const c             = h.c
-const bot           = new TelegramApi (h.token, {polling: true})
+const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
 try{
-const bdAT = h.bd_all[0].data
+    const bdAT = xlsx.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")[0].data
 
     // bot.deleteMyCommands()
     // bot.setMyCommands([ 
@@ -57,8 +56,8 @@ const bdAT = h.bd_all[0].data
 
     bot.on("callback_query", async query=>{ 
         
-        if(query.data === "t"){            
-            cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F > ./SOURSE/1")
+        if(query.data === "t"){ // "tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F > ./SOURSE/1"
+            cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
         }
         if(query.data === "pkill tmate"){
             cp.spawnSync('pkill', ['tmate'])
@@ -70,5 +69,6 @@ const bdAT = h.bd_all[0].data
 }catch(err){
 
     c("_____________________ TRY ERROR _____________________")
+    c(err)
 
 }
