@@ -5,8 +5,13 @@ const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
+const bdAT = xlsx.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")[0].data
+bot.getMe().then(t=>{
+    c(t)
+    c(`Бот ${t.first_name} в работе ... `)
+})
+
 try{
-    const bdAT = xlsx.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")[0].data
 
     // bot.deleteMyCommands()
     // bot.setMyCommands([ 
@@ -62,12 +67,20 @@ try{
             cp.spawnSync('pkill', ['tmate'])
         }
     })
-    
-    bot.getMe().then(t=>{c(t.first_name.toUpperCase() + " ...")})
 
 }catch(err){
 
     console.error("_____________________ TRY ERROR _____________________")
     c(err)
 
+}
+
+function dataAccess(id){
+    usersF = fs.readFileSync(`${__dirname}/SOURSE/users`, "utf8")
+    idF = usersF.match(RegExp(id,""))
+    if(id == idF){
+        return {d:true, id:id}
+    }else{
+        return {d:false, id:id, idF:idF}
+    }
 }
