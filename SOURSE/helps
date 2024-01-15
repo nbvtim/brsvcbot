@@ -32,12 +32,15 @@ bot.onText(/\/help (.+)/, (msg, arr)=>{
 
 /*
 bot.on("message", async msg=>{ // MarkdownV2
-    bot.sendMessage(msg.chat.id,`
-*adsad* _asdasd_ ||asdasd|| ~asdasd~ \`asdasd\` __asdasd__ 
-[inline URL](http://www.example.com/)
-[inline mention of a user](tg://user?id=5131265599)
-![👍](tg://emoji?id=5368324170671202286)
-\`inline fixed-width code\``, {parse_mode:"MarkdownV2"})
+    bot.sendMessage(msg.chat.id,
+        `
+        *adsad* _asdasd_ ||asdasd|| ~asdasd~ \`asdasd\` __asdasd__ 
+        [inline URL](http://www.example.com/)
+        [inline mention of a user](tg://user?id=5131265599)
+        ![👍](tg://emoji?id=5368324170671202286)
+        \`inline fixed-width code\`
+        `
+    , {parse_mode:"MarkdownV2"})
 })
 */
 
@@ -159,32 +162,32 @@ ms = [
 // ----------------------------------------------------------------------------------------------
 
 // Батарея
-        // const termux_battery_status = SP("termux-battery-status")
+        // const termux_battery_status = spawn("termux-battery-status")
         // termux_battery_status.stdout.on("data", data=>{
         //     bot.sendMessage(id, `Заряд батареи ${JSON.parse(data).percentage}%`)
         // })
 
 // Камеры
 // -c camera-id Идентификатор используемой камеры (см. termux-camera-info), по умолчанию: 0
-        // const termux_camera_info = SP("termux-camera-info")
+        // const termux_camera_info = spawn("termux-camera-info")
         // termux_camera_info.stdout.on("data", data=>{
         //     bot.sendMessage(id, `Инфо камер:\n${data}`)
         // })
-        // const termux_camera_photo_0 = SP("termux-camera-photo",["-c 0", `${__dirname}/../storage/downloads/0.jpeg`])
+        // const termux_camera_photo_0 = spawn("termux-camera-photo",["-c 0", `${__dirname}/../storage/downloads/0.jpeg`])
         // termux_camera_photo_0.on("close", code=>{
         //     bot.sendPhoto(id,`${__dirname}/../storage/downloads/0.jpeg`)
         // })
-        // const termux_camera_photo_1 = SP("termux-camera-photo",["-c 1", `${__dirname}/../storage/downloads/1.jpeg`])
+        // const termux_camera_photo_1 = spawn("termux-camera-photo",["-c 1", `${__dirname}/../storage/downloads/1.jpeg`])
         // termux_camera_photo_1.on("close", code=>{
         //     bot.sendPhoto(id,`${__dirname}/../storage/downloads/1.jpeg`)
         // })
 
 // termux-brightness [0 - 255] - яркость
-        // const termux_brightness_0 = SP("termux-brightness",[0])
+        // const termux_brightness_0 = spawn("termux-brightness",[0])
         // termux_brightness_0.on("close", data=>{
         //     bot.sendMessage(id, `яркость: 0`)
         // })
-        // const termux_brightness_255 = SP("termux-brightness",["120"])
+        // const termux_brightness_255 = spawn("termux-brightness",["120"])
         // termux_brightness_255.on("close", data=>{
         //     bot.sendMessage(id, `яркость: 120`)
         // })
@@ -192,7 +195,7 @@ ms = [
 // termux-call-log - журнал вызовов
 // -l предельное смещение в списке журнала вызовов (по умолчанию: 10) 
 // -o смещение смещения в списке журнала вызовов (по умолчанию: 0)
-        // const termux_call_log = SP("termux-call-log")
+        // const termux_call_log = spawn("termux-call-log")
         // termux_call_log.stdout.on("data", data=>{
         //     bot.sendMessage(id, `Вызовы:\n${data}`)
         // })
@@ -200,17 +203,17 @@ ms = [
 // Буфер обмена
 // termux-clipboard-set "hello world"
 // cat file.txt | termux-clipboard-set
-        // const termux_clipboard_set = SP("termux-clipboard-set", ["jsldjflsdfhsdfhklskdjf"])
+        // const termux_clipboard_set = spawn("termux-clipboard-set", ["jsldjflsdfhsdfhklskdjf"])
         // termux_clipboard_set.on("close", data=>{
         //     bot.sendMessage(id, "Записано в буфер")
         // })
-        // const termux_clipboard_get = SP("termux-clipboard-get")
+        // const termux_clipboard_get = spawn("termux-clipboard-get")
         // termux_clipboard_get.stdout.on("data", data=>{
         //     bot.sendMessage(id, `Содержимое буфера:\n${data}`)
         // })
 
 // termux-contact-list
-        // const termux_contact_list = SP("termux-contact-list")
+        // const termux_contact_list = spawn("termux-contact-list")
         // let fulldata = ""
         // let counter = 0
         // termux_contact_list.stderr.on("data", data=>{
@@ -272,7 +275,7 @@ ms = [
 //        * нельзя использовать [-m] с [-n]
 // время — выберите значение времени.
 //     [-t title] установить заголовок диалога (необязательно)
-        // const termux_dialog = SP("termux-dialog", ["-l"])
+        // const termux_dialog = spawn("termux-dialog", ["-l"])
         // termux_dialog.stdout.on("data", data=>{
         //     c( `${data}`)
         // })
@@ -281,7 +284,7 @@ ms = [
 // -d описание описание уведомления о запросе на загрузку
 // -t заголовок уведомления о запросе на загрузку
 // -p путь путь для сохранения загруженного файла
-    // const termux_download = SP("termux-download", ["-d описание уведомления", "-t заголовок уведомления", "-p ./", "https://web.telegram.org/k/#@lydi_sochi"])
+    // const termux_download = spawn("termux-download", ["-d описание уведомления", "-t заголовок уведомления", "-p ./", "https://web.telegram.org/k/#@lydi_sochi"])
     // termux_download.on("close", code=>{c(code)})
 
 */
