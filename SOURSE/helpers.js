@@ -1,3 +1,12 @@
+module.exports = {
+    WSL_DISTRO_NAME:  process.env.WSL_DISTRO_NAME,
+    WSL_DISTRO_NAME_: process.env.WSL_DISTRO_NAME + " ПРИСТАВКА",
+    доступ: function(){
+        msg.chat.id
+        fs.readFileSync(`${__dirname}/SOURSE/users`, "utf8")
+        return "skfkjdh"
+    }
+}
 
 
 /*

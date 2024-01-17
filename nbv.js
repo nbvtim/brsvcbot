@@ -1,16 +1,17 @@
 const c             = console.log
-const helpers       = require(`${__dirname}/SOURSE/helpers.js`)
 const xlsx          = require('node-xlsx').default
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
-const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
+const helpers       = require(`${__dirname}/SOURSE/helpers.js`)
+c(helpers)
 
-const bd = xlsx.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
-const bdAT = bd[0].data
+const bot   = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
+const bd    = xlsx.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
+const bdAT  = bd[0].data
 
 bot.deleteMyCommands()
-bot.getMe().then(t=>{c(t)})
+bot.getMe().then(t=>{c(t.first_name)})
 
 try{
 
