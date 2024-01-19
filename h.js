@@ -1,13 +1,35 @@
-module.exports = {
-    WSL_DISTRO_NAME:  process.env.WSL_DISTRO_NAME,
-    WSL_DISTRO_NAME_: process.env.WSL_DISTRO_NAME + " ПРИСТАВКА",
-    доступ: function(){
-        msg.chat.id
-        fs.readFileSync(`${__dirname}/SOURSE/users`, "utf8")
-        return "skfkjdh"
-    }
+const c             = console.log
+const fs            = require('fs')
+const xlsx          = require('node-xlsx').default
+const token         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
+
+let db
+
+const all_XLSX_path     = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"
+const all_TXT_path      = __dirname+"/SOURSE/cache/all.txt"
+const all_XLSX_exists   = fs.existsSync(all_XLSX_path)
+const all_TXT_Exists    = fs.existsSync(all_TXT_path)
+
+if(all_XLSX_exists){
+    let dbJson = xlsx.parse(all_XLSX_path)
+    let dbText = JSON.stringify(dbJson,null,5)
+    fs.writeFileSync(all_TXT_path, dbText,"utf8")
+    db = dbJson
+}else if(all_TXT_Exists){
+    let dbText = fs.readFileSync(all_TXT_path, "utf8")
+    let dbJson = JSON.parse(dbText)
+    db = dbJson
+}else{
+    c("По такому пути файлов не существует !!!")
 }
 
+module.exports = {
+    db: db,
+    token: token,
+}
+
+// const bot = new TelegramBot(API_KEY_BOT, {polling: {interval: 300, autoStart: true}})
+// bot.on("polling_error", err => console.log(err.data.error.message));
 
 /*
 $ git config --global user.email "exelent206@gmail.com"

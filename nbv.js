@@ -3,24 +3,28 @@ const xlsx          = require('node-xlsx').default
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
-const helpers       = require(`${__dirname}/SOURSE/helpers.js`)
-c(helpers)
+const h             = require("./h.js")
+c(h)
 
-const bot   = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
+const bot   = new TelegramApi (h.token, {polling: true})
 const bd    = xlsx.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
 const bdAT  = bd[0].data
 
 bot.deleteMyCommands()
-bot.getMe().then(t=>{c(t.first_name)})
+// bot.getMe().then(t=>{c(t.first_name)})
+
+bot.on("polling_error", err=>c(err))
+
+const obj = {}
 
 try{
 
     // bot.deleteMyCommands()
-    // bot.setMyCommands([ 
-        // {command:"start",description:"Старт"},
-        // {command:"settings",description:"Настройки"},
-        // {command:"help",description:"Помощь"}
-    // ])
+    bot.setMyCommands([ 
+        {command:"start", description:"Старт"},
+        {command:"settings", description:"Настройки"},
+        {command:"help", description:"Помощь"}
+    ])
     // bot.getMyCommands().then(t=>c(t))
     
     bot.on("message", async msg=>{ // c(msg.chat.id)
@@ -75,14 +79,4 @@ try{
     console.error("_____________________ TRY ERROR _____________________")
     c(err)
 
-}
-
-function dataAccess(id){
-    usersF = fs.readFileSync(`${__dirname}/SOURSE/users`, "utf8")
-    idF = usersF.match(RegExp(id,""))
-    if(id == idF){
-        return {d:true, id:id}
-    }else{
-        return {d:false, id:id, idF:idF}
-    }
 }
