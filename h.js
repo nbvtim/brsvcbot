@@ -3,6 +3,7 @@ const fs            = require('fs')
 const xlsx          = require('node-xlsx').default
 const token         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 
+// берем данные из all.xlsx и формируем базу данных
 let db
 
 const all_XLSX_path     = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"
@@ -23,9 +24,19 @@ if(all_XLSX_exists){
     c("По такому пути файлов не существует !!!")
 }
 
+// формируем список пользователей из имеющейся db
+let users
+
+for(i in db){
+    if(db[i].name === "users"){
+        users = db[i].data
+    }
+}
+
 module.exports = {
     db: db,
     token: token,
+    users: users,
 }
 
 // const bot = new TelegramBot(API_KEY_BOT, {polling: {interval: 300, autoStart: true}})

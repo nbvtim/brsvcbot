@@ -4,9 +4,8 @@
   "description": "",
   "main": "./nbv.js",
   "scripts": {
-    "start": "node nbv",
-    "dev": "pkill screen | nodemon nbv",
-    "dev2":"nodemon ./#Разное/ntbabot/nbv"
+    "start": "node nbv | electron .",
+    "dev": "pkill screen | nodemon nbv"
   },
   "keywords": [],
   "author": "",

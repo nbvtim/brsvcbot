@@ -1,32 +1,30 @@
 const c             = console.log
-const xlsx          = require('node-xlsx').default
+const h             = require("./h.js")
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
-const h             = require("./h.js")
-c(h)
-
-const bot   = new TelegramApi (h.token, {polling: true})
-const bd    = xlsx.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
+const bot           = new TelegramApi (h.token, {polling: true})
+// c(h)
+const bd    = h.db
 const bdAT  = bd[0].data
 
-bot.deleteMyCommands()
-// bot.getMe().then(t=>{c(t.first_name)})
-
+// bot.deleteMyCommands()
+bot.setMyCommands([ 
+    {command:"start", description:"Старт"},
+    {command:"settings", description:"Настройки"},
+    {command:"help", description:"Помощь"}
+])
+bot.getMyCommands().then((t) => { /*c(t)*/ })
+bot.getMe().then(t=>{ /*c(t.first_name.toUpperCase()+"...")*/ })
 bot.on("polling_error", err=>c(err))
 
 const obj = {}
+for(i in h.users){
+    obj[ h.users[i][4] ] = {path: ""}
+}
 
 try{
 
-    // bot.deleteMyCommands()
-    bot.setMyCommands([ 
-        {command:"start", description:"Старт"},
-        {command:"settings", description:"Настройки"},
-        {command:"help", description:"Помощь"}
-    ])
-    // bot.getMyCommands().then(t=>c(t))
-    
     bot.on("message", async msg=>{ // c(msg.chat.id)
         
         if(msg.text !== undefined){
@@ -34,7 +32,6 @@ try{
         }
 
         if(msg.text !== undefined && msg.text !== "/" && fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(msg.chat.id, "gm")) !== null){
-            // c(fs.readFileSync(`${__dirname}/SOURSE/users`,"utf8").match(RegExp(msg.chat.id, "gm")))
 
             re = RegExp(msg.text, "i")
             counter = 0
