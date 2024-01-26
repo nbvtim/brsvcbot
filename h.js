@@ -3,14 +3,12 @@ const fs            = require('fs')
 const xlsx          = require('node-xlsx').default
 const token         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 
-// берем данные из all.xlsx и формируем базу данных
+// берем данные и формируем базу данных
 let db
-
 const all_XLSX_path     = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"
-const all_TXT_path      = __dirname+"/SOURSE/cache/all.txt"
+const all_TXT_path      = __dirname + "/SOURSE/cache/all.txt"
 const all_XLSX_exists   = fs.existsSync(all_XLSX_path)
 const all_TXT_Exists    = fs.existsSync(all_TXT_path)
-
 if(all_XLSX_exists){
     let dbJson = xlsx.parse(all_XLSX_path)
     let dbText = JSON.stringify(dbJson,null,5)
@@ -21,17 +19,18 @@ if(all_XLSX_exists){
     let dbJson = JSON.parse(dbText)
     db = dbJson
 }else{
-    c("По такому пути файлов не существует !!!")
+    c("ДАННЫЕ НЕ ПОЛУЧЕНЫ !!!")
 }
 
 // формируем список пользователей из имеющейся db
 let users
-
 for(i in db){
     if(db[i].name === "users"){
         users = db[i].data
     }
 }
+
+
 
 module.exports = {
     db: db,

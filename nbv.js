@@ -6,7 +6,7 @@ const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (h.token, {polling: true})
 // c(h)
 const bd    = h.db
-const bdAT  = bd[0].data
+const bdAT  = bd[0].datah
 
 // bot.deleteMyCommands()
 bot.setMyCommands([ 
@@ -19,13 +19,12 @@ bot.getMe().then(t=>{ /*c(t.first_name.toUpperCase()+"...")*/ })
 bot.on("polling_error", err=>c(err))
 
 const obj = {}
-for(i in h.users){
-    obj[ h.users[i][4] ] = {path: ""}
-}
 
 try{
 
     bot.on("message", async msg=>{ // c(msg.chat.id)
+        obj[ msg.chat.id ] = msg.text
+
         
         if(msg.text !== undefined){
             fs.appendFileSync(`${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n`)
