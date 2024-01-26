@@ -1,7 +1,6 @@
 const c             = console.log
 const fs            = require('fs')
 const xlsx          = require('node-xlsx').default
-const token         = "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 
 // берем данные и формируем базу данных
 let db
@@ -34,7 +33,7 @@ for(i in db){
 
 module.exports = {
     db: db,
-    token: token,
+    token: "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E",
     users: users,
 }
 

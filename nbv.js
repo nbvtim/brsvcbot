@@ -1,31 +1,28 @@
 const c             = console.log
 const h             = require("./h.js")
+// c(h)
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi (h.token, {polling: true})
-// c(h)
 const bd    = h.db
-const bdAT  = bd[0].datah
+const bdAT  = bd[0].data
 
 // bot.deleteMyCommands()
 bot.setMyCommands([ 
     {command:"start", description:"Старт"},
-    {command:"settings", description:"Настройки"},
-    {command:"help", description:"Помощь"}
+    {command:"auto", description:"Автотранспорнт"},
+    // {command:"settings", description:"Настройки"},
+    // {command:"help", description:"Помощь"}
 ])
 bot.getMyCommands().then((t) => { /*c(t)*/ })
 bot.getMe().then(t=>{ /*c(t.first_name.toUpperCase()+"...")*/ })
 bot.on("polling_error", err=>c(err))
-
-const obj = {}
-
+let obj = {}
 try{
 
     bot.on("message", async msg=>{ // c(msg.chat.id)
-        obj[ msg.chat.id ] = msg.text
 
-        
         if(msg.text !== undefined){
             fs.appendFileSync(`${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n`)
         }
@@ -68,6 +65,7 @@ try{
         if(query.data === "pkill tmate"){
             cp.spawnSync('pkill', ['tmate'])
         }
+        
     })
 
 }catch(err){
