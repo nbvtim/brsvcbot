@@ -1,6 +1,6 @@
 const c             = console.log
 const h             = require("./h.js")
-// c(h)
+c(h)
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
@@ -21,7 +21,7 @@ bot.on("polling_error", err=>c(err))
 let obj = {}
 try{
 
-    bot.on("message", async msg=>{ // c(msg.chat.id)
+    bot.on("message", async msg=>{ // c(msg.chat.id) 
 
         if(msg.text !== undefined){
             fs.appendFileSync(`${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n`)

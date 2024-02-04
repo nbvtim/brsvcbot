@@ -29,12 +29,10 @@ for(i in db){
     }
 }
 
-
-
 module.exports = {
     db: db,
     token: "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E",
-    users: users,
+    users: users
 }
 
 // const bot = new TelegramBot(API_KEY_BOT, {polling: {interval: 300, autoStart: true}})
