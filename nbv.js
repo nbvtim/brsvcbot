@@ -17,8 +17,8 @@ bot.deleteMyCommands()
 //     {command:"settings", description:"Настройки"},
 //     {command:"help", description:"Помощь"}
 // ])
-bot.getMyCommands().then((t) => {       })
-bot.getMe().then(t=>{       })
+bot.getMyCommands().then(   (t) =>  {       })
+bot.getMe().then(           t=>     {       })
 bot.on("polling_error", err=>c(err))
 
 try{
