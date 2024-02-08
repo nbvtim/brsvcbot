@@ -8,6 +8,7 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 const dataAll = getData()
 const bdAT  = dataAll[0].data
 const bdUsers = dataAll[3].data
+const obj = {}
 
 bot.deleteMyCommands()
 // bot.setMyCommands([ 
@@ -16,8 +17,8 @@ bot.deleteMyCommands()
 //     {command:"settings", description:"Настройки"},
 //     {command:"help", description:"Помощь"}
 // ])
-bot.getMyCommands().then((t) => { /*c(t)*/ })
-bot.getMe().then(t=>{ /*c(t.first_name.toUpperCase()+"...")*/ })
+bot.getMyCommands().then((t) => {       })
+bot.getMe().then(t=>{       })
 bot.on("polling_error", err=>c(err))
 
 try{
@@ -29,11 +30,12 @@ try{
         }
 
         if(typeof msg.text == "string" && msg.text !== "/"){
+            if(msg.text[0] === "/"){obj[msg.chat.id] = msg.text}
+            c(obj)
 
-            re = RegExp(msg.text, "i")
             counter = 0
             for(i in bdAT){
-                str = bdAT[i].join("").replace(/ /g, "").toLowerCase().match(re)
+                str = bdAT[i].join("").replace(/ /g, "").toLowerCase().match(RegExp(msg.text, "i"))
                 if(str != null){
                     if(counter < 5){
                         counter++
@@ -83,20 +85,11 @@ try{
 
 }
 
-
 function getData(){
     const all_XLSX_path     = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"
-    const all_TXT_path      = __dirname + "/SOURSE/cache/all.txt"
     const all_XLSX_exists   = fs.existsSync(all_XLSX_path)
-    const all_TXT_Exists    = fs.existsSync(all_TXT_path)
     if(all_XLSX_exists){
         let dbJson = xlsx.parse(all_XLSX_path)
-        let dbText = JSON.stringify(dbJson,null,5)
-        fs.writeFileSync(all_TXT_path, dbText,"utf8")
-        return dbJson
-    }else if(all_TXT_Exists){
-        let dbText = fs.readFileSync(all_TXT_path, "utf8")
-        let dbJson = JSON.parse(dbText)
         return dbJson
     }else{
         c("ДАННЫЕ НЕ ПОЛУЧЕНЫ !!!")
@@ -104,6 +97,6 @@ function getData(){
 }
 
 function security(id){
-    user = +bdUsers.join('\n').match(RegExp(id,"gim"))[0]
+    user = +bdUsers.join('\n').match(RegExp(id,"im"))
     if(user === id){return true}
 }
