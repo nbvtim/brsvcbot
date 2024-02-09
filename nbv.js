@@ -10,33 +10,43 @@ const bdAT  = dataAll[0].data
 const bdUsers = dataAll[3].data
 const obj = {}
 
-bot.deleteMyCommands()
-// bot.setMyCommands([ 
-//     {command:"start", description:"Старт"},
-//     {command:"auto", description:"Автотранспорнт"},
-//     {command:"settings", description:"Настройки"},
-//     {command:"help", description:"Помощь"}
-// ])
+// bot.deleteMyCommands()
+bot.setMyCommands([ 
+    {command:"start", description:"Старт"},
+    {command:"auto", description:"Автотранспорнт"},
+    {command:"settings", description:"Настройки"},
+    {command:"help", description:"Помощь"}
+])
 bot.getMyCommands().then(   (t) =>  {       })
 bot.getMe().then(           t=>     {       })
 bot.on("polling_error", err=>c(err))
 
 try{
 
-    bot.on("message", async msg=>{      if(security(msg.chat.id)){
-
+    bot.on("message", async msg=>{      
         if(typeof msg.text == "string"){
             fs.appendFileSync(`${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n`)
         }
+        if(security(msg.chat.id)){
 
-        if(typeof msg.text == "string" && msg.text !== "/"){
-            if(msg.text[0] === "/"){obj[msg.chat.id] = msg.text}
-            c(obj)
+        if(msg.text[0] === "/"){obj[msg.chat.id] = {command:msg.text, text: ""}}
+        obj[msg.chat.id].text = msg.text
+        if(obj[msg.chat.id].command !== "/auto"){ bot.sendMessage(msg.chat.id, "Этот раздел в разработке, перейдите в /auto") }
+        if(obj[msg.chat.id].command === "/auto" && obj[msg.chat.id].text === "/auto"){ bot.sendMessage(msg.chat.id, "Для поиска по АТ можно вводить любые данные (марку, ФИО, номер АТ возможно не полностью)") }
+
+
+
+        // c(Object.keys(obj))
+        // c(Object.values(obj))
+        // c(Object.entries(obj))
+
+
+        if(obj[msg.chat.id].command === "/auto" && typeof obj[msg.chat.id].text == "string" && obj[msg.chat.id].text !== "/auto"){
 
             counter = 0
             for(i in bdAT){
                 str = bdAT[i].join("").replace(/ /g, "").toLowerCase().match(RegExp(msg.text, "i"))
-                if(str != null){
+                if(str !== null){
                     if(counter < 5){
                         counter++
                         t = bdAT[i].join("\n")
@@ -46,7 +56,7 @@ try{
             }
             await bot.sendMessage(msg.chat.id, `<b><i>Найдено записей: ${counter}</i></b>`,{parse_mode:"HTML"})
         }
-        else if(msg.text === "/" && msg.chat.id == 5131265599){
+        if(msg.text === "/" && msg.chat.id == 5131265599){
             bot.sendMessage(msg.chat.id, "<b> 🛠 НАСТРОЙКИ 🛠 </b>", {
                 parse_mode: "HTML",
                 reply_markup:{
@@ -57,7 +67,7 @@ try{
                 }
             })
         }
-        else if(typeof msg.text === "undefined"){
+        if(typeof msg.text === "undefined"){
             bot.sendMessage(msg.chat.id,"<b>Запрос не является текстом !!!</b>", {parse_mode:"HTML"})
         }
 
