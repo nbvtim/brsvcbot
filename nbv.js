@@ -34,12 +34,9 @@ try{
         if(obj[msg.chat.id].command !== "/auto"){ bot.sendMessage(msg.chat.id, "Этот раздел в разработке, перейдите в /auto") }
         if(obj[msg.chat.id].command === "/auto" && obj[msg.chat.id].text === "/auto"){ bot.sendMessage(msg.chat.id, "Для поиска по АТ можно вводить любые данные (марку, ФИО, номер АТ возможно не полностью)") }
 
-
-
         // c(Object.keys(obj))
         // c(Object.values(obj))
         // c(Object.entries(obj))
-
 
         if(obj[msg.chat.id].command === "/auto" && typeof obj[msg.chat.id].text == "string" && obj[msg.chat.id].text !== "/auto"){
 
@@ -62,7 +59,7 @@ try{
                 reply_markup:{
                     inline_keyboard:[
                         [{text: "▶ Tmate старт", callback_data: "t"}, {text: "⏹ Tmate стоп", callback_data: "pkill tmate"}],
-                        [{text: "🔄 Перезапустить бота", callback_data: "./tg"}]
+                        [{text: "🔄 Перезаписать getData", callback_data: "getData"}]
                     ]
                 }
             })
@@ -78,13 +75,20 @@ try{
     })
 
     bot.on("callback_query", async query=>{ 
-        
+        // c(query.from.id)
         if(query.data === "t"){ // "tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F > ./SOURSE/1"
             cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
+            bot.sendMessage(query.from.id, "https://tmate.io/t/nbv/pc")
         }
         if(query.data === "pkill tmate"){
             cp.spawnSync('pkill', ['tmate'])
+            bot.sendMessage(query.from.id, "pkill tmate")
         }
+        if(query.data === "getData"){
+            getData()
+            bot.sendMessage(query.from.id, "Данные обновлены")
+        }
+
         
     })
 
@@ -99,8 +103,7 @@ function getData(){
     const all_XLSX_path     = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"
     const all_XLSX_exists   = fs.existsSync(all_XLSX_path)
     if(all_XLSX_exists){
-        let dbJson = xlsx.parse(all_XLSX_path)
-        return dbJson
+        return xlsx.parse(all_XLSX_path)
     }else{
         c("ДАННЫЕ НЕ ПОЛУЧЕНЫ !!!")
     }
