@@ -25,9 +25,15 @@ bot.on("message", msg=>{
 })
 
 
-async function brsvcbot(msg){ 
-    
+async function brsvcbot(msg){
+    // c("#################################################################################################")
+    // c(msg)
+    // c("_________________________________________________________________________________________________")
+    // await bot.sendMessage(msg.chat.id,`msg`).then(data=>c(data))
+    // c("#################################################################################################")
+
     if( msg.entities ){ obj[msg.chat.id] = msg.text}
+    
     if( msg.text ){fs.appendFileSync( `${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n` )   }   
 
     if(security(msg.chat.id)){
