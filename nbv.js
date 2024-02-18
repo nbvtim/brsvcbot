@@ -23,6 +23,23 @@ bot.on("polling_error", err=>c("err"))
 bot.on("message", msg=>{
     brsvcbot(msg)
 })
+bot.on("callback_query", query=>{
+    // c(query.from.id)
+    if(query.data === "t"){ // "tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F > ./SOURSE/1"
+        cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
+        bot.sendMessage(query.from.id, "https://tmate.io/t/nbv/pc")
+    }
+    if(query.data === "pkill tmate"){
+        cp.spawnSync('pkill', ['tmate'])
+        bot.sendMessage(query.from.id, "Сессия tmate остановлена")
+    }
+    if(query.data === "getData"){
+        getData()
+        bot.sendMessage(query.from.id, "Данные обновлены")
+    }
+
+    
+})
 
 
 async function brsvcbot(msg){
@@ -85,25 +102,12 @@ async function brsvcbot(msg){
 
 
 
-        bot.on("callback_query", query=>{
-            // c(query.from.id)
-            if(query.data === "t"){ // "tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F > ./SOURSE/1"
-                cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
-                bot.sendMessage(query.from.id, "https://tmate.io/t/nbv/pc")
-            }
-            if(query.data === "pkill tmate"){
-                cp.spawnSync('pkill', ['tmate'])
-                bot.sendMessage(query.from.id, "Сессия tmate остановлена")
-            }
-            if(query.data === "getData"){
-                getData()
-                bot.sendMessage(query.from.id, "Данные обновлены")
-            }
-    
-            
-    })
 
     }
+
+
+
+
 
     if(msg.text === "/" && msg.chat.id == 5131265599){
         bot.sendMessage(msg.chat.id, "<b> 🛠 НАСТРОЙКИ 🛠 </b>", {
