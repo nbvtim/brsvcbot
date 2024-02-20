@@ -20,8 +20,8 @@ bot.setMyCommands([
 // bot.getMe().then(           (t) =>  {       })
 // bot.on("polling_error", err=>c("err"))
 
-bot.on("message", msg=>{
-    brsvcbot(msg)
+bot.on("message", msg=>{ brsvcbot(msg)
+    
 })
 bot.on("callback_query", query=>{
     // c(query.from.id)
@@ -41,49 +41,26 @@ bot.on("callback_query", query=>{
     
 })
 
-
 async function brsvcbot(msg){
     if( msg.entities ){ obj[msg.chat.id] = msg.text}
     if( msg.text ){fs.appendFileSync( `${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n` )   }   
 
     if(security(msg.chat.id)){
 
-        /*временная*/if(obj[msg.chat.id] !== "/auto" && obj[msg.chat.id] != "/key" && obj[msg.chat.id] !== "/settings"){bot.sendMessage(msg.chat.id,`Вод не поддерживается\nперейдите в раздел /auto или /key`, {parse_mode:"HTML"})}
+        /*временная*/if(obj[msg.chat.id] !== "/auto" && obj[msg.chat.id] != "/key" && obj[msg.chat.id] !== "/settings"){bot.sendMessage(msg.chat.id,`Ввод не поддерживается\nперейдите в раздел\n/auto\n/key`, {parse_mode:"HTML"})}
         
         //
         if(obj[msg.chat.id] === "/auto" && msg.text === "/auto"){
             bot.sendMessage(msg.chat.id,`Вы находитесь в режиме поиска по автотранспорту`)
-        }
-        if(obj[msg.chat.id] === "/auto" && msg.text !== "/auto"){
-            counter = 0
-            for(i in dataAll[0].data){
-                str = dataAll[0].data[i].join("").replace(/ /g, "").toLowerCase().match(RegExp(msg.text, "i"))
-                if(str !== null){
-                    if(counter < 5){
-                        await bot.sendMessage(msg.chat.id, `<i>${dataAll[0].data[i].join("\n")}</i>`, {parse_mode:"HTML"})
-                    }
-                    counter++
-                }
-            }
-            await bot.sendMessage(msg.chat.id, `<b>Найдено записей: </b>${counter}`,{parse_mode:"HTML"})
+        }else if(obj[msg.chat.id] === "/auto" && msg.text !== "/auto"){
+            search(msg)
         }
 
         //
         if(obj[msg.chat.id] === "/key" && msg.text === "/key"){
             bot.sendMessage(msg.chat.id,`Вы находитесь в режиме поиска по ключам`)
-        }
-        if(obj[msg.chat.id] === "/key" && msg.text !== "/key"){
-            counter = 0
-            for(i in dataAll[1].data){
-                str = dataAll[1].data[i].join("").replace(/ /g, "").toLowerCase().match(RegExp(msg.text, "i"))
-                if(str !== null){
-                    if(counter < 5){
-                        await bot.sendMessage(msg.chat.id, `<i>${dataAll[1].data[i].join("\n")}</i>`, {parse_mode:"HTML"})
-                    }
-                    counter++
-                }
-            }
-            await bot.sendMessage(msg.chat.id, `<b>Найдено записей: </b>${counter}`,{parse_mode:"HTML"})
+        }else if(obj[msg.chat.id] === "/key" && msg.text !== "/key"){
+            search(msg)
         }
 
         //
@@ -107,14 +84,32 @@ async function brsvcbot(msg){
 
 
 
+async function search(msg, bd = dataAll, command = obj[msg.chat.id], txt = msg.text){
+    let objec = {
+        "АТ" :      "/auto",
+        "Ключи" :   "/key"
+    }
 
+    for(j in bd){
+        for(i in Object.keys(objec)){        
+            if(Object.keys(objec)[i] === bd[j].name && command === Object.values(objec)[i]){
+                counter = 0
+                for(k in bd[j].data){
+                    str = bd[j].data[k].join("").replace(/ /g, "").toLowerCase().match(RegExp(txt, "i"))
+                    if(str !== null){
+                        if(counter < 5){
+                            await bot.sendMessage(msg.chat.id, `<i>${bd[j].data[k].join("\n")}</i>`, {parse_mode:"HTML"})
+                        }
+                        counter++
+                    }
+                }
+                await bot.sendMessage(msg.chat.id, `<b>Найдено записей: </b>${counter}`,{parse_mode:"HTML"})
+            }
+        }
+    }
+}
 
-
-
-
-
-function getData(){
-    path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"
+function getData(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"){
     if(fs.existsSync(path)){
         return xlsx.parse(path)
     }
