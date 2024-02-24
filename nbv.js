@@ -135,6 +135,6 @@ function security(msg){
 <code>  Дата рождения:  ... </code>/regbirs
 
 </i><b>После одобрения Вам предоставят доступ</b>`, 
-    {parse_mode:"HTML"})
+        {parse_mode:"HTML"})
     }
 }
