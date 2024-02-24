@@ -9,7 +9,7 @@
     "dev2": "pkill screen | nodemon 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "NBV",
   "license": "ISC",
   "dependencies": {
     "fs": "^0.0.1-security",
