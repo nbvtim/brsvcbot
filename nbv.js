@@ -20,8 +20,8 @@ bot.setMyCommands([
 // bot.getMe().then(           (t) =>  {       })
 // bot.on("polling_error", err=>c("err"))
 
-bot.on("message", msg=>{ brsvcbot(msg)
-    
+bot.on("message", msg=>{ 
+    brsvcbot(msg)
 })
 bot.on("callback_query", query=>{
     // c(query.from.id)
@@ -37,17 +37,20 @@ bot.on("callback_query", query=>{
         dataAll = getData()
         bot.sendMessage(query.from.id, "Данные обновлены")
     }
-
-    
 })
+
+
+
+
+
 
 async function brsvcbot(msg){
     if( msg.entities ){ obj[msg.chat.id] = msg.text}
     if( msg.text ){fs.appendFileSync( `${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n` )   }   
 
-    if(security(msg.chat.id)){
+    if(security(msg)){
 
-        /*временная*/if(obj[msg.chat.id] !== "/auto" && obj[msg.chat.id] != "/key" && obj[msg.chat.id] !== "/settings"){bot.sendMessage(msg.chat.id,`Ввод не поддерживается\nперейдите в раздел\n/auto\n/key`, {parse_mode:"HTML"})}
+        /*временная*/if(obj[msg.chat.id] !== "/auto" && obj[msg.chat.id] != "/key" && obj[msg.chat.id] !== "/settings"){bot.sendMessage(msg.chat.id,`Ввод не поддерживается\nперейдите в один из разделов:\n - поиск по АТ /auto\n - поиск по ключам /key`, {parse_mode:"HTML"})}
         
         //
         if(obj[msg.chat.id] === "/auto" && msg.text === "/auto"){
@@ -76,13 +79,8 @@ async function brsvcbot(msg){
             })
         }
     }
+    c(obj)
 }
-
-
-
-
-
-
 
 async function search(msg, bd = dataAll, command = obj[msg.chat.id], txt = msg.text){
     let objec = {
@@ -115,26 +113,28 @@ function getData(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смен
     }
 }
 
-function security(id){
+function security(msg){
     getId = ""
     for(i in dataAll){
         if(dataAll[i].name === "users"){
             for(j in dataAll[i].data){
-                if(dataAll[i].data[j][0] === id){
-                    getId = id
+                if(dataAll[i].data[j][0] === msg.chat.id){
+                    getId = msg.chat.id
                 }
             }
         }
     }
-    if(getId === id){
+    if(getId === msg.chat.id){
         return true
     }else{    
-        bot.sendMessage(id, `<b>Нет доступа !!!
-Вы можете прислать данные в формате</b>
-        <i>ФИО: ...
-        Номер телефона: ...
-        Дата рождения: ...</i>
-<b>После одобрения Вам предоставят доступ</b>`, 
+        bot.sendMessage(msg.chat.id, `<b>Нет доступа !!!
+Вы можете прислать данные в формате</b><i>
+
+<code>  ФИО:            ... </code>/regfio
+<code>  Номер телефона: ... </code>/regtel
+<code>  Дата рождения:  ... </code>/regbirs
+
+</i><b>После одобрения Вам предоставят доступ</b>`, 
     {parse_mode:"HTML"})
     }
 }
