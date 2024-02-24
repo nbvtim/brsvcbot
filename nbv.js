@@ -134,7 +134,6 @@ function security(msg){
 <code>  Номер телефона: ... </code>/regtel
 <code>  Дата рождения:  ... </code>/regbirs
 
-</i><b>После одобрения Вам предоставят доступ</b>`, 
-        {parse_mode:"HTML"})
+</i><b>После одобрения Вам предоставят доступ</b>`, {parse_mode:"HTML"})
     }
 }
