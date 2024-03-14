@@ -5,28 +5,11 @@ const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
-
-// function nbv(text = "14 6000"){
-//     text = text.replace(/,/g, ".")
-//     days = Number(text.split(" ")[0])
-//     summ = Number(text.split(" ")[1])
-
-//     return 32.5 * 11 * days - summ
-
-    
-    
-// }c(nbv())
-
-
-
-
-
-let dataAll = getData()
-const obj = {}
+let dataAll, users={}, obj={}, regUser={}
 
 // bot.deleteMyCommands()
 bot.setMyCommands([
-//     {command:"start",       description:"Старт"},
+    {command:"start",       description:"Старт"},
     {command:"auto",        description:"Автотранспорнт"},
     {command:"key",         description:"Ключи"},
     {command:"food",        description:"Питание"},
@@ -37,14 +20,18 @@ bot.setMyCommands([
 // bot.getMe().then(           (t) =>  {       })
 // bot.on("polling_error", err=>c("err"))
 
-bot.on("message", async msg=>{ 
+bot.on("message", async msg=>{ //users[msg.chat.id] = false
     
     if( msg.entities ){ obj[msg.chat.id] = msg.text}
     if( msg.text ){fs.appendFileSync( `${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n` )   }   
+    if(users[msg.chat.id]){ // проверка для допуска
 
-    if(security(msg)){
 
-        /*временная*/if(obj[msg.chat.id] !== "/food" && obj[msg.chat.id] !== "/auto" && obj[msg.chat.id] != "/key" && obj[msg.chat.id] !== "/settings"){
+
+
+
+        
+        if(obj[msg.chat.id] === "/start" || obj[msg.chat.id] === undefined){
             bot.sendMessage(msg.chat.id,`Ввод не поддерживается
 перейдите в один из разделов:
  - поиск по АТ /auto
@@ -87,8 +74,44 @@ bot.on("message", async msg=>{
                 }
             })
         }
-    }
 
+
+
+
+
+
+    }else{
+
+        
+
+        
+        
+
+        if(regUser[msg.chat.id] === undefined){
+            await bot.sendMessage(msg.chat.id,`Пройдите регистрацию !!!\nДля изменения данных просто вводите данные в соответствующем формате`)
+            regUser[msg.chat.id] = {}
+        }
+        
+        if(msg.text.split(" ").length === 3){
+            regUser[msg.chat.id].name = msg.text
+        }
+        if( +msg.text && msg.text.length === 11 && msg.text[0] === "8" && msg.text[1] === "9" ){
+            regUser[msg.chat.id].tel = msg.text
+        }
+        if( +msg.text && msg.text.length === 8 && msg.text[0]<4 && msg.text[1]<10 && msg.text[2]<2 && msg.text[3]<10){
+            regUser[msg.chat.id].date = msg.text
+        }
+        if(Object.keys(regUser[msg.chat.id]).length === 3){
+            bot.sendMessage(msg.chat.id,`Регистрация окончена, ожидайте подтверждения !!!\nДля изменения данных просто вводите данные в соответствующем формате`)
+            fs.writeFileSync( `${__dirname}/SOURSE/${msg.chat.id}`, JSON.stringify(regUser[msg.chat.id], null, 5))
+        }
+
+        await bot.sendMessage(msg.chat.id, `ФИО: ${regUser[msg.chat.id].name || "Фамилия Имя Отчество"}\nТелефон: ${regUser[msg.chat.id].tel || "89XXXXXXXXX"}\nДата рождения: ${regUser[msg.chat.id].date || "01011970"}`)
+        
+        
+        
+
+    }
 })
 
 
@@ -105,7 +128,7 @@ bot.on("callback_query", query=>{
         bot.sendMessage(query.from.id, "Сессия tmate остановлена")
     }
     if(query.data === "getData"){
-        dataAll = getData()
+        getData()
         bot.sendMessage(query.from.id, "Данные обновлены")
     }
 })
@@ -139,31 +162,15 @@ async function search(msg, bd = dataAll, command = obj[msg.chat.id], txt = msg.t
 
 function getData(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"){
     if(fs.existsSync(path)){
-        return xlsx.parse(path)
-    }
-}
-
-function security(msg){
-    getId = ""
-    for(i in dataAll){
-        if(dataAll[i].name === "users"){
-            for(j in dataAll[i].data){
-                if(dataAll[i].data[j][0] === msg.chat.id){
-                    getId = msg.chat.id
+        dataAll = xlsx.parse(path) // =>
+        for(i in dataAll){
+            if(dataAll[i].name === "users"){
+                for(j in dataAll[i].data){
+                    if(+dataAll[i].data[j][0]){
+                        users[dataAll[i].data[j][0]] = true 
+                    }
                 }
             }
         }
     }
-    if(getId === msg.chat.id){
-        return true
-    }else{    
-        bot.sendMessage(msg.chat.id, `<b>Нет доступа !!!
-Вы можете прислать данные в формате</b><i>
-
-<code>  ФИО:            ... </code>/regfio
-<code>  Номер телефона: ... </code>/regtel
-<code>  Дата рождения:  ... </code>/regbirs
-
-</i><b>После одобрения Вам предоставят доступ</b>`, {parse_mode:"HTML"})
-    }
-}
+}getData()
