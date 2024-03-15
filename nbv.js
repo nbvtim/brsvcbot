@@ -122,7 +122,7 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
 
 
 bot.on("callback_query", query=>{
-    c(query)
+    //c(query)
     if(query.data === "t"){ 
         cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
         bot.sendMessage(query.from.id, `Сессия доступна по этой <a href="https://tmate.io/t/nbv/pc">ССЫЛКЕ </a>`, {parse_mode:"HTML"})
