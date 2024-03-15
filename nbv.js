@@ -83,7 +83,7 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
     }else{
 
         
-
+        
         
         
 
@@ -91,21 +91,13 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
             await bot.sendMessage(msg.chat.id,`Пройдите регистрацию !!!\nДля изменения данных просто вводите данные в соответствующем формате`)
             regUser[msg.chat.id] = {}
         }
-        
-        if(msg.text.split(" ").length === 3){
-            regUser[msg.chat.id].name = msg.text
-        }
-        if( +msg.text && msg.text.length === 11 && msg.text[0] === "8" && msg.text[1] === "9" ){
-            regUser[msg.chat.id].tel = msg.text
-        }
-        if( +msg.text && msg.text.length === 8 && msg.text[0]<4 && msg.text[1]<10 && msg.text[2]<2 && msg.text[3]<10){
-            regUser[msg.chat.id].date = msg.text
+        if(parse(msg.text)){
+            regUser[msg.chat.id][Object.keys(parse(msg.text))[0]] = Object.values(parse(msg.text))[0]
         }
         if(Object.keys(regUser[msg.chat.id]).length === 3){
             bot.sendMessage(msg.chat.id,`Регистрация окончена, ожидайте подтверждения !!!\nДля изменения данных просто вводите данные в соответствующем формате`)
             fs.writeFileSync( `${__dirname}/SOURSE/${msg.chat.id}`, JSON.stringify(regUser[msg.chat.id], null, 5))
         }
-
         await bot.sendMessage(msg.chat.id, `ФИО: ${regUser[msg.chat.id].name || "Фамилия Имя Отчество"}\nТелефон: ${regUser[msg.chat.id].tel || "89XXXXXXXXX"}\nДата рождения: ${regUser[msg.chat.id].date || "01011970"}`)
         
         
@@ -174,3 +166,42 @@ function getData(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смен
         }
     }
 }getData()
+
+function parse(t){
+
+    if(t.match(/[А-я]/g) && t.match(/\d/g) === null){
+        mas = t.split(" ")
+        if(mas.length === 3){
+            masF = mas[0][0].match(/[А-Я]/g)
+            masI = mas[1][0].match(/[А-Я]/g)
+            masO = mas[2][0].match(/[А-Я]/g)
+            if(masF && masI && masO){
+                return {FIO:t}
+            }
+        }
+    }
+
+    if(t.match(/\d/g)){
+        
+        if(t.match(/\d/g).length === 8){
+            date = new Date()
+            maxYear = date.getFullYear()-10
+            num = t.match(/\d/g).join("")
+            numDay = num[0]+num[1]
+            numMonth = num[2]+num[3]
+            numYear = num[4]+num[5]+num[6]+num[7]
+            if(numDay<=31 && numMonth<=12 && numYear>1900 && numYear<maxYear){
+                return {date:`${numDay}.${numMonth}.${numYear}`}
+            }
+        }
+
+        if(t.match(/\d/g).length === 11){
+            tel = t.match(/\d/g).join("")
+            cod8 = tel[0] == 8
+            cod9 = tel[1] == 9
+            if(cod8 && cod9){
+                return {tel:`${tel[0]} (${tel[1]}${tel[2]}${tel[3]}) ${tel[4]}${tel[5]}${tel[6]}-${tel[7]}${tel[8]}-${tel[9]}${tel[10]}`}
+            }
+        }   
+    }
+}
