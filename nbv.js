@@ -24,6 +24,12 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
     
     if( msg.entities ){ obj[msg.chat.id] = msg.text}
     if( msg.text ){fs.appendFileSync( `${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n` )   }   
+
+
+
+
+
+
     if(users[msg.chat.id]){ // проверка для допуска
 
 
@@ -32,11 +38,7 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
 
         
         if(obj[msg.chat.id] === "/start" || obj[msg.chat.id] === undefined){
-            bot.sendMessage(msg.chat.id,`Ввод не поддерживается
-перейдите в один из разделов:
- - поиск по АТ /auto
- - поиск по ключам /key
- - питание /food`, {parse_mode:"HTML"})}
+            bot.sendMessage(msg.chat.id,`Пожалуйста перейдите в один из разделов, кнопка меню находится радом с полем ввода текста`, {parse_mode:"HTML"})}
         
         //
         if(obj[msg.chat.id] === "/auto" && msg.text === "/auto"){
@@ -92,16 +94,26 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
             regUser[msg.chat.id] = {}
         }
         if(parse(msg.text)){
-            regUser[msg.chat.id][Object.keys(parse(msg.text))[0]] = Object.values(parse(msg.text))[0]
+            regUser[msg.chat.id][parse(msg.text)[0]] = parse(msg.text)[1]
         }
         if(Object.keys(regUser[msg.chat.id]).length === 3){
             bot.sendMessage(msg.chat.id,`Регистрация окончена, ожидайте подтверждения !!!\nДля изменения данных просто вводите данные в соответствующем формате`)
             fs.writeFileSync( `${__dirname}/SOURSE/${msg.chat.id}`, JSON.stringify(regUser[msg.chat.id], null, 5))
+            bot.sendMessage(5131265599, `${JSON.stringify(regUser[msg.chat.id], null, 5)}`, {
+                parse_mode: "HTML",
+                reply_markup:{
+                    inline_keyboard:[
+                        [{text: "Предоставить доступ", callback_data: `${JSON.stringify([msg.chat.id])}`}]
+                    ]
+                }
+            })
+            users[msg.chat.id] = null
         }
-        await bot.sendMessage(msg.chat.id, `ФИО: ${regUser[msg.chat.id].name || "Фамилия Имя Отчество"}\nТелефон: ${regUser[msg.chat.id].tel || "89XXXXXXXXX"}\nДата рождения: ${regUser[msg.chat.id].date || "01011970"}`)
+        await bot.sendMessage(msg.chat.id, `ФИО: ${regUser[msg.chat.id].FIO || "Фамилия Имя Отчество"}\nТелефон: ${regUser[msg.chat.id].tel || "89xxxxxxxxx"}\nДата рождения: ${regUser[msg.chat.id].date || "01011970"}`)
         
-        
-        
+
+
+
 
     }
 })
@@ -110,7 +122,7 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
 
 
 bot.on("callback_query", query=>{
-    // c(query.from.id)
+    c(query)
     if(query.data === "t"){ 
         cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
         bot.sendMessage(query.from.id, `Сессия доступна по этой <a href="https://tmate.io/t/nbv/pc">ССЫЛКЕ </a>`, {parse_mode:"HTML"})
@@ -123,6 +135,13 @@ bot.on("callback_query", query=>{
         getData()
         bot.sendMessage(query.from.id, "Данные обновлены")
     }
+    if(users[JSON.parse(query.data)[0]] == null){
+        users[JSON.parse(query.data)[0]] = true
+        bot.sendMessage(JSON.parse(query.data)[0], "Вам предоставлен временный доступ !!!")
+        
+    }
+
+
 })
 
 
@@ -159,7 +178,7 @@ function getData(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смен
             if(dataAll[i].name === "users"){
                 for(j in dataAll[i].data){
                     if(+dataAll[i].data[j][0]){
-                        users[dataAll[i].data[j][0]] = true 
+                        users[dataAll[i].data[j][0]] = true ///////////////////////////////////////////
                     }
                 }
             }
@@ -176,7 +195,7 @@ function parse(t){
             masI = mas[1][0].match(/[А-Я]/g)
             masO = mas[2][0].match(/[А-Я]/g)
             if(masF && masI && masO){
-                return {FIO:t}
+                return ["FIO",t]
             }
         }
     }
@@ -191,7 +210,7 @@ function parse(t){
             numMonth = num[2]+num[3]
             numYear = num[4]+num[5]+num[6]+num[7]
             if(numDay<=31 && numMonth<=12 && numYear>1900 && numYear<maxYear){
-                return {date:`${numDay}.${numMonth}.${numYear}`}
+                return ["date",`${numDay}.${numMonth}.${numYear}`]
             }
         }
 
@@ -200,7 +219,7 @@ function parse(t){
             cod8 = tel[0] == 8
             cod9 = tel[1] == 9
             if(cod8 && cod9){
-                return {tel:`${tel[0]} (${tel[1]}${tel[2]}${tel[3]}) ${tel[4]}${tel[5]}${tel[6]}-${tel[7]}${tel[8]}-${tel[9]}${tel[10]}`}
+                return ["tel",`${tel[0]} (${tel[1]}${tel[2]}${tel[3]}) ${tel[4]}${tel[5]}${tel[6]}-${tel[7]}${tel[8]}-${tel[9]}${tel[10]}`]
             }
         }   
     }
