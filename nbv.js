@@ -20,21 +20,15 @@ bot.setMyCommands([
 // bot.getMe().then(           (t) =>  {       })
 // bot.on("polling_error", err=>c("err"))
 
+
 bot.on("message", async msg=>{ //users[msg.chat.id] = false
+
     
     if( msg.entities ){ obj[msg.chat.id] = msg.text}
     if( msg.text ){fs.appendFileSync( `${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n` )   }   
 
 
-
-
-
-
     if(users[msg.chat.id]){ // проверка для допуска
-
-
-
-
 
         
         if(obj[msg.chat.id] === "/start" || obj[msg.chat.id] === undefined){
@@ -78,16 +72,8 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
         }
 
 
-
-
-
-
     }else{
 
-        
-        
-        
-        
 
         if(regUser[msg.chat.id] === undefined){
             await bot.sendMessage(msg.chat.id,`Пройдите регистрацию !!!\nДля изменения данных просто вводите данные в соответствующем формате`)
@@ -111,9 +97,6 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
         }
         await bot.sendMessage(msg.chat.id, `ФИО: ${regUser[msg.chat.id].FIO || "Фамилия Имя Отчество"}\nТелефон: ${regUser[msg.chat.id].tel || "89xxxxxxxxx"}\nДата рождения: ${regUser[msg.chat.id].date || "01011970"}`)
         
-
-
-
 
     }
 })
