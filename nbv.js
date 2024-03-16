@@ -21,6 +21,9 @@ bot.setMyCommands([
 // bot.on("polling_error", err=>c("err"))
 
 
+
+
+// -------------------------------------------------------------------------------------------------------------------------------------------
 bot.on("message", async msg=>{ //users[msg.chat.id] = false
 
     
@@ -104,7 +107,11 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
 
 
 
+
+// -------------------------------------------------------------------------------------------------------------------------------------------
 bot.on("callback_query", query=>{
+
+
     //c(query)
     if(query.data === "t"){ 
         cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
@@ -129,6 +136,9 @@ bot.on("callback_query", query=>{
 
 
 
+
+
+// -------------------------------------------------------------------------------------------------------------------------------------------
 async function search(msg, bd = dataAll, command = obj[msg.chat.id], txt = msg.text){
     let objec = {
         "АТ" :      "/auto",
