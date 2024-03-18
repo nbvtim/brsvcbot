@@ -4,8 +4,8 @@
   "description": "",
   "main": "./brsvcbot.js",
   "scripts": {
-    "start": "node brsvcbot.js",
-    "dev": "pkill screen | nodemon brsvcbot.js"
+    "start": "node brsvcbot",
+    "dev": "pkill screen | nodemon brsvcbot"
   },
   "keywords": [],
   "author": "NBV",
