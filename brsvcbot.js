@@ -7,8 +7,6 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 
 let dataAll, users={}, obj={}, regUser={}
 
-
-
 // bot.deleteMyCommands()
 bot.setMyCommands([
     {command:"start",       description:"Старт"},
@@ -19,7 +17,7 @@ bot.setMyCommands([
 //     {command:"help",        description:"Помощь"}
 ])
 // bot.getMyCommands().then(   (t) =>  {       })
-bot.getMe().then(           (t) =>  {   c(t)    })
+// bot.getMe().then(           (t) =>  {   c(t)    })
 // bot.on("polling_error", err=>c("err"))
 
 
