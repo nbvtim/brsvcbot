@@ -1,11 +1,11 @@
 {
-  "name": "tg",
+  "name": "brsvcbot",
   "version": "1.0.100",
   "description": "",
-  "main": "./nbv.js",
+  "main": "./brsvcbot.js",
   "scripts": {
-    "start": "node nbv",
-    "dev": "pkill screen | nodemon nbv"
+    "start": "node brsvcbot.js",
+    "dev": "pkill screen | nodemon brsvcbot.js"
   },
   "keywords": [],
   "author": "NBV",
