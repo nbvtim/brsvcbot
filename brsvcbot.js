@@ -7,14 +7,6 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 
 let dataAll, users={}, obj={}, regUser={}
 
-let DATA = {
-    xlsx: new function(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"){
-        if(fs.existsSync(path)){
-            return xlsx.parse(path)
-        }
-    }
-}
-
 // bot.deleteMyCommands()
 bot.setMyCommands([
     {command:"start",       description:"Старт"},
@@ -34,17 +26,8 @@ bot.setMyCommands([
 // -------------------------------------------------------------------------------------------------------------------------------------------
 bot.on("message", async msg=>{ //users[msg.chat.id] = false
 
-    if(DATA[msg.chat.id] === undefined){
-        DATA[msg.chat.id] = {
-            id: msg.chat.id,
-            text: msg.text,
-            command: "",
-            dataXlsx: DATA.xlsx[2].data[1],
-            smens: [zp().smena1d.smens, zp().smena1n.smens]
-            
-        }
-    }
-    
+
+
     if( msg.entities ){ obj[msg.chat.id] = msg.text}
     if( msg.text ){fs.appendFileSync( `${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n` )   }   
 
@@ -92,7 +75,7 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
             })
         }
 
-        c(DATA)
+    
     }else{
 
 
@@ -189,12 +172,7 @@ function getData(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смен
             if(dataAll[i].name === "users"){
                 for(j in dataAll[i].data){
                     if(+dataAll[i].data[j][0]){
-                        users[dataAll[i].data[j][0]] = true ///////////////////////////////////////////
-                    }
-                }
-            }
-        }
-    }
+                        users[dataAll[i].data[j][0]] = true }}}}}
 }getData()
 
 function parse(t){
