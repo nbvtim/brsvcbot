@@ -5,7 +5,7 @@
   "main": "./brsvcbot.js",
   "scripts": {
     "start": "node brsvcbot",
-    "dev": "pkill screen | nodemon brsvcbot"
+    "dev": "pkill screen ; nodemon brsvcbot"
   },
   "keywords": [],
   "author": "NBV",

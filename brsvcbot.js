@@ -7,6 +7,14 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 
 let dataAll, users={}, obj={}, regUser={}
 
+let DATA = {
+    xlsx: new function(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"){
+        if(fs.existsSync(path)){
+            return xlsx.parse(path)
+        }
+    }
+}
+
 // bot.deleteMyCommands()
 bot.setMyCommands([
     {command:"start",       description:"Старт"},
@@ -26,6 +34,16 @@ bot.setMyCommands([
 // -------------------------------------------------------------------------------------------------------------------------------------------
 bot.on("message", async msg=>{ //users[msg.chat.id] = false
 
+    if(DATA[msg.chat.id] === undefined){
+        DATA[msg.chat.id] = {
+            id: msg.chat.id,
+            text: msg.text,
+            command: "",
+            dataXlsx: DATA.xlsx[2].data[1],
+            smens: [zp().smena1d.smens, zp().smena1n.smens]
+            
+        }
+    }
     
     if( msg.entities ){ obj[msg.chat.id] = msg.text}
     if( msg.text ){fs.appendFileSync( `${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n` )   }   
@@ -74,7 +92,7 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
             })
         }
 
-
+        c(DATA)
     }else{
 
 
@@ -216,4 +234,53 @@ function parse(t){
             }
         }   
     }
+}
+
+function zp(){
+    
+    let s1d = new Date(2024, 2 -1, 27  , 8 +3   , 0,0,0)
+    let s1n = new Date(2024, 2 -1, 27+1, 8 +3+12, 0,0,0)
+    let s2d = new Date(2024, 2 -1, 28  , 8 +3   , 0,0,0)
+    let s2n = new Date(2024, 2 -1, 28+1, 8 +3+12, 0,0,0)
+    let s3d = new Date(2024, 2 -1, 29  , 8 +3   , 0,0,0)
+    let s3n = new Date(2024, 2 -1, 29+1, 8 +3+12, 0,0,0)
+    let s4d = new Date(2024, 2 -1, 30  , 8 +3   , 0,0,0)
+    let s4n = new Date(2024, 2 -1, 30+1, 8 +3+12, 0,0,0)
+
+    let now = new Date()
+    now.setHours(now.getHours()+3)
+    let daysInMounth = (new Date(now.getFullYear(), now.getMonth()+1) - new Date(now.getFullYear(), now.getMonth()))/1000/60/60/24 // 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
+
+    let obj = {}
+    massName    = ["smena1d", "smena1n", "smena2d", "smena2n", "smena3d", "smena3n", "smena4d", "smena4n"]
+    mass        = [ s1d,       s1n,       s2d,       s2n,       s3d,       s3n,       s4d,       s4n]
+    arr = []
+    for(i in mass){
+        while (now.getMonth() !== mass[i].getMonth()) {
+            mass[i].setDate(mass[i].getDate() + 4)
+        }
+        while (now.getMonth() === mass[i].getMonth()) {
+            arr.push(new Date(mass[i]))
+            mass[i].setDate(mass[i].getDate() + 4)
+        }
+        obj[massName[i]] = {}
+        obj[massName[i]].smens =  arr
+        obj[massName[i]]["datesLength"] = arr.length
+        obj[massName[i]]["startDate"] = arr[0]
+        obj[massName[i]]["finishDate"] = arr[arr.length -1]
+        obj[massName[i]]["daysInMounth"] = daysInMounth
+        arr = []
+    }
+    // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
+    // ночные + 20% за час
+    // в ночь 7 часов ночных 23:00 - 06:00
+    // 47000       за 16 смен
+    // 35000       за 16 смен
+    // 92380.13
+
+    // c(zp(47000, 7000, 6000 ,143, 6*7))
+    // c(zp(35000, 7000))
+    // c(zp(47000, 7000, 6000 ,143, 6*7).summ + zp(35000, 7000).summ)
+
+    return obj
 }
