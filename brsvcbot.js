@@ -38,21 +38,21 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
         if(obj[msg.chat.id] === "/start" || obj[msg.chat.id] === undefined){
             bot.sendMessage(msg.chat.id,`Пожалуйста перейдите в один из разделов, кнопка меню находится радом с полем ввода текста`, {parse_mode:"HTML"})}
         
-        //
+        // ------------------------------------------
         if(obj[msg.chat.id] === "/auto" && msg.text === "/auto"){
             bot.sendMessage(msg.chat.id,`Вы находитесь в режиме поиска по автотранспорту`)
         }else if(obj[msg.chat.id] === "/auto" && msg.text !== "/auto"){
             search(msg)
         }
 
-        //
+        // ------------------------------------------
         if(obj[msg.chat.id] === "/key" && msg.text === "/key"){
             bot.sendMessage(msg.chat.id,`Вы находитесь в режиме поиска по ключам`)
         }else if(obj[msg.chat.id] === "/key" && msg.text !== "/key"){
             search(msg)
         }
 
-        //
+        // ------------------------------------------
         if(obj[msg.chat.id] === "/food" && msg.text === "/food"){
             bot.sendMessage(msg.chat.id,`<b>Подсчет остатка по питанию</b>\n<i>Ведите количество рабочих смен и сумму покупок <u>через пробел</u></i>`,{parse_mode:"HTML"})
         }else if(obj[msg.chat.id] === "/food" && msg.text !== "/food"){
@@ -62,7 +62,7 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
             bot.sendMessage(msg.chat.id,`Лимит: ${32.5 * 11 * days}\nОстаток: ${32.5 * 11 * days - summ}`, {parse_mode:"HTML"})
         }
 
-        //
+        // ------------------------------------------
         if(msg.text === "/settings" && msg.chat.id === 5131265599){
             bot.sendMessage(msg.chat.id, "<b> 🛠 НАСТРОЙКИ 🛠 </b>", {
                 parse_mode: "HTML",
@@ -230,8 +230,8 @@ function zp(){
     let daysInMounth = (new Date(now.getFullYear(), now.getMonth()+1) - new Date(now.getFullYear(), now.getMonth()))/1000/60/60/24 // 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
 
     let obj = {}
-    massName    = ["smena1d", "smena1n", "smena2d", "smena2n", "smena3d", "smena3n", "smena4d", "smena4n"]
-    mass        = [ s1d,       s1n,       s2d,       s2n,       s3d,       s3n,       s4d,       s4n]
+    massName    = ["smena1Day", "smena1Night", "smena2Day", "smena2Night", "smena3Day", "smena3Night", "smena4Day", "smena4Night"]
+    mass        = [ s1d,        s1n,           s2d,         s2n,           s3d,         s3n,           s4d,         s4n]
     arr = []
     for(i in mass){
         while (now.getMonth() !== mass[i].getMonth()) {
