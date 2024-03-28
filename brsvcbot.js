@@ -1,9 +1,44 @@
+// "6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w"
+// "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const c             = console.log
 const xlsx          = require('node-xlsx').default
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
+
+const getDataa = new function (path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"){
+    if(fs.existsSync(path)){
+        fs.writeFileSync( `${__dirname}/SOURSE/all`, JSON.stringify(xlsx.parse(path), null,5) )
+        return xlsx.parse(path)
+    }else{
+        return JSON.parse(fs.readFileSync(`${__dirname}/SOURSE/all`))
+    }
+}
+
+const main = {}
+
+for(i in getDataa){
+    if(getDataa[i].name === "users"){
+        for(j in getDataa[i].data){
+            if(+getDataa[i].data[j][0]){
+                main[getDataa[i].data[j][0]] = {
+                    seq: true,
+                    f: getDataa[i].data[j][1],
+                    i: getDataa[i].data[j][2],
+                    o: getDataa[i].data[j][3],
+                    tel: getDataa[i].data[j][5],
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
 
 let dataAll, users={}, obj={}, regUser={}
 
@@ -12,7 +47,6 @@ bot.setMyCommands([
     {command:"start",       description:"Старт"},
     {command:"auto",        description:"Автотранспорнт"},
     {command:"key",         description:"Ключи"},
-    {command:"food",        description:"Питание"},
     {command:"settings",    description:"Настройки"},
 //     {command:"help",        description:"Помощь"}
 ])
@@ -53,18 +87,12 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
         }
 
         // ------------------------------------------
-        if(obj[msg.chat.id] === "/food" && msg.text === "/food"){
-            bot.sendMessage(msg.chat.id,`<b>Подсчет остатка по питанию</b>\n<i>Ведите количество рабочих смен и сумму покупок <u>через пробел</u></i>`,{parse_mode:"HTML"})
-        }else if(obj[msg.chat.id] === "/food" && msg.text !== "/food"){
-            msg.text = msg.text.replace(/,/g, ".")
-            days = Number(msg.text.split(" ")[0])
-            summ = Number(msg.text.split(" ")[1])
-            bot.sendMessage(msg.chat.id,`Лимит: ${32.5 * 11 * days}\nОстаток: ${32.5 * 11 * days - summ}`, {parse_mode:"HTML"})
-        }
-
-        // ------------------------------------------
         if(msg.text === "/settings" && msg.chat.id === 5131265599){
-            bot.sendMessage(msg.chat.id, "<b> 🛠 НАСТРОЙКИ 🛠 </b>", {
+
+            await bot.sendMessage(msg.chat.id, JSON.stringify(zp(1,47000),null,5))
+            await bot.sendMessage(msg.chat.id, JSON.stringify(zp(4,35000),null,5))
+
+            await bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
                 parse_mode: "HTML",
                 reply_markup:{
                     inline_keyboard:[
@@ -214,51 +242,70 @@ function parse(t){
     }
 }
 
-function zp(){
+
+
+
+
+
+    function smensCalc(){
+
+        let s1d = new Date(2024, 1 -1, 2   , 8 +3    , 0,0,0)
+        let s2d = new Date(2024, 1 -1, 2 +1, 8 +3    , 0,0,0)
+        let s3d = new Date(2024, 1 -1, 2 +2, 8 +3    , 0,0,0)
+        let s4d = new Date(2024, 1 -1, 2 +3, 8 +3    , 0,0,0)
+        let s1n = new Date(2024, 1 -1, 2 +1, 8 +3 +12, 0,0,0)
+        let s2n = new Date(2024, 1 -1, 2 +2, 8 +3 +12, 0,0,0)
+        let s3n = new Date(2024, 1 -1, 2 +3, 8 +3 +12, 0,0,0)
+        let s4n = new Date(2024, 1 -1, 2 +4, 8 +3 +12, 0,0,0)
+        
+        let now = new Date()
+        now.setHours(now.getHours() +3)
+        now.setMonth(now.getMonth() -0)
+        let daysInMounth = (new Date(now.getFullYear(), now.getMonth()+1) - new Date(now.getFullYear(), now.getMonth()))/1000/60/60/24 // 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
     
-    let s1d = new Date(2024, 2 -1, 27  , 8 +3   , 0,0,0)
-    let s1n = new Date(2024, 2 -1, 27+1, 8 +3+12, 0,0,0)
-    let s2d = new Date(2024, 2 -1, 28  , 8 +3   , 0,0,0)
-    let s2n = new Date(2024, 2 -1, 28+1, 8 +3+12, 0,0,0)
-    let s3d = new Date(2024, 2 -1, 29  , 8 +3   , 0,0,0)
-    let s3n = new Date(2024, 2 -1, 29+1, 8 +3+12, 0,0,0)
-    let s4d = new Date(2024, 2 -1, 30  , 8 +3   , 0,0,0)
-    let s4n = new Date(2024, 2 -1, 30+1, 8 +3+12, 0,0,0)
-
-    let now = new Date()
-    now.setHours(now.getHours()+3)
-    let daysInMounth = (new Date(now.getFullYear(), now.getMonth()+1) - new Date(now.getFullYear(), now.getMonth()))/1000/60/60/24 // 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
-
-    let obj = {}
-    massName    = ["smena1Day", "smena1Night", "smena2Day", "smena2Night", "smena3Day", "smena3Night", "smena4Day", "smena4Night"]
-    mass        = [ s1d,        s1n,           s2d,         s2n,           s3d,         s3n,           s4d,         s4n]
-    arr = []
-    for(i in mass){
-        while (now.getMonth() !== mass[i].getMonth()) {
-            mass[i].setDate(mass[i].getDate() + 4)
-        }
-        while (now.getMonth() === mass[i].getMonth()) {
-            arr.push(new Date(mass[i]))
-            mass[i].setDate(mass[i].getDate() + 4)
-        }
-        obj[massName[i]] = {}
-        obj[massName[i]].smens =  arr
-        obj[massName[i]]["datesLength"] = arr.length
-        obj[massName[i]]["startDate"] = arr[0]
-        obj[massName[i]]["finishDate"] = arr[arr.length -1]
-        obj[massName[i]]["daysInMounth"] = daysInMounth
+        let objSmens = {}  
+        massName    = ["smena1Day", "smena1Night", "smena2Day", "smena2Night", "smena3Day", "smena3Night", "smena4Day", "smena4Night"]
+        mass        = [ s1d,        s1n,           s2d,         s2n,           s3d,         s3n,           s4d,         s4n]
         arr = []
+        for(i in mass){
+            while (now.getMonth() !== mass[i].getMonth()) {
+                mass[i].setDate(mass[i].getDate() + 4)
+            }
+            while (now.getMonth() === mass[i].getMonth()) {
+                arr.push(new Date(mass[i]))
+                mass[i].setDate(mass[i].getDate() + 4)
+            }
+            objSmens[massName[i]] = arr
+            arr = []
+        }
+        return objSmens       
     }
-    // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
-    // ночные + 20% за час
-    // в ночь 7 часов ночных 23:00 - 06:00
-    // 47000       за 16 смен
-    // 35000       за 16 смен
-    // 92380.13
-
-    // c(zp(47000, 7000, 6000 ,143, 6*7))
-    // c(zp(35000, 7000))
-    // c(zp(47000, 7000, 6000 ,143, 6*7).summ + zp(35000, 7000).summ)
-
-    return obj
-}
+    function zp(smena = 1, oklad = 35000){
+    
+        // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
+        // ночные 7 часов  23:00 - 06:00         20%
+        // праздничные     00:00 - 23:59         *2
+        // 47000       за 16 смен
+        // 35000       за 16 смен
+        // питание 32.5 за час
+    
+        calc        =   smensCalc()
+        mass_days   =   calc[`smena${smena}Day`]
+        mass_nights =   calc[`smena${smena}Night`]
+        
+        oneHours    =   oklad/176
+        smens       =   mass_days.length + mass_nights.length
+        smensNight  =   mass_nights.length
+        rubNight    =   smensNight*7*oneHours*.2
+        result      =   oklad+rubNight
+        
+        return {
+            [`сменa ${smena}`]: [...mass_days, ...mass_nights],
+            "смен в месяце":    smens,
+            "из них ночных":    smensNight,
+            "оклад":            oklad,
+            "оплата за час":    Math.round(oneHours*100) / 100,
+            "ночные":           Math.round(rubNight*100) / 100,
+            "итого":            Math.round(result*100) / 100,
+        }
+    }
