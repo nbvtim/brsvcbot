@@ -22,15 +22,22 @@ for(i in getDataa){
         for(j in getDataa[i].data){
             if(+getDataa[i].data[j][0]){
                 main[getDataa[i].data[j][0]] = {
-                    seq: true,
+                    seq: false,
                     f: getDataa[i].data[j][1],
                     i: getDataa[i].data[j][2],
                     o: getDataa[i].data[j][3],
                     tel: getDataa[i].data[j][5],}}}}}
 
+bot.setMyCommands([
+    {command:"start",       description:"Старт"},
+    {command:"auto",        description:"Автотранспорнт"},
+    {command:"key",         description:"Ключи"},
+    {command:"settings",    description:"Настройки"},
+//     {command:"help",        description:"Помощь"}
+])
 
 bot.on("message", async msg=>{
-
+    
 })
 bot.on("callback_query", query=>{
 

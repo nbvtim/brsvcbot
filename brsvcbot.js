@@ -214,65 +214,65 @@ function parse(t){
 
 
 
-    function smensCalc(){
+                        function smensCalc(){
 
-        let s1d = new Date(2024, 1 -1, 2   , 8 +3    , 0,0,0)
-        let s2d = new Date(2024, 1 -1, 2 +1, 8 +3    , 0,0,0)
-        let s3d = new Date(2024, 1 -1, 2 +2, 8 +3    , 0,0,0)
-        let s4d = new Date(2024, 1 -1, 2 +3, 8 +3    , 0,0,0)
-        let s1n = new Date(2024, 1 -1, 2 +1, 8 +3 +12, 0,0,0)
-        let s2n = new Date(2024, 1 -1, 2 +2, 8 +3 +12, 0,0,0)
-        let s3n = new Date(2024, 1 -1, 2 +3, 8 +3 +12, 0,0,0)
-        let s4n = new Date(2024, 1 -1, 2 +4, 8 +3 +12, 0,0,0)
-        
-        let now = new Date()
-        now.setHours(now.getHours() +3)
-        now.setMonth(now.getMonth() -0)
-        let daysInMounth = (new Date(now.getFullYear(), now.getMonth()+1) - new Date(now.getFullYear(), now.getMonth()))/1000/60/60/24 // 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
-    
-        let objSmens = {}  
-        massName    = ["smena1Day", "smena1Night", "smena2Day", "smena2Night", "smena3Day", "smena3Night", "smena4Day", "smena4Night"]
-        mass        = [ s1d,        s1n,           s2d,         s2n,           s3d,         s3n,           s4d,         s4n]
-        arr = []
-        for(i in mass){
-            while (now.getMonth() !== mass[i].getMonth()) {
-                mass[i].setDate(mass[i].getDate() + 4)
-            }
-            while (now.getMonth() === mass[i].getMonth()) {
-                arr.push(new Date(mass[i]))
-                mass[i].setDate(mass[i].getDate() + 4)
-            }
-            objSmens[massName[i]] = arr
-            arr = []
-        }
-        return objSmens       
-    }
-    function zp(smena = 1, oklad = 35000){
-    
-        // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
-        // ночные 7 часов  23:00 - 06:00         20%
-        // праздничные     00:00 - 23:59         *2
-        // 47000       за 16 смен
-        // 35000       за 16 смен
-        // питание 32.5 за час
-    
-        calc        =   smensCalc()
-        mass_days   =   calc[`smena${smena}Day`]
-        mass_nights =   calc[`smena${smena}Night`]
-        
-        oneHours    =   oklad/176
-        smens       =   mass_days.length + mass_nights.length
-        smensNight  =   mass_nights.length
-        rubNight    =   smensNight*7*oneHours*.2
-        result      =   oklad+rubNight
-        
-        return {
-            [`сменa ${smena}`]: [...mass_days, ...mass_nights],
-            "смен в месяце":    smens,
-            "из них ночных":    smensNight,
-            "оклад":            oklad,
-            "оплата за час":    Math.round(oneHours*100) / 100,
-            "ночные":           Math.round(rubNight*100) / 100,
-            "итого":            Math.round(result*100) / 100,
-        }
-    }
+                            let s1d = new Date(2024, 1 -1, 2   , 8 +3    , 0,0,0)
+                            let s2d = new Date(2024, 1 -1, 2 +1, 8 +3    , 0,0,0)
+                            let s3d = new Date(2024, 1 -1, 2 +2, 8 +3    , 0,0,0)
+                            let s4d = new Date(2024, 1 -1, 2 +3, 8 +3    , 0,0,0)
+                            let s1n = new Date(2024, 1 -1, 2 +1, 8 +3 +12, 0,0,0)
+                            let s2n = new Date(2024, 1 -1, 2 +2, 8 +3 +12, 0,0,0)
+                            let s3n = new Date(2024, 1 -1, 2 +3, 8 +3 +12, 0,0,0)
+                            let s4n = new Date(2024, 1 -1, 2 +4, 8 +3 +12, 0,0,0)
+                            
+                            let now = new Date()
+                            now.setHours(now.getHours() +3)
+                            now.setMonth(now.getMonth() -0)
+                            let daysInMounth = (new Date(now.getFullYear(), now.getMonth()+1) - new Date(now.getFullYear(), now.getMonth()))/1000/60/60/24 // 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
+                        
+                            let objSmens = {}  
+                            massName    = ["smena1Day", "smena1Night", "smena2Day", "smena2Night", "smena3Day", "smena3Night", "smena4Day", "smena4Night"]
+                            mass        = [ s1d,        s1n,           s2d,         s2n,           s3d,         s3n,           s4d,         s4n]
+                            arr = []
+                            for(i in mass){
+                                while (now.getMonth() !== mass[i].getMonth()) {
+                                    mass[i].setDate(mass[i].getDate() + 4)
+                                }
+                                while (now.getMonth() === mass[i].getMonth()) {
+                                    arr.push(new Date(mass[i]))
+                                    mass[i].setDate(mass[i].getDate() + 4)
+                                }
+                                objSmens[massName[i]] = arr
+                                arr = []
+                            }
+                            return objSmens       
+                        }
+                        function zp(smena = 1, oklad = 35000){
+                        
+                            // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
+                            // ночные 7 часов  23:00 - 06:00         20%
+                            // праздничные     00:00 - 23:59         *2
+                            // 47000       за 16 смен
+                            // 35000       за 16 смен
+                            // питание 32.5 за час
+                        
+                            calc        =   smensCalc()
+                            mass_days   =   calc[`smena${smena}Day`]
+                            mass_nights =   calc[`smena${smena}Night`]
+                            
+                            oneHours    =   oklad/176
+                            smens       =   mass_days.length + mass_nights.length
+                            smensNight  =   mass_nights.length
+                            rubNight    =   smensNight*7*oneHours*.2
+                            result      =   oklad+rubNight
+                            
+                            return {
+                                [`сменa ${smena}`]: [...mass_days, ...mass_nights],
+                                "смен в месяце":    smens,
+                                "из них ночных":    smensNight,
+                                "оклад":            oklad,
+                                "оплата за час":    Math.round(oneHours*100) / 100,
+                                "ночные":           Math.round(rubNight*100) / 100,
+                                "итого":            Math.round(result*100) / 100,
+                            }
+                        }
