@@ -5,6 +5,7 @@ const xlsx          = require('node-xlsx').default
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
+const { count } = require('console')
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
 let dataAll, users={}, obj={}, regUser={}
@@ -55,9 +56,25 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
 
         // ------------------------------------------
         if(msg.text === "/settings" && msg.chat.id === 5131265599){
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+            let counter = 0
 
-            await bot.sendMessage(msg.chat.id, JSON.stringify(zp(1,47000),null,5))
-            await bot.sendMessage(msg.chat.id, JSON.stringify(zp(4,35000),null,5))
+            async function nbv(oklad = 47000){
+                hours = oklad / 176
+                night = 8 * 7 * hours*.2
+                result = oklad + night
+                counter+=result
+                await bot.sendMessage(msg.chat.id,`\noklad = ${oklad}\nhours = oklad / 176\nnight = 8 * 7 * hours*.2\nresult = oklad + night\n\n${result}`)
+            }
+            nbv(47000)
+            nbv(35000)
+            bot.sendMessage(msg.chat.id,`зарплата: ${counter}\n+преми\n+8 марта доп смена\n-жилье`)
+
+
+            
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
 
             await bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
                 parse_mode: "HTML",
@@ -211,68 +228,47 @@ function parse(t){
 
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+function zp(smena = 1, oklad = 47000){
 
+    let s1d = new Date(2024, 1 -1, 2   , 8 +3    , 0,0,0)
+    let s2d = new Date(2024, 1 -1, 2 +1, 8 +3    , 0,0,0)
+    let s3d = new Date(2024, 1 -1, 2 +2, 8 +3    , 0,0,0)
+    let s4d = new Date(2024, 1 -1, 2 +3, 8 +3    , 0,0,0)
+    let s1n = new Date(2024, 1 -1, 2 +1, 8 +3 +12, 0,0,0)
+    let s2n = new Date(2024, 1 -1, 2 +2, 8 +3 +12, 0,0,0)
+    let s3n = new Date(2024, 1 -1, 2 +3, 8 +3 +12, 0,0,0)
+    let s4n = new Date(2024, 1 -1, 2 +4, 8 +3 +12, 0,0,0)
+    
+    let now = new Date()
+    now.setHours(now.getHours() +3)
+    now.setMonth(now.getMonth() -0)
+    let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
 
+    let objSmens = {}
 
-                        function smensCalc(){
+    massName    = ["smena_1_Day", "smena_1_Night", "smena_2_Day", "smena_2_Night", "smena_3_Day", "smena_3_Night", "smena_4_Day", "smena_4_Night"]
+    mass        = [ s1d,           s1n,             s2d,           s2n,             s3d,           s3n,             s4d,           s4n]
+    arr = []
+    for(i in mass){
+        while (now.getMonth() !== mass[i].getMonth()) {
+            mass[i].setDate(mass[i].getDate() + 4)
+        }
+        while (now.getMonth() === mass[i].getMonth()) {
+            arr.push(new Date(mass[i]))
+            mass[i].setDate(mass[i].getDate() + 4)
+        }
+        objSmens[massName[i]] = arr
+        arr = []
+    }
 
-                            let s1d = new Date(2024, 1 -1, 2   , 8 +3    , 0,0,0)
-                            let s2d = new Date(2024, 1 -1, 2 +1, 8 +3    , 0,0,0)
-                            let s3d = new Date(2024, 1 -1, 2 +2, 8 +3    , 0,0,0)
-                            let s4d = new Date(2024, 1 -1, 2 +3, 8 +3    , 0,0,0)
-                            let s1n = new Date(2024, 1 -1, 2 +1, 8 +3 +12, 0,0,0)
-                            let s2n = new Date(2024, 1 -1, 2 +2, 8 +3 +12, 0,0,0)
-                            let s3n = new Date(2024, 1 -1, 2 +3, 8 +3 +12, 0,0,0)
-                            let s4n = new Date(2024, 1 -1, 2 +4, 8 +3 +12, 0,0,0)
-                            
-                            let now = new Date()
-                            now.setHours(now.getHours() +3)
-                            now.setMonth(now.getMonth() -0)
-                            let daysInMounth = (new Date(now.getFullYear(), now.getMonth()+1) - new Date(now.getFullYear(), now.getMonth()))/1000/60/60/24 // 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
-                        
-                            let objSmens = {}  
-                            massName    = ["smena1Day", "smena1Night", "smena2Day", "smena2Night", "smena3Day", "smena3Night", "smena4Day", "smena4Night"]
-                            mass        = [ s1d,        s1n,           s2d,         s2n,           s3d,         s3n,           s4d,         s4n]
-                            arr = []
-                            for(i in mass){
-                                while (now.getMonth() !== mass[i].getMonth()) {
-                                    mass[i].setDate(mass[i].getDate() + 4)
-                                }
-                                while (now.getMonth() === mass[i].getMonth()) {
-                                    arr.push(new Date(mass[i]))
-                                    mass[i].setDate(mass[i].getDate() + 4)
-                                }
-                                objSmens[massName[i]] = arr
-                                arr = []
-                            }
-                            return objSmens       
-                        }
-                        function zp(smena = 1, oklad = 35000){
-                        
-                            // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
-                            // ночные 7 часов  23:00 - 06:00         20%
-                            // праздничные     00:00 - 23:59         *2
-                            // 47000       за 16 смен
-                            // 35000       за 16 смен
-                            // питание 32.5 за час
-                        
-                            calc        =   smensCalc()
-                            mass_days   =   calc[`smena${smena}Day`]
-                            mass_nights =   calc[`smena${smena}Night`]
-                            
-                            oneHours    =   oklad/176
-                            smens       =   mass_days.length + mass_nights.length
-                            smensNight  =   mass_nights.length
-                            rubNight    =   smensNight*7*oneHours*.2
-                            result      =   oklad+rubNight
-                            
-                            return {
-                                [`сменa ${smena}`]: [...mass_days, ...mass_nights],
-                                "смен в месяце":    smens,
-                                "из них ночных":    smensNight,
-                                "оклад":            oklad,
-                                "оплата за час":    Math.round(oneHours*100) / 100,
-                                "ночные":           Math.round(rubNight*100) / 100,
-                                "итого":            Math.round(result*100) / 100,
-                            }
-                        }
+    // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
+    // ночные 7 часов  23:00 - 06:00         20%
+    // праздничные     00:00 - 23:59         *2
+    // 47000       за 16 смен
+    // 35000       за 16 смен
+    // питание 32.5 за час
+
+    // аванс в марте 29272.9    
+}
