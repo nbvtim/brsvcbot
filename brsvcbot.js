@@ -234,7 +234,7 @@ function smensParse(){
 
     let now = new Date()
     now.setHours(now.getHours() +3)
-    // now = new Date(2024, 2 -1, 1, 0+3)
+    now = new Date(2024, 2 -1, 1, 0+3)
     let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
 
     let holiday = [
@@ -259,13 +259,16 @@ function smensParse(){
     arr = []
     for(i in mass){
 
-        smens[massName[i]] = {smens:arr, holiday:[], holidayHour: 0}
+        smens[massName[i]] = {smens:arr, holiday:[], holidayHour: 0, night:0}
         
         while (now.getMonth() !== mass[i].getMonth()) {
             mass[i].setDate(mass[i].getDate() + 4)
         }
         while (now.getMonth() === mass[i].getMonth()) {
             arr.push(new Date(mass[i]))
+            if(mass[i].getHours() - 3 === 20){
+                smens[massName[i]].night += 7
+            }
             for(j in holiday){
                 if(mass[i].getDate() === holiday[j].getDate() && mass[i].getMonth() === holiday[j].getMonth()){
                     smens[massName[i]].holiday.push(holiday[j])
@@ -273,7 +276,7 @@ function smensParse(){
                         smens[massName[i]].holidayHour += 11 
                     }
                     if(mass[i].getHours()-3 === 20){
-                        smens[massName[i]].holidayHour += 4 
+                        smens[massName[i]].holidayHour += 4
                     }
                 }
             }
