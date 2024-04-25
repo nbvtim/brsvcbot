@@ -1,11 +1,13 @@
 // "6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w"
 // "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
+
+const ntba          = require('./ntba')
+
 const c             = console.log
 const xlsx          = require('node-xlsx').default
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
-const { count } = require('console')
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
 let dataAll, users={}, obj={}, regUser={}
@@ -305,4 +307,3 @@ function smensParse(){
 
     // аванс в марте 29272.9
 }
-c(smensParse())
