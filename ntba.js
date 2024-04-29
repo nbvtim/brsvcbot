@@ -10,7 +10,7 @@ bot.on("message", async msg=>{
     m2 = Object.keys(msg)
     for(i in m2){
         if(m2[i] !== m1[i]){
-            bot.sendMessage(msg.chat.id, `<b>${ m2[i]  }</b>\n--------------\n${ JSON.stringify(msg[m2[i]], null, 4) }\n--------------`, {parse_mode:"HTML"})
+            bot.sendMessage(msg.chat.id, `<b><u>${ m2[i]  }</u></b> : \n<b>${ JSON.stringify(msg[m2[i]], null, 4) }</b>`, {parse_mode:"HTML"})
         }
     }
 })
