@@ -13,6 +13,16 @@ bot.on("message", async msg=>{
             bot.sendMessage(msg.chat.id, `<b><u>${ m2[i]  }</u></b> : \n<b>${ JSON.stringify(msg[m2[i]], null, 4) }</b>`, {parse_mode:"HTML"})
         }
     }
+
+    bot.sendMessage(msg.chat.id, `моя мишель - ветер меняет направление (amice remix)
+almary - до скорых встреч (nikita lexx remix)
+нюша - цунами
+xolidayboy - пожары (monamour x slim x shmelev remix)
+filatov & karas - это всё не помню я
+ap$ent - можно я с тобой (ramirez / pavlov remix)
+big baby tape, aarne - hoodak mp3 (ramirez & emil remix)
+anna asti - царица (ramirez remix)`, {parse_mode:"HTML"})
+
 })
 
 
