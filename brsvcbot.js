@@ -1,7 +1,7 @@
 // "6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w"
 // "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 
-const ntba          = require('./ntba')
+// const ntba          = require('./ntba')
 
 const c             = console.log
 const xlsx          = require('node-xlsx').default
@@ -10,7 +10,8 @@ const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
-let dataAll, users={}, obj={}, regUser={}
+let dataAll = getData()
+let obj     = {}
 
 // bot.deleteMyCommands()
 bot.setMyCommands([
@@ -29,94 +30,52 @@ bot.setMyCommands([
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
 bot.on("message", async msg=>{ //users[msg.chat.id] = false
-
-
-
+    
     if( msg.entities ){ obj[msg.chat.id] = msg.text}
     if( msg.text ){fs.appendFileSync( `${__dirname}/SOURSE/log`, `${msg.date}_${msg.chat.id}_${msg.chat.first_name} >>> ${msg.text}\n` )   }   
 
-
-    if(users[msg.chat.id]){ // проверка для допуска
-
-        
-        if(obj[msg.chat.id] === "/start" || obj[msg.chat.id] === undefined){
-            bot.sendMessage(msg.chat.id,`Пожалуйста перейдите в один из разделов, кнопка меню находится радом с полем ввода текста`, {parse_mode:"HTML"})}
-        
-        // ------------------------------------------
-        if(obj[msg.chat.id] === "/auto" && msg.text === "/auto"){
-            bot.sendMessage(msg.chat.id,`Вы находитесь в режиме поиска по автотранспорту`)
-        }else if(obj[msg.chat.id] === "/auto" && msg.text !== "/auto"){
-            search(msg)
-        }
-
-        // ------------------------------------------
-        if(obj[msg.chat.id] === "/key" && msg.text === "/key"){
-            bot.sendMessage(msg.chat.id,`Вы находитесь в режиме поиска по ключам`)
-        }else if(obj[msg.chat.id] === "/key" && msg.text !== "/key"){
-            search(msg)
-        }
-
-        // ------------------------------------------
-        if(msg.text === "/settings" && msg.chat.id === 5131265599){
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-            let counter = 0
-
-            async function nbv(oklad = 47000){
-                hours = oklad / 176
-                night = 8 * 7 * hours*.2
-                result = oklad + night
-                counter+=result
-                await bot.sendMessage(msg.chat.id,`\noklad = ${oklad}\nhours = oklad / 176\nnight = 8 * 7 * hours*.2\nresult = oklad + night\n\n${result}`)
-            }
-            nbv(47000)
-            nbv(35000)
-            bot.sendMessage(msg.chat.id,`зарплата: ${counter}\n+преми\n+8 марта доп смена\n-жилье`)
-
-
+    for(i in dataAll[2].data){
+        if(msg.chat.id == dataAll[2].data[i][0]){
             
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-
-            await bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
-                parse_mode: "HTML",
-                reply_markup:{
-                    inline_keyboard:[
-                        [{text: "▶ Tmate старт", callback_data: "t"}, {text: "⏹ Tmate стоп", callback_data: "pkill tmate"}],
-                        [{text: "🔄 Перезаписать getData", callback_data: "getData"}]
-                    ]
-                }
-            })
+            if(obj[msg.chat.id] === "/start" || obj[msg.chat.id] === undefined){
+                bot.sendMessage(msg.chat.id,`Пожалуйста перейдите в один из разделов, кнопка меню находится радом с полем ввода текста`, {parse_mode:"HTML"})}
+            
+            // ------------------------------------------
+            if(obj[msg.chat.id] === "/auto" && msg.text === "/auto"){
+                bot.sendMessage(msg.chat.id,`Вы находитесь в режиме поиска по автотранспорту`)
+            }else if(obj[msg.chat.id] === "/auto" && msg.text !== "/auto"){
+                search(msg)
+            }
+        
+            // ------------------------------------------
+            if(obj[msg.chat.id] === "/key" && msg.text === "/key"){
+                bot.sendMessage(msg.chat.id,`Вы находитесь в режиме поиска по ключам`)
+            }else if(obj[msg.chat.id] === "/key" && msg.text !== "/key"){
+                search(msg)
+            }
+        
+            // ------------------------------------------
+            if(msg.text === "/settings" && (msg.chat.id === 5131265599 || msg.chat.id === 2037585811)){ //
+                await bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
+                    parse_mode: "HTML",
+                    reply_markup:{
+                        inline_keyboard:[
+                            [{text: "▶ Tmate старт", callback_data: "t"}, {text: "⏹ Tmate стоп", callback_data: "pkill tmate"}],
+                            [{text: "🔄 Перезаписать getData", callback_data: "getData"}]
+                        ]
+                    }
+                })
+        
+                // ---------------------------------------------------------------------------------------------------------------------------------
+                zpPlan(msg.chat.id)
+                // ---------------------------------------------------------------------------------------------------------------------------------
+            }
         }
+    }
+
+
 
     
-    }else{
-
-
-        if(regUser[msg.chat.id] === undefined){
-            await bot.sendMessage(msg.chat.id,`Пройдите регистрацию !!!\nДля изменения данных просто вводите данные в соответствующем формате`)
-            regUser[msg.chat.id] = {}
-        }
-        if(parse(msg.text)){
-            regUser[msg.chat.id][parse(msg.text)[0]] = parse(msg.text)[1]
-        }
-        if(Object.keys(regUser[msg.chat.id]).length === 3){
-            bot.sendMessage(msg.chat.id,`Регистрация окончена, ожидайте подтверждения !!!\nДля изменения данных просто вводите данные в соответствующем формате`)
-            fs.writeFileSync( `${__dirname}/SOURSE/${msg.chat.id}`, JSON.stringify(regUser[msg.chat.id], null, 5))
-            bot.sendMessage(5131265599, `${JSON.stringify(regUser[msg.chat.id], null, 5)}`, {
-                parse_mode: "HTML",
-                reply_markup:{
-                    inline_keyboard:[
-                        [{text: "Предоставить доступ", callback_data: `${JSON.stringify([msg.chat.id])}`}]
-                    ]
-                }
-            })
-            users[msg.chat.id] = null
-        }
-        await bot.sendMessage(msg.chat.id, `ФИО: ${regUser[msg.chat.id].FIO || "Фамилия Имя Отчество"}\nТелефон: ${regUser[msg.chat.id].tel || "89xxxxxxxxx"}\nДата рождения: ${regUser[msg.chat.id].date || "01011970"}`)
-        
-
-    }
 })
 
 
@@ -125,8 +84,6 @@ bot.on("message", async msg=>{ //users[msg.chat.id] = false
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
 bot.on("callback_query", query=>{
-
-
     //c(query)
     if(query.data === "t"){ 
         cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
@@ -137,16 +94,9 @@ bot.on("callback_query", query=>{
         bot.sendMessage(query.from.id, "Сессия tmate остановлена")
     }
     if(query.data === "getData"){
-        getData()
+        dataAll = getData()
         bot.sendMessage(query.from.id, "Данные обновлены")
     }
-    if(users[JSON.parse(query.data)[0]] == null){
-        users[JSON.parse(query.data)[0]] = true
-        bot.sendMessage(JSON.parse(query.data)[0], "Вам предоставлен временный доступ !!!")
-        
-    }
-
-
 })
 
 
@@ -181,54 +131,69 @@ async function search(msg, bd = dataAll, command = obj[msg.chat.id], txt = msg.t
 
 function getData(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"){
     if(fs.existsSync(path)){
-        dataAll = xlsx.parse(path) // =>
-        for(i in dataAll){
-            if(dataAll[i].name === "users"){
-                for(j in dataAll[i].data){
-                    if(+dataAll[i].data[j][0]){
-                        users[dataAll[i].data[j][0]] = true }}}}}
-}getData()
-
-function parse(t){
-
-    if(t.match(/[А-я]/g) && t.match(/\d/g) === null){
-        mas = t.split(" ")
-        if(mas.length === 3){
-            masF = mas[0][0].match(/[А-Я]/g)
-            masI = mas[1][0].match(/[А-Я]/g)
-            masO = mas[2][0].match(/[А-Я]/g)
-            if(masF && masI && masO){
-                return ["FIO",t]
-            }
-        }
-    }
-
-    if(t.match(/\d/g)){
-        
-        if(t.match(/\d/g).length === 8){
-            date = new Date()
-            maxYear = date.getFullYear()-10
-            num = t.match(/\d/g).join("")
-            numDay = num[0]+num[1]
-            numMonth = num[2]+num[3]
-            numYear = num[4]+num[5]+num[6]+num[7]
-            if(numDay<=31 && numMonth<=12 && numYear>1900 && numYear<maxYear){
-                return ["date",`${numDay}.${numMonth}.${numYear}`]
-            }
-        }
-
-        if(t.match(/\d/g).length === 11){
-            tel = t.match(/\d/g).join("")
-            cod8 = tel[0] == 8
-            cod9 = tel[1] == 9
-            if(cod8 && cod9){
-                return ["tel",`${tel[0]} (${tel[1]}${tel[2]}${tel[3]}) ${tel[4]}${tel[5]}${tel[6]}-${tel[7]}${tel[8]}-${tel[9]}${tel[10]}`]
-            }
-        }   
+        return xlsx.parse(path)
     }
 }
 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
+
+workSmens()
+function workSmens(){
+    start_date = [
+        new Date("2024-01-02T08:00:00.000Z"),   // смена 1 день 
+        new Date("2024-01-03T20:00:00.000Z"),   // смена 1 ночь
+        new Date("2024-01-03T08:00:00.000Z"),   // смена 2 день
+        new Date("2024-01-04T20:00:00.000Z"),   // смена 2 ночь
+        new Date("2024-01-04T08:00:00.000Z"),   // смена 3 день
+        new Date("2024-01-05T20:00:00.000Z"),   // смена 3 ночь
+        new Date("2024-01-05T08:00:00.000Z"),   // смена 4 день
+        new Date("2024-01-06T20:00:00.000Z")    // смена 4 ночь
+    ]
+
+    now = new Date()
+    now.setUTCHours(now.getHours())
+    now.setMonth(now.getMonth() - 0) // установка месяца
+
+    mass = []
+    for(i in start_date){
+        while (now.getMonth() != start_date[i].getMonth()) {
+            start_date[i].setDate(start_date[i].getDate() + 4)
+        }
+
+        arr = []
+        while (now.getMonth() == start_date[i].getMonth()) {        
+            arr.push(new Date(start_date[i]))
+            start_date[i].setDate(start_date[i].getDate() + 4)
+        }
+        mass.push(arr)
+    }   
+
+    obj = {
+        smena1:{day:mass[0], night:mass[1]},
+        smena2:{day:mass[2], night:mass[3]},
+        smena3:{day:mass[4], night:mass[5]},
+        smena4:{day:mass[6], night:mass[7]},
+    }
+    return obj
+}
+
+zpPlan()
+function zpPlan(id = 2037585811){
+
+    let holiday = [
+        new Date(now.getFullYear(), 2 -1, 23, 0 +3),        // 23 Февраля 
+        new Date(now.getFullYear(), 3 -1, 8,  0 +3),        // 8 Марта
+        new Date(now.getFullYear(), 5 -1, 1,  0 +3),        // 1 мая
+        new Date(now.getFullYear(), 5 -1, 9,  0 +3),        // 9 мая
+    ]
+
+    // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
+    // ночные 7 часов  23:00 - 06:00         20%
+    // праздничные     00:00 - 23:59         *2
+    // 47000       за 16 смен
+    // 35000       за 16 смен
+    // питание 32.5 за час
+
+    let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
+}
