@@ -72,33 +72,6 @@ function workSmens(){
         }
     }
     
-    const obj = {
-        smena1:{
-            smens_all:[...mass[0], ...mass[1]].length,
-            smens_night:mass[1].length,
-            smens_holiday: obj1.smena1.holiday.length
-        },
-
-        smena2:{
-            smens_all:[...mass[2], ...mass[3]].length,
-            smens_night:mass[3].length,
-            smens_holiday: obj1.smena2.holiday.length
-        },
-
-        smena3:{
-            smens_all:[...mass[4], ...mass[5]].length,
-            smens_night:mass[5].length,
-            smens_holiday: obj1.smena3.holiday.length
-        },
-
-        smena4:{
-            smens_all:[...mass[6], ...mass[7]].length,
-            smens_night:mass[7].length,
-            smens_holiday: obj1.smena4.holiday.length
-        },
-
-    }
-    c(obj)
 
     
 
