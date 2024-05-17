@@ -238,4 +238,3 @@ function workSmens(){
 
     let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
 }
-workSmens()
