@@ -176,10 +176,7 @@ function workSmens(){
         smena4:{day:mass[6], night:mass[7]},
     }
     return obj
-}
 
-zpPlan()
-function zpPlan(id = 2037585811){
 
     let holiday = [
         new Date(now.getFullYear(), 2 -1, 23, 0 +3),        // 23 Февраля 
