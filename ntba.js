@@ -5,7 +5,39 @@ const bot           = new TelegramApi ("6997016766:AAGEyqHbedZPqMT060glZYweCgKDk
 bot.setMyCommands([{command:"test",       description:"Тест"}])
 
 bot.on("message", async msg=>{
-    bot.sendMessage(msg.chat.id, msg.text,{parse_mode:"HTML"})
+    if(5131265599 == msg.chat.id){
+        let obj = workSmens()
+
+        await bot.sendMessage(msg.chat.id, `
+Ст. смены:
+з/п 47 000
+ночные ${obj.smena1.night.length*7} час. = ${           Math.round( obj.smena1.night.length*7*47000/176*.2 *100)/100 } руб.
+праздничные ${obj.smena1.holiday.length*11} час. = ${   Math.round( obj.smena1.holiday.length*11*47000/176 *100)/100 } руб.
+<b>Итого</b>: ${47000 + Math.round( obj.smena1.night.length*7*47000/176*.2 *100)/100 + Math.round( obj.smena1.holiday.length*11*47000/176 *100)/100}
+`,{parse_mode:"HTML"})
+
+        await bot.sendMessage(msg.chat.id, `
+Ст. смены:
+з/п 35 000
+ночные ${obj.smena4.night.length*7} час. = ${           Math.round( obj.smena4.night.length*7*35000/176*.2 *100)/100 } руб.
+праздничные ${obj.smena4.holiday.length*11} час. = ${   Math.round( obj.smena4.holiday.length*11*35000/176 *100)/100 } руб.
+<b>Итого</b>: ${35000 + Math.round( obj.smena4.night.length*7*35000/176*.2 *100)/100 + Math.round( obj.smena4.holiday.length*11*35000/176 *100)/100}
+`,{parse_mode:"HTML"})
+
+        await bot.sendMessage(msg.chat.id, `
+В общем: ${
+    (35000 + Math.round( obj.smena4.night.length*7*35000/176*.2 *100)/100 + Math.round( obj.smena4.holiday.length*11*35000/176 *100)/100) +
+    (47000 + Math.round( obj.smena1.night.length*7*47000/176*.2 *100)/100 + Math.round( obj.smena1.holiday.length*11*47000/176 *100)/100)
+} + 7000 + 7000 - 6000 = ${
+    (35000 + Math.round( obj.smena4.night.length*7*35000/176*.2 *100)/100 + Math.round( obj.smena4.holiday.length*11*35000/176 *100)/100) +
+    (47000 + Math.round( obj.smena1.night.length*7*47000/176*.2 *100)/100 + Math.round( obj.smena1.holiday.length*11*47000/176 *100)/100) +
+    7000 + 7000 - 6000
+}
+`)
+
+await bot.sendMessage(msg.chat.id, `Питание: ${(obj.smena1.day.length+obj.smena1.night.length+obj.smena4.day.length+obj.smena4.night.length)*11*32.5}`)
+
+    }
 })
 
 
@@ -17,13 +49,13 @@ function workSmens(){
     now.setUTCHours(now.getHours())
     now.setMonth(now.getMonth() - 0) // установка месяца
     const holiday = [
-        new Date(now.getFullYear(), 2 -1, 23, 0 +3),        // 23 Февраля 
+        new Date(now.getFullYear(), 2 -1, 23, 0 +3),        // 23 Февраля
         new Date(now.getFullYear(), 3 -1, 8,  0 +3),        // 8 Марта
         new Date(now.getFullYear(), 5 -1, 1,  0 +3),        // 1 мая
         new Date(now.getFullYear(), 5 -1, 9,  0 +3),        // 9 мая
     ]
     const start_date = [
-        new Date("2024-01-02T08:00:00.000Z"),   // смена 1 день 
+        new Date("2024-01-02T08:00:00.000Z"),   // смена 1 день
         new Date("2024-01-03T20:00:00.000Z"),   // смена 1 ночь
         new Date("2024-01-03T08:00:00.000Z"),   // смена 2 день
         new Date("2024-01-04T20:00:00.000Z"),   // смена 2 ночь
@@ -40,12 +72,12 @@ function workSmens(){
         }
 
         arr = []
-        while (now.getMonth() == start_date[i].getMonth()) {        
+        while (now.getMonth() == start_date[i].getMonth()) {
             arr.push(new Date(start_date[i]))
             start_date[i].setDate(start_date[i].getDate() + 4)
         }
         mass.push(arr)
-    }   
+    }
 
     const obj1 = {
         smena1:{day:mass[0], night:mass[1]},
@@ -71,10 +103,8 @@ function workSmens(){
             }
         }
     }
-    
 
-    
-
+    return obj1
     // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
     // ночные 7 часов  23:00 - 06:00         20%
     // праздничные     00:00 - 23:59         *2
@@ -85,3 +115,4 @@ function workSmens(){
     let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
 }
 workSmens()
+

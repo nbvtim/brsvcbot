@@ -1,7 +1,7 @@
 // "6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w"
 // "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 
-// const ntba          = require('./ntba')
+const ntba          = require('./ntba')
 
 const c             = console.log
 const xlsx          = require('node-xlsx').default
