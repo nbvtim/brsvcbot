@@ -1,43 +1,13 @@
 const c             = console.log
+const fs            = require('fs')
+const xlsx          = require('node-xlsx').default
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi ("6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w", {polling: true})
 
 bot.setMyCommands([{command:"test",       description:"Тест"}])
 
 bot.on("message", async msg=>{
-    if(5131265599 == msg.chat.id){
-        let obj = workSmens()
-
-        await bot.sendMessage(msg.chat.id, `
-Ст. смены:
-з/п 47 000
-ночные ${obj.smena1.night.length*7} час. = ${           Math.round( obj.smena1.night.length*7*47000/176*.2 *100)/100 } руб.
-праздничные ${obj.smena1.holiday.length*11} час. = ${   Math.round( obj.smena1.holiday.length*11*47000/176 *100)/100 } руб.
-<b>Итого</b>: ${47000 + Math.round( obj.smena1.night.length*7*47000/176*.2 *100)/100 + Math.round( obj.smena1.holiday.length*11*47000/176 *100)/100}
-`,{parse_mode:"HTML"})
-
-        await bot.sendMessage(msg.chat.id, `
-Ст. смены:
-з/п 35 000
-ночные ${obj.smena4.night.length*7} час. = ${           Math.round( obj.smena4.night.length*7*35000/176*.2 *100)/100 } руб.
-праздничные ${obj.smena4.holiday.length*11} час. = ${   Math.round( obj.smena4.holiday.length*11*35000/176 *100)/100 } руб.
-<b>Итого</b>: ${35000 + Math.round( obj.smena4.night.length*7*35000/176*.2 *100)/100 + Math.round( obj.smena4.holiday.length*11*35000/176 *100)/100}
-`,{parse_mode:"HTML"})
-
-        await bot.sendMessage(msg.chat.id, `
-В общем: ${
-    (35000 + Math.round( obj.smena4.night.length*7*35000/176*.2 *100)/100 + Math.round( obj.smena4.holiday.length*11*35000/176 *100)/100) +
-    (47000 + Math.round( obj.smena1.night.length*7*47000/176*.2 *100)/100 + Math.round( obj.smena1.holiday.length*11*47000/176 *100)/100)
-} + 7000 + 7000 - 6000 = ${
-    (35000 + Math.round( obj.smena4.night.length*7*35000/176*.2 *100)/100 + Math.round( obj.smena4.holiday.length*11*35000/176 *100)/100) +
-    (47000 + Math.round( obj.smena1.night.length*7*47000/176*.2 *100)/100 + Math.round( obj.smena1.holiday.length*11*47000/176 *100)/100) +
-    7000 + 7000 - 6000
-}
-`)
-
-await bot.sendMessage(msg.chat.id, `Питание: ${(obj.smena1.day.length+obj.smena1.night.length+obj.smena4.day.length+obj.smena4.night.length)*11*32.5}`)
-
-    }
+    zp(msg.chat.id)
 })
 
 
@@ -65,7 +35,7 @@ function workSmens(){
         new Date("2024-01-06T20:00:00.000Z")    // смена 4 ночь
     ]
 
-    mass = []
+    const mass = []
     for(i in start_date){
         while (now.getMonth() != start_date[i].getMonth()) {
             start_date[i].setDate(start_date[i].getDate() + 4)
@@ -79,40 +49,71 @@ function workSmens(){
         mass.push(arr)
     }
 
-    const obj1 = {
-        smena1:{day:mass[0], night:mass[1]},
-        smena2:{day:mass[2], night:mass[3]},
-        smena3:{day:mass[4], night:mass[5]},
-        smena4:{day:mass[6], night:mass[7]},
+    const obj = {
+        smena1:{m: [...mass[0], ...mass[1]]},
+        smena2:{m: [...mass[2], ...mass[3]]},
+        smena3:{m: [...mass[4], ...mass[5]]},
+        smena4:{m: [...mass[6], ...mass[7]]},
     }
 
-    const obj2 = {
-        smena1:[...mass[0], ...mass[1]],
-        smena2:[...mass[2], ...mass[3]],
-        smena3:[...mass[4], ...mass[5]],
-        smena4:[...mass[6], ...mass[7]],
+    for(i in obj){
+        obj[i].d = []
+        obj[i].n = []
+        obj[i].h = []
+        obj[i].m.forEach(elem => {
+            if(elem.getUTCHours() === 8 ){obj[i].d.push(elem.getDate())}
+            if(elem.getUTCHours() === 20){obj[i].n.push(elem.getDate())}
+            holiday.forEach(el => {     if(elem.getMonth() === el.getMonth() && elem.getDate() === el.getDate()){   obj[i].h.push(elem)}    })
+        })
+        obj[i].all_time        = ( obj[i].d.length + obj[i].n.length )      * 11
+        obj[i].night_time      = obj[i].n.length                            * 7      // ночные 7 часов  23:00 - 06:00
+        obj[i].holiday_time    = obj[i].h.length                            * 11     // ночные могут быть по 4 часа
+        
+        
     }
+    return (obj)
+    let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
+}
 
-    for(i in obj2){
-        obj1[i].holiday = []
-        for(j in obj2[i]){
-            for(k in holiday){
-                if(obj2[i][j].getMonth() === holiday[k].getMonth()  &&  obj2[i][j].getDate() === holiday[k].getDate()){
-                    obj1[i].holiday.push(obj2[i][j])
+
+
+function zp(id = 5131265599){
+    const obj = workSmens()
+    // c(obj)
+    function getData(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"){      if(fs.existsSync(path)){    return xlsx.parse(path)}}
+    const data = getData()
+    const m = []
+    data.forEach(el => {
+        if(el.name === "users"){
+            el.data.forEach(elem => {
+                if(elem[6]){
+                    if(elem[6].match(/inspektor/)){
+                        m.push([elem[0], elem[6].match(/inspektor./)[0], elem[6].match(/inspektor./)[0].match(/\d/)[0]])
+                    }
+                    if(elem[6].match(/stsmena/)){
+                        m.push([elem[0], elem[6].match(/stsmena./)[0], elem[6].match(/stsmena./)[0].match(/\d/)[0]])
+                    }
                 }
-            }
+            })
         }
-    }
+    })
+    m.forEach(el=>{
+        if(el[0] === id){
+            bot.sendMessage(id, JSON.stringify(obj[`smena${el[2]}`], null, 4))
+        }
+    })
 
-    return obj1
+
+
+    stSmena     = 47000
+    inspektor   = 35000
+    stSmena_hour    = stSmena   / 176
+    inspektor_hour  = inspektor / 176
     // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
     // ночные 7 часов  23:00 - 06:00         20%
     // праздничные     00:00 - 23:59         *2
     // 47000       за 16 смен
     // 35000       за 16 смен
     // питание 32.5 за час
-
-    let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
 }
-workSmens()
 
