@@ -77,7 +77,7 @@ function workSmens(){
 
 
 
-function zp(id = 5131265599){
+function zp(id){
     const obj = workSmens()
     // c(obj)
     function getData(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"){      if(fs.existsSync(path)){    return xlsx.parse(path)}}
@@ -97,6 +97,7 @@ function zp(id = 5131265599){
             })
         }
     })
+
     m.forEach(el=>{
         if(el[0] === id){
             bot.sendMessage(id, JSON.stringify(obj[`smena${el[2]}`], null, 4))
@@ -116,4 +117,3 @@ function zp(id = 5131265599){
     // 35000       за 16 смен
     // питание 32.5 за час
 }
-
