@@ -13,7 +13,7 @@ bot.on("message", async msg=>{
 
 
 
-
+//////////////////////////////////////////////////////////////////////////
 function workSmens(){
     now = new Date()
     now.setUTCHours(now.getHours())
@@ -71,12 +71,11 @@ function workSmens(){
         
         
     }
-    return (obj)
+
+    return c(obj)
     let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
-}
-
-
-
+}workSmens()
+////////////////////////////////////////////////////////////////////
 function zp(id){
     const obj = workSmens()
     // c(obj)
