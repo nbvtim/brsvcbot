@@ -1,5 +1,4 @@
 const c             = console.log
-const { ok } = require('assert')
 const fs            = require('fs')
 const xlsx          = require('node-xlsx').default
 const TelegramApi   = require('node-telegram-bot-api')
