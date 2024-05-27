@@ -39,11 +39,13 @@ if(msg.chat.id == 5131265599){
 Питание: ${(sm1.countSmens.length + sm4.countSmens.length)*11*32.5}
     `, {parse_mode:"HTML"})
 
+}else{
+    await bot.sendMessage(msg.chat.id, `
+    random : ${Math.round(Math.random(1000000))}
+    datenow: ${Date.now()}
+    `, {parse_mode:"HTML"})
 }
 })
-
-
-
 
 //////////////////////////////////////////////////////////////////////////
 function workSmens(){
