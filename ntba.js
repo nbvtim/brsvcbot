@@ -41,8 +41,8 @@ if(msg.chat.id == 5131265599){
 
 }else{
     await bot.sendMessage(msg.chat.id, `
-    random : ${Math.round(Math.random(1000000))}
-    datenow: ${Date.now()}
+random : ${Math.round(Math.random()*10000000000000)}
+datenow: ${Date.now()}
     `, {parse_mode:"HTML"})
 }
 })
