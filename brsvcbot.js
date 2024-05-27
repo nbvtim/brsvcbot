@@ -132,5 +132,7 @@ async function search(msg, bd = dataAll, command = obj[msg.chat.id], txt = msg.t
 function getData(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"){
     if(fs.existsSync(path)){
         return xlsx.parse(path)
+    }else{
+        return JSON.parse(fs.readFileSync(`${__dirname}/SOURSE/all`, "utf8")) 
     }
 }
