@@ -6,12 +6,13 @@ const bot           = new TelegramApi ("6997016766:AAGEyqHbedZPqMT060glZYweCgKDk
 
 bot.setMyCommands([{command:"test",       description:"Тест"}])
 
+let objUsers = {}
+
 const dat = workSmens()
 sm1 = dat.smena1
 sm4 = dat.smena4
 
 bot.on("message", async msg=>{
-
 
 if(msg.chat.id == 5131265599){
 
