@@ -195,7 +195,7 @@ function calcSmens(msg){
         }
     }
     
-    function zp(oklad, smena, minus){
+    async function zp(oklad, smena, minus){
         smena_name = smena
         smena = obj["smena" + smena]
         counter = 0
@@ -238,7 +238,7 @@ function calcSmens(msg){
             result.pitanie = result.hourses * 32.5
         }
         if(msg.text === "/" && msg.chat.id === 5131265599){
-            bot.sendMessage(msg.chat.id, `${"Смена_"+smena_name} = ${JSON.stringify(result, null, 4)}`)
+            await bot.sendMessage(msg.chat.id, `${"Смена_"+smena_name} = ${JSON.stringify(result, null, 4)}`)
         }
     }
     zp(54000, 1)
