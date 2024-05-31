@@ -25,64 +25,46 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 
 const obj = {}
 const xlsxData = xlsxGet()
-xlsxData.forEach(el=>{
-    if(el.name == "users"){
-        el.data.forEach(ell=>{
-            if(+ell[0]){
-                obj[ell[0]] = {
-                    id:         ell[0],
-                    mass:       ell,
-                    secure:     true,
-                }
-            }
-        })
-    }
-})
-bot.on("message", async msg=>{
-    fs.appendFileSync(`${__dirname}/SOURSE/log`, `\n${msg.chat.id}: ${msg.text}`)
-    
-    search(msg.chat.id, msg.text).forEach(el=>{
-        bot.sendMessage(msg.chat.id, JSON.stringify(el, null, 4))
-    })
-        
-    // ------------------------------------------
-    if(msg.text === "/" && msg.chat.id === 5131265599){ //  (|| msg.chat.id === 2037585811)
-        await bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
-            parse_mode: "HTML",
-            reply_markup:{
-                inline_keyboard:[
-                    [{text: "▶ Tmate старт",            callback_data: "t"}, {text: "⏹ Tmate стоп", callback_data: "pkill tmate"}],
-                    [{text: "🔄 Перезаписать getData",  callback_data: "getData"}]
-                ]
-            }
-        })
-    }
-})
 
-
+bot.on("message", async msg=>{ 
+    start(msg)
+    reg(msg)
+    search(msg)
+    nbv(msg)
+    calcSmens(msg)
+})
 
 
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
-bot.on("callback_query", query=>{
-    //c(query)
-    if(query.data === "t"){ 
-        cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
-        bot.sendMessage(query.from.id, `Сессия доступна по этой <a href="https://tmate.io/t/nbv/pc">ССЫЛКЕ</a>`, {parse_mode:"HTML"})
+function start(msg){
+    
+    if(!obj[msg.chat.id]){
+        obj[msg.chat.id] = {
+            id: msg.chat.id,
+            secure: false,
+            command: "",
+            first_name: msg.from.first_name,
+            username: msg.from.username,
+        }
+        xlsxData.forEach(e=>{
+            if(e.name == "users"){e.data.forEach(el=>{
+                if(el[0] == obj[msg.chat.id].id){
+                    obj[msg.chat.id].xls = el
+                    obj[msg.chat.id].secure = true
+                }
+            })}
+        })
     }
-    if(query.data === "pkill tmate"){
-        cp.spawnSync('pkill', ['tmate'])
-        bot.sendMessage(query.from.id, "Сессия tmate остановлена")
+    fs.appendFileSync(`${__dirname}/SOURSE/log`, `\n${obj[msg.chat.id].secure} ${msg.chat.id} ${msg.from.first_name}: ${msg.text}`)
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------------
+function reg(msg){
+    if(!obj[msg.chat.id].secure){
+        bot.sendMessage(msg.chat.id, "Нет доступа\n\nВведите ФИО, дату рождения и номер телефона\n\nОжидайте обновления !!!")
     }
-    if(query.data === "getData"){
-        xlsxData = xlsxGet()
-        bot.sendMessage(query.from.id, "Данные обновлены")
-    }
-})
-
-
-
-
+}
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
 function xlsxGet(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"){
@@ -93,7 +75,71 @@ function xlsxGet(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смен
     }
 }
 
-function smensCalc(){
+// -------------------------------------------------------------------------------------------------------------------------------------------
+function search(msg){ 
+try {
+    if(obj[msg.chat.id].secure && msg.text !== "/"){
+        arr = []
+        counter = 0
+        
+            xlsxData.forEach(el=>{
+                if(el.name == "АТ"){
+                    el.data.forEach(ell=>{
+                        if(ell.join(" ").match(RegExp(msg.text, "i")) && counter<5){
+                            counter++
+                            arr.push(ell)
+                        }
+                    })
+                }
+            })
+        if(arr.length == 0){
+            bot.sendMessage(msg.chat.id, `По запросу ничего не найдено`)
+        }else{
+            arr.forEach(el=>{
+                bot.sendMessage(msg.chat.id, JSON.stringify(el, null, 4))
+            })
+        }
+    }
+    
+} catch (err) {
+    // c(`TRY ERR > RegExp("${msg.text}", "i") > не допустимый ввод "${msg.text}"`)
+    bot.sendMessage(msg.chat.id, `Неверный ввод "${msg.text}"`)
+}
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------------
+function nbv(msg){    
+    if(msg.text === "/" && msg.chat.id === 5131265599){
+        bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
+            parse_mode: "HTML",
+            reply_markup:{
+                inline_keyboard:[
+                    [{text: "▶ Tmate старт",            callback_data: "t"}, {text: "⏹ Tmate стоп", callback_data: "pkill tmate"}],
+                    [{text: "🔄 Перезаписать getData",  callback_data: "getData"}]
+                ]
+            }
+        })
+    }
+
+    bot.on("callback_query", query=>{
+        //c(query)
+        if(query.data === "t"){ 
+            cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
+            bot.sendMessage(query.from.id, `Сессия доступна по этой <a href="https://tmate.io/t/nbv/pc">ССЫЛКЕ</a>`, {parse_mode:"HTML"})
+        }
+        if(query.data === "pkill tmate"){
+            cp.spawnSync('pkill', ['tmate'])
+            bot.sendMessage(query.from.id, "Сессия tmate остановлена")
+        }
+        if(query.data === "getData"){
+            xlsxData = xlsxGet()
+            bot.sendMessage(query.from.id, "Данные обновлены")
+        }
+    })
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------------
+function calcSmens(msg){
     now = new Date()
     now.setUTCHours(now.getHours())
     now.setMonth(now.getMonth() - 0) // установка месяца
@@ -129,62 +175,80 @@ function smensCalc(){
     }
 
     const obj = {
-        smena1:{day:mass[0], night:mass[1]},
-        smena2:{day:mass[2], night:mass[3]},
-        smena3:{day:mass[4], night:mass[5]},
-        smena4:{day:mass[6], night:mass[7]},
+        smena1:{day:mass[0], night:mass[1], holiday:[]},
+        smena2:{day:mass[2], night:mass[3], holiday:[]},
+        smena3:{day:mass[4], night:mass[5], holiday:[]},
+        smena4:{day:mass[6], night:mass[7], holiday:[]},
     }
-
+    
     for(i in obj){
         for(j in obj[i]){
             obj[i][j].forEach(elem=>{
-                holiday.forEach(el => {
-                    if(elem.getMonth() === el.getMonth() && elem.getDate() === el.getDate()){
-                        if(!obj[i].holiday){obj[i].holiday = []}
-                        obj[i].holiday.push(elem)
-                    }
-                })
+                if(j !== "holiday"){
+                    holiday.forEach(el => {
+                        if(elem.getMonth() === el.getMonth() && elem.getDate() === el.getDate()){
+                            obj[i].holiday.push(elem)
+                        }
+                    })
+                }
             })
         }
     }
-    return (obj)
-    let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
-    stSmena     = 54000
-    inspektor   = 45000
-    stSmena_hour    = stSmena   / 176
-    inspektor_hour  = inspektor / 176
-    // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
-    // ночные 7 часов  23:00 - 06:00         20%
-    // праздничные     00:00 - 23:59         *2
-    // 47000       за 16 смен
-    // 35000       за 16 смен
-    // питание 32.5 за час
-}
+    
+    function zp(oklad, smena, minus){
+        smena = obj["smena" + smena]
+        counter = 0
 
-function search(id, txt){
-    arr = []
-    counter = 0
-    if(obj[id]){
-        xlsxData.forEach(el=>{
-            if(el.name == "АТ"){
-                el.data.forEach(ell=>{
-                    if(ell.join(" ").match(txt) && counter<5){
-                        counter++
-                        arr.push(ell)
+        result = {
+            hourses:              (smena.day.length + smena.night.length)*11,
+            hours_night:          smena.night.length*7,
+            hours_holiday:        smena.holiday.length*11,
+            rub_all:              oklad,
+            rub_night:            smena.night.length*7 *oklad/176* .2,
+            rub_holiday:          smena.holiday.length*11 *oklad/176,
+            summ:                 oklad  +  smena.night.length*7 *oklad/176* .2  +  smena.holiday.length*11 *oklad/176,
+        }
+        counter = result.summ
+
+        if(minus){
+            for(i in smena){
+                smena[i].forEach((el, index)=>{
+                    if(el.getDate() == minus){
+                        smena[i].splice(index,1)
                     }
                 })
             }
-        })
+            result = {
+                hourses:              (smena.day.length + smena.night.length)*11,
+                hours_night:          smena.night.length*7,
+                hours_holiday:        smena.holiday.length*11,
+                rub_all:              oklad/176  *  (smena.day.length + smena.night.length)*11, //не верно 
+                rub_night:            smena.night.length*7 *oklad/176* .2,
+                rub_holiday:          smena.holiday.length*11 *oklad/176,
+                summ:                 oklad/176*(smena.day.length + smena.night.length)*11  +  smena.night.length*7 *oklad/176* .2  +  smena.holiday.length*11 *oklad/176,
+            }
+            counter-=result.summ
+            result.delta = counter
+            result.pitanie = result.hourses * 32.5
+        }
+        // if(msg.text === "/" && msg.chat.id === 5131265599){
+        //     bot.sendMessage(msg.chat.id, JSON.stringify(result, null, 4))
+        // }
     }
-    return arr
-}
+    zp(45000, 4)
 
 
-function nbv(){
 
-    t = "askdjaksdjkasjd"
-    r = "as"
-    c(t.match(RegExp(r, "i")))
+
+
+
+
+    let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
     
-
-}nbv()
+    // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
+    // ночные 7 часов  23:00 - 06:00         20%
+    // праздничные     00:00 - 23:59         *2
+    // 54000       за 16 смен
+    // 45000       за 16 смен
+    // питание 32.5 за час
+}calcSmens()
