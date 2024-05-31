@@ -196,6 +196,7 @@ function calcSmens(msg){
     }
     
     function zp(oklad, smena, minus){
+        smena_name = smena
         smena = obj["smena" + smena]
         counter = 0
 
@@ -206,8 +207,11 @@ function calcSmens(msg){
             rub_all:              oklad,
             rub_night:            smena.night.length*7 *oklad/176* .2,
             rub_holiday:          smena.holiday.length*11 *oklad/176,
-            summ:                 oklad  +  smena.night.length*7 *oklad/176* .2  +  smena.holiday.length*11 *oklad/176,
+            summ:                 oklad  +  
+                                  smena.night.length*7 *oklad/176* .2  +  
+                                  smena.holiday.length*11 *oklad/176,
         }
+        result.pitanie = result.hourses * 32.5
         counter = result.summ
 
         if(minus){
@@ -222,20 +226,23 @@ function calcSmens(msg){
                 hourses:              (smena.day.length + smena.night.length)*11,
                 hours_night:          smena.night.length*7,
                 hours_holiday:        smena.holiday.length*11,
-                rub_all:              oklad/176  *  (smena.day.length + smena.night.length)*11, //не верно 
+                rub_all:              oklad/176  *  (smena.day.length + smena.night.length)*11, 
                 rub_night:            smena.night.length*7 *oklad/176* .2,
                 rub_holiday:          smena.holiday.length*11 *oklad/176,
-                summ:                 oklad/176*(smena.day.length + smena.night.length)*11  +  smena.night.length*7 *oklad/176* .2  +  smena.holiday.length*11 *oklad/176,
+                summ:                 oklad/176*(smena.day.length + smena.night.length)*11  +  
+                                      smena.night.length*7 *oklad/176* .2  +  
+                                      smena.holiday.length*11 *oklad/176,
             }
             counter-=result.summ
             result.delta = counter
             result.pitanie = result.hourses * 32.5
         }
-        // if(msg.text === "/" && msg.chat.id === 5131265599){
-        //     bot.sendMessage(msg.chat.id, JSON.stringify(result, null, 4))
-        // }
+        if(msg.text === "/" && msg.chat.id === 5131265599){
+            bot.sendMessage(msg.chat.id, `${"Смена_"+smena_name} = ${JSON.stringify(result, null, 4)}`)
+        }
     }
-    zp(45000, 4)
+    zp(54000, 1)
+    zp(45000, 4, "28")
 
 
 
@@ -251,4 +258,4 @@ function calcSmens(msg){
     // 54000       за 16 смен
     // 45000       за 16 смен
     // питание 32.5 за час
-}calcSmens()
+}
