@@ -28,12 +28,10 @@ let   xlsxData  = []
 start()
 
 bot.on("message", async msg=>{   
-    c(obj[msg.chat.id])  
     reg(msg)
     search(msg)
     nbv(msg)
     calcSmens(msg)
-    c(obj[msg.chat.id])
 })
 
 
