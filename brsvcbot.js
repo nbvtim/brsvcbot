@@ -23,58 +23,73 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
 
-const obj = {}
-const xlsxData = xlsxGet()
+const obj       = {}
+let   xlsxData  = []
+start()
 
-bot.on("message", async msg=>{ 
-    start(msg)
+bot.on("message", async msg=>{   
+    c(obj[msg.chat.id])  
     reg(msg)
     search(msg)
     nbv(msg)
     calcSmens(msg)
+    c(obj[msg.chat.id])
 })
 
 
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
-function start(msg){
+// -------------------------------------------------------------------------------------------------------------------------------------------
+function start(){
+
+    path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"
+    if(fs.existsSync(path)){
+        xlsxData = xlsx.parse(path)
+        fs.writeFileSync(`${__dirname}/SOURSE/all`, JSON.stringify(xlsxData,null, 5))
+    }else{
+        xlsxData = JSON.parse(fs.readFileSync(`${__dirname}/SOURSE/all`, "utf8")) 
+    }
+
+    xlsxData.forEach(e=>{
+        if(e.name == "users"){
+            e.data.forEach(el=>{
+                if(+el[0]){
+                    obj[el[0]] = {
+                        id:         el[0],
+                        xls:        el,
+                        secure:     true,
+                        jobTitle:   el[6],
+                        command:    "",
+                    }
+                }
+            })
+        }
+    })
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------
+function reg(msg){
     
     if(!obj[msg.chat.id]){
         obj[msg.chat.id] = {
-            id: msg.chat.id,
-            secure: false,
-            command: "",
+            id:         msg.chat.id,
+            secure:     false,
+            command:    "",
             first_name: msg.from.first_name,
-            username: msg.from.username,
+            username:   msg.from.username,
         }
-        xlsxData.forEach(e=>{
-            if(e.name == "users"){e.data.forEach(el=>{
-                if(el[0] == obj[msg.chat.id].id){
-                    obj[msg.chat.id].xls = el
-                    obj[msg.chat.id].secure = true
-                }
-            })}
-        })
+        bot.sendMessage(msg.chat.id, "Нет доступа\n\nВведите ФИО, дату рождения и номер телефона\n\nОжидайте обновления !!!")
+        
+    }
+    if(obj[msg.chat.id].secure){
+        obj[msg.chat.id].first_name  = msg.from.first_name
+        obj[msg.chat.id].username    = msg.from.username
     }
     fs.appendFileSync(`${__dirname}/SOURSE/log`, `\n${obj[msg.chat.id].secure} ${msg.chat.id} ${msg.from.first_name}: ${msg.text}`)
 }
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
-function reg(msg){
-    if(!obj[msg.chat.id].secure){
-        bot.sendMessage(msg.chat.id, "Нет доступа\n\nВведите ФИО, дату рождения и номер телефона\n\nОжидайте обновления !!!")
-    }
-}
-
-// -------------------------------------------------------------------------------------------------------------------------------------------
-function xlsxGet(path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"){
-    if(fs.existsSync(path)){
-        return xlsx.parse(path)
-    }else{
-        return JSON.parse(fs.readFileSync(`${__dirname}/SOURSE/all`, "utf8")) 
-    }
-}
-
 // -------------------------------------------------------------------------------------------------------------------------------------------
 function search(msg){ 
 try {
@@ -108,6 +123,7 @@ try {
 }
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------
 function nbv(msg){    
     if(msg.text === "/" && msg.chat.id === 5131265599){
         bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
@@ -138,6 +154,7 @@ function nbv(msg){
     })
 }
 
+// -------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------
 function calcSmens(msg){
     now = new Date()
@@ -241,14 +258,11 @@ function calcSmens(msg){
             await bot.sendMessage(msg.chat.id, `${"Смена_"+smena_name} = ${JSON.stringify(result, null, 4)}`)
         }
     }
+    
+
     zp(54000, 1)
     zp(45000, 4, "28")
-
-
-
-
-
-
+    
 
     let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
     
@@ -258,4 +272,10 @@ function calcSmens(msg){
     // 54000       за 16 смен
     // 45000       за 16 смен
     // питание 32.5 за час
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------
+function test(msg){
+    
 }
