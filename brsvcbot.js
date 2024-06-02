@@ -30,9 +30,24 @@ start()
 bot.on("message", async msg=>{   
     reg(msg)
     search(msg)
-    nbv(msg)
+    my(msg)
     calcSmens(msg)
 })
+bot.on("callback_query", query=>{
+    //c(query)
+    if(query.data === "t"){ 
+        cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
+        bot.sendMessage(query.from.id, `Сессия доступна по этой <a href="https://tmate.io/t/my/pc">ССЫЛКЕ</a>`, {parse_mode:"HTML"})
+    }
+    if(query.data === "pkill tmate"){
+        cp.spawnSync('pkill', ['tmate'])
+        bot.sendMessage(query.from.id, "Сессия tmate остановлена")
+    }
+    if(query.data === "getData"){
+        start()
+        bot.sendMessage(query.from.id, "Данные обновлены")
+    }
+}) 
 
 
 
@@ -54,16 +69,29 @@ function start(){
                 if(+el[0]){
                     obj[el[0]] = {
                         id:         el[0],
-                        xls:        el,
-                        secure:     true,
-                        jobTitle:   el[6],
                         command:    "",
+                        secure:     true,                        
+                        jobTitle:   el[6],
                     }
+                    if(obj[el[0]].jobTitle && obj[el[0]].jobTitle.split("_")[1]){
+                        m = []
+                        obj[el[0]].jobTitle.split(", ").forEach(ell=>{
+                            if(ell.split("_")[0] == "stsmena"){
+                                m.push([ell.split("_")[0], ell.split("_")[1], 54000])
+                            }else 
+                            if(ell.split("_")[0] == "inspektor"){
+                                m.push([ell.split("_")[0], ell.split("_")[1], 45000])
+                            }
+                        })
+                        obj[el[0]].jobTitle = m
+                    }
+                    if(!obj[el[0]].jobTitle){obj[el[0]].jobTitle = []}
                 }
             })
         }
     })
 }
+
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------
@@ -122,34 +150,19 @@ try {
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------
-function nbv(msg){    
+function my(msg){    
     if(msg.text === "/" && msg.chat.id === 5131265599){
         bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
             parse_mode: "HTML",
             reply_markup:{
                 inline_keyboard:[
-                    [{text: "▶ Tmate старт",            callback_data: "t"}, {text: "⏹ Tmate стоп", callback_data: "pkill tmate"}],
-                    [{text: "🔄 Перезаписать getData",  callback_data: "getData"}]
+                    [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
+                    [{text: "Обновить данные",      callback_data:   "getData"}],
+                    [{text: "ntba старт",           callback_data:   "??????"},       {text: "ntba стоп", callback_data: "???????"}],
                 ]
             }
         })
     }
-
-    bot.on("callback_query", query=>{
-        //c(query)
-        if(query.data === "t"){ 
-            cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
-            bot.sendMessage(query.from.id, `Сессия доступна по этой <a href="https://tmate.io/t/nbv/pc">ССЫЛКЕ</a>`, {parse_mode:"HTML"})
-        }
-        if(query.data === "pkill tmate"){
-            cp.spawnSync('pkill', ['tmate'])
-            bot.sendMessage(query.from.id, "Сессия tmate остановлена")
-        }
-        if(query.data === "getData"){
-            xlsxData = xlsxGet()
-            bot.sendMessage(query.from.id, "Данные обновлены")
-        }
-    })
 }
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
@@ -157,7 +170,8 @@ function nbv(msg){
 function calcSmens(msg){
     now = new Date()
     now.setUTCHours(now.getHours())
-    now.setMonth(now.getMonth() - 0) // установка месяца
+    if(now.getDate() < 29){n = 1}else{n = 0}
+    now.setMonth(now.getMonth() - n) // установка месяца
     const holiday = [
         new Date(now.getFullYear(), 2 -1, 23, 0 +3),        // 23 Февраля
         new Date(now.getFullYear(), 3 -1, 8,  0 +3),        // 8 Марта
@@ -189,77 +203,102 @@ function calcSmens(msg){
         mass.push(arr)
     }
 
-    const obj = {
-        smena1:{day:mass[0], night:mass[1], holiday:[]},
-        smena2:{day:mass[2], night:mass[3], holiday:[]},
-        smena3:{day:mass[4], night:mass[5], holiday:[]},
-        smena4:{day:mass[6], night:mass[7], holiday:[]},
+    const obj_smens = {
+        smena_1:{day:mass[0], night:mass[1], holiday:[]},
+        smena_2:{day:mass[2], night:mass[3], holiday:[]},
+        smena_3:{day:mass[4], night:mass[5], holiday:[]},
+        smena_4:{day:mass[6], night:mass[7], holiday:[]},
     }
-    
-    for(i in obj){
-        for(j in obj[i]){
-            obj[i][j].forEach(elem=>{
+
+    // добавление праздничных
+    for(i in obj_smens){ 
+        for(j in obj_smens[i]){
+            obj_smens[i][j].forEach(elem=>{
                 if(j !== "holiday"){
                     holiday.forEach(el => {
                         if(elem.getMonth() === el.getMonth() && elem.getDate() === el.getDate()){
-                            obj[i].holiday.push(elem)
+                            obj_smens[i].holiday.push(elem)
                         }
                     })
                 }
             })
         }
     }
-    
-    async function zp(oklad, smena, minus){
-        smena_name = smena
-        smena = obj["smena" + smena]
-        counter = 0
 
-        result = {
-            hourses:              (smena.day.length + smena.night.length)*11,
-            hours_night:          smena.night.length*7,
-            hours_holiday:        smena.holiday.length*11,
-            rub_all:              oklad,
-            rub_night:            smena.night.length*7 *oklad/176* .2,
-            rub_holiday:          smena.holiday.length*11 *oklad/176,
-            summ:                 oklad  +  
-                                  smena.night.length*7 *oklad/176* .2  +  
-                                  smena.holiday.length*11 *oklad/176,
-        }
-        result.pitanie = result.hourses * 32.5
-        counter = result.summ
+    //--------------------------------------------------------------------------------
+    // if(obj[msg.chat.id].jobTitle){
+    //     obj[msg.chat.id].jobTitle.split(", ").forEach(el=>{
+    //         if(el.split("_")[0] == "stsmena"){
+    //             aaa = 54000
+    //             bbb = el[el.length-1]
+    //             jobTitle = el.split("_")[0]
+    //             minus = undefined
+    //         }
+    //         if(el.split("_")[0] == "inspektor"){
+    //             aaa = 45000
+    //             bbb = el[el.length-1]
+    //             jobTitle = el.split("_")[0]
+    //             minus = "13"
+    //         }
+    //         zp(aaa, bbb, minus)
+    //     })
+    // }
+    // //--------------------------------------------------------------------------------
+    // function zp(oklad, smena, minus){
+    //     smena_namber = smena
+    //     smena = obj_smens["smena" + smena]
+    //     counter = 0
 
-        if(minus){
-            for(i in smena){
-                smena[i].forEach((el, index)=>{
-                    if(el.getDate() == minus){
-                        smena[i].splice(index,1)
-                    }
-                })
-            }
-            result = {
-                hourses:              (smena.day.length + smena.night.length)*11,
-                hours_night:          smena.night.length*7,
-                hours_holiday:        smena.holiday.length*11,
-                rub_all:              oklad/176  *  (smena.day.length + smena.night.length)*11, 
-                rub_night:            smena.night.length*7 *oklad/176* .2,
-                rub_holiday:          smena.holiday.length*11 *oklad/176,
-                summ:                 oklad/176*(smena.day.length + smena.night.length)*11  +  
-                                      smena.night.length*7 *oklad/176* .2  +  
-                                      smena.holiday.length*11 *oklad/176,
-            }
-            counter-=result.summ
-            result.delta = counter
-            result.pitanie = result.hourses * 32.5
-        }
-        if(msg.text === "/" && msg.chat.id === 5131265599){
-            await bot.sendMessage(msg.chat.id, `${"Смена_"+smena_name} = ${JSON.stringify(result, null, 4)}`)
-        }
-    }
-    
+    //     result = {
+    //         month:                now.getMonth() + 1,
+    //         hourses:              (smena.day.length + smena.night.length)*11,
+    //         hours_night:          smena.night.length*7,
+    //         hours_holiday:        smena.holiday.length*11,
+    //         rub_all:              oklad,
+    //         rub_night:            smena.night.length*7 *oklad/176* .2,
+    //         rub_holiday:          smena.holiday.length*11 *oklad/176,
+    //         summ:                 oklad  +  
+    //                               smena.night.length*7 *oklad/176* .2  +  
+    //                               smena.holiday.length*11 *oklad/176,
+    //     }
+    //     result.pitanie = result.hourses * 32.5
+    //     counter = result.summ
 
-    zp(54000, 1)
-    zp(45000, 4, "28")
+    //     if(minus){
+    //         for(i in smena){
+    //             smena[i].forEach((el, index)=>{
+    //                 if(el.getDate() == minus){
+    //                     smena[i].splice(index,1)
+    //                 }
+    //             })
+    //         }
+    //         result = {
+    //             month:                now.getMonth() + 1,
+    //             hourses:              (smena.day.length + smena.night.length)*11,
+    //             hours_night:          smena.night.length*7,
+    //             hours_holiday:        smena.holiday.length*11,
+    //             rub_all:              oklad/176  *  (smena.day.length + smena.night.length)*11, 
+    //             rub_night:            smena.night.length*7 *oklad/176* .2,
+    //             rub_holiday:          smena.holiday.length*11 *oklad/176,
+    //             summ:                 oklad/176*(smena.day.length + smena.night.length)*11  +  
+    //                                   smena.night.length*7 *oklad/176* .2  +  
+    //                                   smena.holiday.length*11 *oklad/176,
+    //         }
+    //         counter-=result.summ
+    //         result.delta = counter
+    //         result.pitanie = result.hourses * 32.5
+    //     }
+        
+    //     if(msg.text === "/"){
+    //         bot.sendMessage(msg.chat.id, `${jobTitle + "_" + smena_namber} = ${JSON.stringify(result, null, 4)}`)
+    //     }
+    // }
+
+
+
+
+    // zp(54000, 1)
+    // zp(45000, 4, "28")
     
 
     let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
@@ -270,10 +309,7 @@ function calcSmens(msg){
     // 54000       за 16 смен
     // 45000       за 16 смен
     // питание 32.5 за час
-}
+}calcSmens()
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------
-function test(msg){
-    
-}
