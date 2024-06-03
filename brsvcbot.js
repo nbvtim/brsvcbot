@@ -58,7 +58,7 @@ function start(){
     path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"
     if(fs.existsSync(path)){
         xlsxData = xlsx.parse(path)
-        fs.writeFileSync(`${__dirname}/SOURSE/all`, JSON.stringify(xlsxData,null, 5))
+        fs.writeFileSync(`${__dirname}/SOURSE/all`, JSON.stringify(xlsxData, null, 5))
     }else{
         xlsxData = JSON.parse(fs.readFileSync(`${__dirname}/SOURSE/all`, "utf8")) 
     }
@@ -78,7 +78,7 @@ function start(){
                         obj[el[0]].jobTitle.split(", ").forEach(ell=>{
                             if(ell.split("_")[0] == "stsmena"){
                                 m.push([ell.split("_")[0], ell.split("_")[1], 54000])
-                            }else 
+                            }
                             if(ell.split("_")[0] == "inspektor"){
                                 m.push([ell.split("_")[0], ell.split("_")[1], 45000])
                             }
@@ -167,7 +167,7 @@ function my(msg){
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------
-function calcSmens(msg){
+function calcSmens(){
     now = new Date()
     now.setUTCHours(now.getHours())
     if(now.getDate() < 29){n = 1}else{n = 0}
