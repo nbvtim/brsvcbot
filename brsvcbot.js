@@ -30,7 +30,7 @@ const obj       = {}
 let   xlsxData  = []
 start()
 
-bot.on("message", async msg=>{   
+bot.on("message", async msg=>{  //c(obj) 
     reg(msg)
     search(msg)
     my(msg)
@@ -217,7 +217,7 @@ function calcSmens(){
     }
 
     c(obj_smens)
-    
+
     let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
     
     // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
