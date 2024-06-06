@@ -216,7 +216,7 @@ function calcSmens(){
         }
     }
 
-    c(obj_smens)
+    // c(obj_smens)
 
     let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
     
