@@ -76,19 +76,6 @@ function start(){
                         secure:     true,                        
                         jobTitle:   el[6],
                     }
-                    if(obj[el[0]].jobTitle && obj[el[0]].jobTitle.split("_")[1]){
-                        m = []
-                        obj[el[0]].jobTitle.split(", ").forEach(ell=>{
-                            if(ell.split("_")[0] == "stsmena"){
-                                m.push([ell.split("_")[0], ell.split("_")[1], 54000])
-                            }
-                            if(ell.split("_")[0] == "inspektor"){
-                                m.push([ell.split("_")[0], ell.split("_")[1], 45000])
-                            }
-                        })
-                        obj[el[0]].jobTitle = m
-                    }
-                    if(!obj[el[0]].jobTitle){obj[el[0]].jobTitle = []}
                 }
             })
         }
