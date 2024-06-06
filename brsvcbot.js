@@ -7,6 +7,9 @@ const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
+const ntba          = require("./ntba")
+
+
 
 // bot.deleteMyCommands()
 // bot.setMyCommands([
@@ -224,83 +227,7 @@ function calcSmens(){
             })
         }
     }
-
-    //--------------------------------------------------------------------------------
-    // if(obj[msg.chat.id].jobTitle){
-    //     obj[msg.chat.id].jobTitle.split(", ").forEach(el=>{
-    //         if(el.split("_")[0] == "stsmena"){
-    //             aaa = 54000
-    //             bbb = el[el.length-1]
-    //             jobTitle = el.split("_")[0]
-    //             minus = undefined
-    //         }
-    //         if(el.split("_")[0] == "inspektor"){
-    //             aaa = 45000
-    //             bbb = el[el.length-1]
-    //             jobTitle = el.split("_")[0]
-    //             minus = "13"
-    //         }
-    //         zp(aaa, bbb, minus)
-    //     })
-    // }
-    // //--------------------------------------------------------------------------------
-    // function zp(oklad, smena, minus){
-    //     smena_namber = smena
-    //     smena = obj_smens["smena" + smena]
-    //     counter = 0
-
-    //     result = {
-    //         month:                now.getMonth() + 1,
-    //         hourses:              (smena.day.length + smena.night.length)*11,
-    //         hours_night:          smena.night.length*7,
-    //         hours_holiday:        smena.holiday.length*11,
-    //         rub_all:              oklad,
-    //         rub_night:            smena.night.length*7 *oklad/176* .2,
-    //         rub_holiday:          smena.holiday.length*11 *oklad/176,
-    //         summ:                 oklad  +  
-    //                               smena.night.length*7 *oklad/176* .2  +  
-    //                               smena.holiday.length*11 *oklad/176,
-    //     }
-    //     result.pitanie = result.hourses * 32.5
-    //     counter = result.summ
-
-    //     if(minus){
-    //         for(i in smena){
-    //             smena[i].forEach((el, index)=>{
-    //                 if(el.getDate() == minus){
-    //                     smena[i].splice(index,1)
-    //                 }
-    //             })
-    //         }
-    //         result = {
-    //             month:                now.getMonth() + 1,
-    //             hourses:              (smena.day.length + smena.night.length)*11,
-    //             hours_night:          smena.night.length*7,
-    //             hours_holiday:        smena.holiday.length*11,
-    //             rub_all:              oklad/176  *  (smena.day.length + smena.night.length)*11, 
-    //             rub_night:            smena.night.length*7 *oklad/176* .2,
-    //             rub_holiday:          smena.holiday.length*11 *oklad/176,
-    //             summ:                 oklad/176*(smena.day.length + smena.night.length)*11  +  
-    //                                   smena.night.length*7 *oklad/176* .2  +  
-    //                                   smena.holiday.length*11 *oklad/176,
-    //         }
-    //         counter-=result.summ
-    //         result.delta = counter
-    //         result.pitanie = result.hourses * 32.5
-    //     }
-        
-    //     if(msg.text === "/"){
-    //         bot.sendMessage(msg.chat.id, `${jobTitle + "_" + smena_namber} = ${JSON.stringify(result, null, 4)}`)
-    //     }
-    // }
-
-
-
-
-    // zp(54000, 1)
-    // zp(45000, 4, "28")
-    
-
+    c(obj_smens)
     let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
     
     // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
