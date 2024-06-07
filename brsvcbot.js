@@ -30,11 +30,11 @@ const obj       = {}
 let   xlsxData  = []
 start()
 
+
 bot.on("message", async msg=>{  //c(obj) 
     reg(msg)
     search(msg)
     my(msg)
-    calcSmens(msg)
 })
 bot.on("callback_query", query=>{
     //c(query)
@@ -71,7 +71,6 @@ function start(){
             e.data.forEach(el=>{
                 if(+el[0]){
                     obj[el[0]] = {
-                        id:         el[0],
                         command:    "",
                         secure:     true,                        
                         jobTitle:   el[6],
@@ -80,8 +79,123 @@ function start(){
             })
         }
     })
-}
 
+    function calcSmens(){
+        now = new Date()
+        now.setUTCHours(now.getHours())
+        if(now.getDate() < 29){n = 1}else{n = 0}
+        now.setMonth(now.getMonth() - n) // установка месяца
+        const holiday = [
+            new Date(now.getFullYear(), 2 -1, 23, 0 +3),        // 23 Февраля
+            new Date(now.getFullYear(), 3 -1, 8,  0 +3),        // 8 Марта
+            new Date(now.getFullYear(), 5 -1, 1,  0 +3),        // 1 мая
+            new Date(now.getFullYear(), 5 -1, 9,  0 +3),        // 9 мая
+        ]
+        const start_date = [
+            new Date("2024-01-02T08:00:00.000Z"),   // смена 1 день
+            new Date("2024-01-03T20:00:00.000Z"),   // смена 1 ночь
+            new Date("2024-01-03T08:00:00.000Z"),   // смена 2 день
+            new Date("2024-01-04T20:00:00.000Z"),   // смена 2 ночь
+            new Date("2024-01-04T08:00:00.000Z"),   // смена 3 день
+            new Date("2024-01-05T20:00:00.000Z"),   // смена 3 ночь
+            new Date("2024-01-05T08:00:00.000Z"),   // смена 4 день
+            new Date("2024-01-06T20:00:00.000Z")    // смена 4 ночь
+        ]
+    
+        const mass = []
+        for(i in start_date){
+            while (now.getMonth() != start_date[i].getMonth()) {
+                start_date[i].setDate(start_date[i].getDate() + 4)
+            }
+    
+            arr = []
+            while (now.getMonth() == start_date[i].getMonth()) {
+                arr.push(new Date(start_date[i]))
+                start_date[i].setDate(start_date[i].getDate() + 4)
+            }
+            mass.push(arr)
+        }
+    
+        const obj_smens = {
+            smena_1:{day:mass[0], night:mass[1], holiday:[]},
+            smena_2:{day:mass[2], night:mass[3], holiday:[]},
+            smena_3:{day:mass[4], night:mass[5], holiday:[]},
+            smena_4:{day:mass[6], night:mass[7], holiday:[]},
+        }
+    
+        // добавление праздничных
+        for(i in obj_smens){ 
+            for(j in obj_smens[i]){
+                obj_smens[i][j].forEach(elem=>{
+                    if(j !== "holiday"){
+                        holiday.forEach(el => {
+                            if(elem.getMonth() === el.getMonth() && elem.getDate() === el.getDate()){
+                                obj_smens[i].holiday.push(elem)
+                            }
+                        })
+                    }
+                })
+            }
+        }
+    
+        // c(obj_smens)
+    
+        let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
+        
+        // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
+        // ночные 7 часов  23:00 - 06:00         20%
+        // праздничные     00:00 - 23:59         *2
+        // 54000       за 16 смен
+        // 45000       за 16 смен
+        // питание 32.5 за час
+        
+        obj_jobTitle = {}
+        Object.keys(obj).forEach(el=>{
+            if(obj[el].jobTitle && obj[el].jobTitle.match(/\d/)){
+                obj[el].jobTitle.split(", ").forEach(ell=>{
+                    
+                    jobtitle = ell.split("").splice(0, ell.length-2).join("")
+                    smenaNumber = ell.match(/\d/).join()
+                    mounth = now.getMonth() + 1
+                    day = obj_smens[`smena_${ell.match(/\d/).join()}`].day.length
+                    night = obj_smens[`smena_${ell.match(/\d/).join()}`].night.length
+                    holidaySmen = obj_smens[`smena_${ell.match(/\d/).join()}`].holiday
+                    if(ell.split("").splice(0, ell.length-2).join("") == "stsmena"){    oklad = 54000}
+                    if(ell.split("").splice(0, ell.length-2).join("") == "inspektor"){  oklad = 45000}
+
+                    h_all_fact = (day + night) * 11
+                    h_night = night * 7
+                    h_holiday = holidaySmen.length * 11
+
+                    rub_h =         oklad / 176
+                    rub_night =     rub_h * h_night * .2
+                    rub_holiday =   h_holiday * rub_h
+                    summ =          oklad + rub_night + rub_holiday
+
+                    obj_jobTitle[jobtitle] = {
+                        jobtitle,
+                        smenaNumber,
+                        mounth,
+                        // oklad,
+                        zp:{
+                            // h_all_fact, 
+                            h_night,
+                            h_holiday,
+                            // rub_h:          Math.round(rub_h*100)/100,
+                            rub_night:      Math.round(rub_night*100)/100,
+                            rub_holiday:    Math.round(rub_holiday*100)/100,
+                            summ:           Math.round(summ*100)/100,
+                        }
+                    }
+                })
+                obj[el].jobTitle = obj_jobTitle
+                obj_jobTitle = {}
+            }
+        })
+
+    }
+    calcSmens()
+}
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------
@@ -153,81 +267,7 @@ function my(msg){
             }
         })
     }
+    if(msg.text === "/" && obj[msg.chat.id].jobTitle){
+        bot.sendMessage(msg.chat.id, JSON.stringify(obj[msg.chat.id].jobTitle, null, 4))
+    }
 }
-
-
-// -------------------------------------------------------------------------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------------------------------------------------
-function calcSmens(){
-    now = new Date()
-    now.setUTCHours(now.getHours())
-    if(now.getDate() < 29){n = 1}else{n = 0}
-    now.setMonth(now.getMonth() - n) // установка месяца
-    const holiday = [
-        new Date(now.getFullYear(), 2 -1, 23, 0 +3),        // 23 Февраля
-        new Date(now.getFullYear(), 3 -1, 8,  0 +3),        // 8 Марта
-        new Date(now.getFullYear(), 5 -1, 1,  0 +3),        // 1 мая
-        new Date(now.getFullYear(), 5 -1, 9,  0 +3),        // 9 мая
-    ]
-    const start_date = [
-        new Date("2024-01-02T08:00:00.000Z"),   // смена 1 день
-        new Date("2024-01-03T20:00:00.000Z"),   // смена 1 ночь
-        new Date("2024-01-03T08:00:00.000Z"),   // смена 2 день
-        new Date("2024-01-04T20:00:00.000Z"),   // смена 2 ночь
-        new Date("2024-01-04T08:00:00.000Z"),   // смена 3 день
-        new Date("2024-01-05T20:00:00.000Z"),   // смена 3 ночь
-        new Date("2024-01-05T08:00:00.000Z"),   // смена 4 день
-        new Date("2024-01-06T20:00:00.000Z")    // смена 4 ночь
-    ]
-
-    const mass = []
-    for(i in start_date){
-        while (now.getMonth() != start_date[i].getMonth()) {
-            start_date[i].setDate(start_date[i].getDate() + 4)
-        }
-
-        arr = []
-        while (now.getMonth() == start_date[i].getMonth()) {
-            arr.push(new Date(start_date[i]))
-            start_date[i].setDate(start_date[i].getDate() + 4)
-        }
-        mass.push(arr)
-    }
-
-    const obj_smens = {
-        smena_1:{day:mass[0], night:mass[1], holiday:[]},
-        smena_2:{day:mass[2], night:mass[3], holiday:[]},
-        smena_3:{day:mass[4], night:mass[5], holiday:[]},
-        smena_4:{day:mass[6], night:mass[7], holiday:[]},
-    }
-
-    // добавление праздничных
-    for(i in obj_smens){ 
-        for(j in obj_smens[i]){
-            obj_smens[i][j].forEach(elem=>{
-                if(j !== "holiday"){
-                    holiday.forEach(el => {
-                        if(elem.getMonth() === el.getMonth() && elem.getDate() === el.getDate()){
-                            obj_smens[i].holiday.push(elem)
-                        }
-                    })
-                }
-            })
-        }
-    }
-
-    // c(obj_smens)
-
-    let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
-    
-    // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
-    // ночные 7 часов  23:00 - 06:00         20%
-    // праздничные     00:00 - 23:59         *2
-    // 54000       за 16 смен
-    // 45000       за 16 смен
-    // питание 32.5 за час
-}calcSmens()
-
-
-// -------------------------------------------------------------------------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------------------------------------------------
