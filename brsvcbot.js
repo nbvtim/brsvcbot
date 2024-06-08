@@ -203,7 +203,6 @@ function reg(msg){
     
     if(!obj[msg.chat.id]){
         obj[msg.chat.id] = {
-            id:         msg.chat.id,
             secure:     false,
             command:    "",
         }
