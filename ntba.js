@@ -10,3 +10,4 @@ bot.on("message", async msg=>{ c(msg)
     await bot.sendMessage(msg.chat.id, `first_name: ${msg.from.first_name}\nusername: ${msg.from.username}`, {parse_mode:"HTML"})
 
 })
+
