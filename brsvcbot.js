@@ -7,7 +7,6 @@ const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
-const ntba          = require("./ntba")
 
 
 
@@ -49,6 +48,11 @@ bot.on("callback_query", query=>{
     if(query.data === "getData"){
         start()
         bot.sendMessage(query.from.id, "Данные обновлены")
+    }
+    
+    if(query.data === "ntbaStart"){
+        require("./ntba")
+        bot.sendMessage(query.from.id, "ntba в работе")
     }
 }) 
 
@@ -261,7 +265,7 @@ function my(msg){
                 inline_keyboard:[
                     [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
                     [{text: "Обновить данные",      callback_data:   "getData"}],
-                    [{text: "ntba старт",           callback_data:   "??????"},       {text: "ntba стоп", callback_data: "???????"}],
+                    [{text: "ntba старт",           callback_data:   "ntbaStart"}]
                 ]
             }
         })

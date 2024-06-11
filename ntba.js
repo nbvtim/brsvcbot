@@ -4,10 +4,9 @@ const bot           = new TelegramApi ("6997016766:AAGEyqHbedZPqMT060glZYweCgKDk
 const xlsx          = require('node-xlsx').default.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
 
 bot.setMyCommands([{command:"test",       description:"Тест"}])
-bot.on("message", async msg=>{ c(msg)
+bot.on("message", async msg=>{
 
     await bot.sendMessage(msg.chat.id, `random : ${Math.round(Math.random()*10000000000000)}\ndatenow: ${Date.now()}`, {parse_mode:"HTML"})
-    await bot.sendMessage(msg.chat.id, `first_name: ${msg.from.first_name}\nusername: ${msg.from.username}`, {parse_mode:"HTML"})
 
 })
 
