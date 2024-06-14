@@ -9,4 +9,3 @@ bot.on("message", async msg=>{
     await bot.sendMessage(msg.chat.id, `random : ${Math.round(Math.random()*10000000000000)}\ndatenow: ${Date.now()}`, {parse_mode:"HTML"})
 
 })
-

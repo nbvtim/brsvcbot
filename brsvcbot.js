@@ -9,15 +9,14 @@ const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
 
-
 // bot.deleteMyCommands()
-// bot.setMyCommands([
+bot.setMyCommands([
 //     {command:"start",       description:"Старт"},
 //     {command:"auto",        description:"Автотранспорнт"},
 //     {command:"key",         description:"Ключи"},
-//     {command:"settings",    description:"Настройки"},
+    {command:"settings",    description:"Настройки"},
 //     {command:"help",        description:"Помощь"}
-// ])
+])
 // bot.getMyCommands().then(   (t) =>  {       })
 // bot.getMe().then(           (t) =>  {   c(t)    })
 // bot.on("polling_error", err=>c("err"))
@@ -31,9 +30,12 @@ start()
 
 
 bot.on("message", async msg=>{  //c(obj) 
+    fs.appendFileSync(`${__dirname}/SOURSE/log`, `\n${obj[msg.chat.id].secure} ${msg.chat.id} ${msg.from.first_name}: ${msg.text}`)
+    if(msg.entities){obj[msg.chat.id].command = msg.text}
     reg(msg)
     search(msg)
     my(msg)
+    zp(msg)
 })
 bot.on("callback_query", query=>{
     //c(query)
@@ -51,15 +53,13 @@ bot.on("callback_query", query=>{
     }
     
     if(query.data === "ntbaStart"){
-        require("./ntba")
+        // require("./ntba")
         bot.sendMessage(query.from.id, "ntba в работе")
     }
 }) 
 
 
 
-// -------------------------------------------------------------------------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------------------------------------------------
 function start(){
 
     path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"
@@ -83,126 +83,8 @@ function start(){
             })
         }
     })
-
-    function calcSmens(){
-        now = new Date()
-        now.setUTCHours(now.getHours())
-        if(now.getDate() < 29){n = 1}else{n = 0}
-        now.setMonth(now.getMonth() - n) // установка месяца
-        const holiday = [
-            new Date(now.getFullYear(), 2 -1, 23, 0 +3),        // 23 Февраля
-            new Date(now.getFullYear(), 3 -1, 8,  0 +3),        // 8 Марта
-            new Date(now.getFullYear(), 5 -1, 1,  0 +3),        // 1 мая
-            new Date(now.getFullYear(), 5 -1, 9,  0 +3),        // 9 мая
-        ]
-        const start_date = [
-            new Date("2024-01-02T08:00:00.000Z"),   // смена 1 день
-            new Date("2024-01-03T20:00:00.000Z"),   // смена 1 ночь
-            new Date("2024-01-03T08:00:00.000Z"),   // смена 2 день
-            new Date("2024-01-04T20:00:00.000Z"),   // смена 2 ночь
-            new Date("2024-01-04T08:00:00.000Z"),   // смена 3 день
-            new Date("2024-01-05T20:00:00.000Z"),   // смена 3 ночь
-            new Date("2024-01-05T08:00:00.000Z"),   // смена 4 день
-            new Date("2024-01-06T20:00:00.000Z")    // смена 4 ночь
-        ]
-    
-        const mass = []
-        for(i in start_date){
-            while (now.getMonth() != start_date[i].getMonth()) {
-                start_date[i].setDate(start_date[i].getDate() + 4)
-            }
-    
-            arr = []
-            while (now.getMonth() == start_date[i].getMonth()) {
-                arr.push(new Date(start_date[i]))
-                start_date[i].setDate(start_date[i].getDate() + 4)
-            }
-            mass.push(arr)
-        }
-    
-        const obj_smens = {
-            smena_1:{day:mass[0], night:mass[1], holiday:[]},
-            smena_2:{day:mass[2], night:mass[3], holiday:[]},
-            smena_3:{day:mass[4], night:mass[5], holiday:[]},
-            smena_4:{day:mass[6], night:mass[7], holiday:[]},
-        }
-    
-        // добавление праздничных
-        for(i in obj_smens){ 
-            for(j in obj_smens[i]){
-                obj_smens[i][j].forEach(elem=>{
-                    if(j !== "holiday"){
-                        holiday.forEach(el => {
-                            if(elem.getMonth() === el.getMonth() && elem.getDate() === el.getDate()){
-                                obj_smens[i].holiday.push(elem)
-                            }
-                        })
-                    }
-                })
-            }
-        }
-    
-        // c(obj_smens)
-    
-        let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
-        
-        // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
-        // ночные 7 часов  23:00 - 06:00         20%
-        // праздничные     00:00 - 23:59         *2
-        // 54000       за 16 смен
-        // 45000       за 16 смен
-        // питание 32.5 за час
-        
-        obj_jobTitle = {}
-        Object.keys(obj).forEach(el=>{
-            if(obj[el].jobTitle && obj[el].jobTitle.match(/\d/)){
-                obj[el].jobTitle.split(", ").forEach(ell=>{
-                    
-                    jobtitle = ell.split("").splice(0, ell.length-2).join("")
-                    smenaNumber = ell.match(/\d/).join()
-                    mounth = now.getMonth() + 1
-                    day = obj_smens[`smena_${ell.match(/\d/).join()}`].day.length
-                    night = obj_smens[`smena_${ell.match(/\d/).join()}`].night.length
-                    holidaySmen = obj_smens[`smena_${ell.match(/\d/).join()}`].holiday
-                    if(ell.split("").splice(0, ell.length-2).join("") == "stsmena"){    oklad = 54000}
-                    if(ell.split("").splice(0, ell.length-2).join("") == "inspektor"){  oklad = 45000}
-
-                    h_all_fact = (day + night) * 11
-                    h_night = night * 7
-                    h_holiday = holidaySmen.length * 11
-
-                    rub_h =         oklad / 176
-                    rub_night =     rub_h * h_night * .2
-                    rub_holiday =   h_holiday * rub_h
-                    summ =          oklad + rub_night + rub_holiday
-
-                    obj_jobTitle[jobtitle] = {
-                        jobtitle,
-                        smenaNumber,
-                        mounth,
-                        // oklad,
-                        zp:{
-                            // h_all_fact, 
-                            h_night,
-                            h_holiday,
-                            // rub_h:          Math.round(rub_h*100)/100,
-                            rub_night:      Math.round(rub_night*100)/100,
-                            rub_holiday:    Math.round(rub_holiday*100)/100,
-                            summ:           Math.round(summ*100)/100,
-                        }
-                    }
-                })
-                obj[el].jobTitle = obj_jobTitle
-                obj_jobTitle = {}
-            }
-        })
-
-    }
-    calcSmens()
 }
 
-// -------------------------------------------------------------------------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------------------------------------------------
 function reg(msg){
     
     if(!obj[msg.chat.id]){
@@ -211,18 +93,9 @@ function reg(msg){
             command:    "",
         }
         bot.sendMessage(msg.chat.id, "Нет доступа\n\nВведите ФИО, дату рождения и номер телефона\n\nОжидайте обновления !!!")
-        
     }
-    if(obj[msg.chat.id].secure){
-        obj[msg.chat.id].first_name  = msg.from.first_name
-        obj[msg.chat.id].username    = msg.from.username
-    }
-    fs.appendFileSync(`${__dirname}/SOURSE/log`, `\n${obj[msg.chat.id].secure} ${msg.chat.id} ${msg.from.first_name}: ${msg.text}`)
 }
 
-
-// -------------------------------------------------------------------------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------------------------------------------------
 function search(msg){ 
 try {
     if(obj[msg.chat.id].secure && msg.text !== "/"){
@@ -254,11 +127,8 @@ try {
 }
 }
 
-
-// -------------------------------------------------------------------------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------------------------------------------------
 function my(msg){    
-    if(msg.text === "/" && msg.chat.id === 5131265599){
+    if(msg.text === "/settings" && msg.chat.id === 5131265599){
         bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
             parse_mode: "HTML",
             reply_markup:{
@@ -270,7 +140,120 @@ function my(msg){
             }
         })
     }
-    if(msg.text === "/" && obj[msg.chat.id].jobTitle){
-        bot.sendMessage(msg.chat.id, JSON.stringify(obj[msg.chat.id].jobTitle, null, 4))
+}
+
+function zp(msg){
+
+    // let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
+    now = new Date()
+    now.setUTCHours(now.getHours())
+    if(now.getDate() < 29){n = 1}else{n = 0}
+    now.setMonth(now.getMonth() - n) // установка месяца
+    const holiday = [
+        new Date(now.getFullYear(), 2 -1, 23, 0 +3),        // 23 Февраля
+        new Date(now.getFullYear(), 3 -1, 8,  0 +3),        // 8 Марта
+        new Date(now.getFullYear(), 5 -1, 1,  0 +3),        // 1 мая
+        new Date(now.getFullYear(), 5 -1, 9,  0 +3),        // 9 мая
+        new Date(now.getFullYear(), 6 -1, 12, 0 +3),        // День России
+    ]
+    const start_date = [
+        new Date("2024-01-02T08:00:00.000Z"),   // смена 1 день
+        new Date("2024-01-03T20:00:00.000Z"),   // смена 1 ночь
+        new Date("2024-01-03T08:00:00.000Z"),   // смена 2 день
+        new Date("2024-01-04T20:00:00.000Z"),   // смена 2 ночь
+        new Date("2024-01-04T08:00:00.000Z"),   // смена 3 день
+        new Date("2024-01-05T20:00:00.000Z"),   // смена 3 ночь
+        new Date("2024-01-05T08:00:00.000Z"),   // смена 4 день
+        new Date("2024-01-06T20:00:00.000Z")    // смена 4 ночь
+    ]
+
+    const mass = []
+    for(i in start_date){
+        while (now.getMonth() != start_date[i].getMonth()) {
+            start_date[i].setDate(start_date[i].getDate() + 4)
+        }
+
+        arr = []
+        while (now.getMonth() == start_date[i].getMonth()) {
+            arr.push(new Date(start_date[i]))
+            start_date[i].setDate(start_date[i].getDate() + 4)
+        }
+        mass.push(arr)
     }
+
+    const obj_smens = {
+        smena_1:{day:mass[0], night:mass[1], holiday:[]},
+        smena_2:{day:mass[2], night:mass[3], holiday:[]},
+        smena_3:{day:mass[4], night:mass[5], holiday:[]},
+        smena_4:{day:mass[6], night:mass[7], holiday:[]},
+    }
+
+    // добавление праздничных
+    for(i in obj_smens){ 
+        for(j in obj_smens[i]){
+            obj_smens[i][j].forEach(elem=>{
+                if(j !== "holiday"){
+                    holiday.forEach(el => {
+                        if(elem.getMonth() === el.getMonth() && elem.getDate() === el.getDate()){
+                            obj_smens[i].holiday.push(elem)
+                        }
+                    })
+                }
+            })
+        }
+    }
+
+    // добавление количества отработанных часов
+    Object.keys(obj_smens).forEach(el=>{
+        obj_smens[el].hours             =   obj_smens[el].day.length * 11 + obj_smens[el].night.length * 11
+        obj_smens[el].hoursDay          =   obj_smens[el].day.length * 11
+        obj_smens[el].hoursNight        =   obj_smens[el].night.length * 11
+        obj_smens[el].hoursHoliday      =   0
+        obj_smens[el].holiday.forEach(ell=>{
+            if(ell.getUTCHours() == 8){   obj_smens[el].hoursHoliday += 11 }
+            if(ell.getUTCHours() == 20){  obj_smens[el].hoursHoliday += 4}
+        })
+
+
+        
+    })
+    
+    // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
+    // ночные 7 часов  23:00 - 06:00         20%
+    // праздничные     00:00 - 23:59         *2
+    // 54000       за 16 смен
+    // 45000       за 16 смен
+    // питание 32.5 за час
+    
+    if(obj[msg.chat.id].jobTitle && obj[msg.chat.id].jobTitle.match(/\d/)){
+        arrZp = []
+        obj[msg.chat.id].jobTitle.split(", ").forEach(el=>{
+            smenaObj = obj_smens["smena_" + el.split("_")[1]]
+            all =       smenaObj.hours
+            day =       smenaObj.hoursDay
+            night =     smenaObj.hoursNight
+            holi =   smenaObj.hoursHoliday
+            
+            if(el.split("_")[0] === "stsmena")   {   oklad = 54000}
+            if(el.split("_")[0] === "inspektor") {   oklad = 45000}
+            rubHours = oklad / 176
+
+            summ = oklad // ????
+            summNight = night * rubHours * .2
+            summHoliday = holi * rubHours
+            result = summ + summNight + summHoliday
+
+            obj_calc = {
+                jobTitle: el.split("_")[0],
+                hours: `all: ${all}, night: ${night}, holiday: ${holi}`,
+                result: `${Math.round(result*100)/100} (${Math.round(summ*100)/100} ${Math.round(summNight*100)/100} ${Math.round(summHoliday*100)/100})`
+            }
+            arrZp.push(obj_calc)
+        })
+        obj[msg.chat.id].jobTitleArr = arrZp
+    }
+    if(obj[msg.chat.id].command === "/settings"){
+        bot.sendMessage(msg.chat.id, JSON.stringify(obj[msg.chat.id].jobTitleArr, null, 4))
+    }
+    
 }
