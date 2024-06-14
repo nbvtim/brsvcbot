@@ -207,7 +207,7 @@ function zp(msg){
     Object.keys(obj_smens).forEach(el=>{
         obj_smens[el].hours             =   obj_smens[el].day.length * 11 + obj_smens[el].night.length * 11
         obj_smens[el].hoursDay          =   obj_smens[el].day.length * 11
-        obj_smens[el].hoursNight        =   obj_smens[el].night.length * 11
+        obj_smens[el].hoursNight        =   obj_smens[el].night.length * 7
         obj_smens[el].hoursHoliday      =   0
         obj_smens[el].holiday.forEach(ell=>{
             if(ell.getUTCHours() == 8){   obj_smens[el].hoursHoliday += 11 }
@@ -217,6 +217,8 @@ function zp(msg){
 
         
     })
+
+    c(obj_smens)
     
     // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
     // ночные 7 часов  23:00 - 06:00         20%
@@ -252,6 +254,7 @@ function zp(msg){
         })
         obj[msg.chat.id].jobTitleArr = arrZp
     }
+
     if(obj[msg.chat.id].command === "/settings"){
         bot.sendMessage(msg.chat.id, JSON.stringify(obj[msg.chat.id].jobTitleArr, null, 4))
     }
