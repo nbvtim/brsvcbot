@@ -1,3 +1,6 @@
+const c = console.log
+
+
 oklad = 54000
 kviplate = oklad
 night = oklad/176*56*.2
