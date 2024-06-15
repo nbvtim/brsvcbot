@@ -51,11 +51,12 @@ bot.on("callback_query", query=>{
         start()
         bot.sendMessage(query.from.id, "Данные обновлены")
     }
-    
+
     if(query.data === "ntbaStart"){
-        // require("./ntba")
+        ntba = require("./ntba")
         bot.sendMessage(query.from.id, "ntba в работе")
     }
+
 }) 
 
 
