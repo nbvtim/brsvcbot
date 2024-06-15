@@ -2,6 +2,7 @@
 // "6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w"
 // "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const c             = console.log
+const ntba          = require("./ntba")
 const xlsx          = require('node-xlsx').default
 const fs            = require('fs')
 const cp            = require('child_process')
@@ -136,7 +137,7 @@ function my(msg){
                 inline_keyboard:[
                     [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
                     [{text: "Обновить данные",      callback_data:   "getData"}],
-                    [{text: "ntba старт",           callback_data:   "ntbaStart"}]
+                    // [{text: "ntba старт",           callback_data:   "ntbaStart"}]
                 ]
             }
         })
