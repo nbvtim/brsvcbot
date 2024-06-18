@@ -36,8 +36,10 @@ bot.on("message", async msg=>{  //c(obj)
     reg(msg)
     search(msg)
     my(msg)
-    // zp(msg)
+    zp(msg)
 })
+
+
 bot.on("callback_query", query=>{
     //c(query)
     if(query.data === "t"){ 
@@ -86,7 +88,6 @@ function start(){
         }
     })
 }
-
 
 function reg(msg){
     
@@ -144,7 +145,7 @@ function my(msg){
         })
     }
 }
-/*
+
 function zp(msg){
 
     // let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
@@ -218,7 +219,7 @@ function zp(msg){
         })        
     })
 
-    c(obj_smens)
+    // c(obj_smens)
     
     // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
     // ночные 7 часов  23:00 - 06:00         20%
@@ -261,5 +262,3 @@ function zp(msg){
 
     
 }
-
-*/
