@@ -31,8 +31,10 @@ start()
 
 
 bot.on("message", async msg=>{  //c(obj) 
-    fs.appendFileSync(`${__dirname}/SOURSE/log`, `\n${obj[msg.chat.id].secure} ${msg.chat.id} ${msg.from.first_name}: ${msg.text}`)
+    if(!obj[msg.chat.id]){obj[msg.chat.id] = {}}
     if(msg.entities){obj[msg.chat.id].command = msg.text}
+    fs.appendFileSync(`${__dirname}/SOURSE/log`, `\n${obj[msg.chat.id].secure} ${msg.chat.id} ${msg.from.first_name}: ${msg.text}`)
+    
     reg(msg)
     search(msg)
     my(msg)
@@ -54,7 +56,6 @@ bot.on("callback_query", query=>{
         start()
         bot.sendMessage(query.from.id, "Данные обновлены")
     }
-
     if(query.data === "ntbaStart"){
         ntba = require("./ntba")
         bot.sendMessage(query.from.id, "ntba в работе")
