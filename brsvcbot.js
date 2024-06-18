@@ -3,7 +3,7 @@
 // "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const c             = console.log
 const ntba          = require("./ntba")
-const xlsx          = require('node-xlsx').default
+const xlsx          = require('node-xlsx').default //.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
@@ -13,7 +13,7 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 // bot.deleteMyCommands()
 bot.setMyCommands([
 //     {command:"start",       description:"Старт"},
-//     {command:"auto",        description:"Автотранспорнт"},
+    {command:"auto",        description:"Автотранспорнт"},
 //     {command:"key",         description:"Ключи"},
     {command:"settings",    description:"Настройки"},
 //     {command:"help",        description:"Помощь"}
@@ -36,7 +36,7 @@ bot.on("message", async msg=>{  //c(obj)
     reg(msg)
     search(msg)
     my(msg)
-    zp(msg)
+    // zp(msg)
 })
 bot.on("callback_query", query=>{
     //c(query)
@@ -61,7 +61,7 @@ bot.on("callback_query", query=>{
 }) 
 
 
-
+/*
 function start(){
 
     path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"
@@ -86,6 +86,7 @@ function start(){
         }
     })
 }
+*/
 
 function reg(msg){
     
@@ -143,7 +144,7 @@ function my(msg){
         })
     }
 }
-
+/*
 function zp(msg){
 
     // let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
@@ -214,10 +215,7 @@ function zp(msg){
         obj_smens[el].holiday.forEach(ell=>{
             if(ell.getUTCHours() == 8){   obj_smens[el].hoursHoliday += 11 }
             if(ell.getUTCHours() == 20){  obj_smens[el].hoursHoliday += 4}
-        })
-
-
-        
+        })        
     })
 
     c(obj_smens)
@@ -260,5 +258,8 @@ function zp(msg){
     if(obj[msg.chat.id].command === "/settings"){
         bot.sendMessage(msg.chat.id, JSON.stringify(obj[msg.chat.id].jobTitleArr, null, 4))
     }
+
     
 }
+
+*/
