@@ -61,7 +61,7 @@ bot.on("callback_query", query=>{
 }) 
 
 
-/*
+
 function start(){
 
     path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"
@@ -86,7 +86,7 @@ function start(){
         }
     })
 }
-*/
+
 
 function reg(msg){
     
