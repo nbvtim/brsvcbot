@@ -228,19 +228,19 @@ function zp(id = 5131265599){
                         if(obj_smena.jobTitle == "inspektor")   { oklad = 45000 }
                         if(obj_smena.jobTitle == "stsmena")     { oklad = 54000 }
                         
-                        oneHours    = oklad / 176
+                        oneHours    = oklad    / 176
                         viplata     = oneHours * 176
                         night       = oneHours * obj_smena.hoursNight * 0.2
                         holi        = oneHours * obj_smena.hoursHoliday
-                        doplata     = viplata * 0.07
-                        itogo       = viplata + night + holi + doplata
+                        doplata     = viplata  * 0.07
+                        itogo       = viplata  + night  + holi  + doplata
 
                         obj_smena.zp = {
-                            viplata:    Math.round(viplata  *100)/100,
-                            night:      Math.round(night    *100)/100,
-                            holi:       Math.round(holi     *100)/100,
-                            doplata:    Math.round(doplata  *100)/100,
-                            itogo:      Math.round(itogo    *100)/100,
+                            viplata     :    Math.round(    viplata     *100)/100,
+                            night       :    Math.round(    night       *100)/100,
+                            holi        :    Math.round(    holi        *100)/100,
+                            doplata     :    Math.round(    doplata     *100)/100,
+                            itogo       :    Math.round(    itogo       *100)/100,
                         }
                     })
                 }
