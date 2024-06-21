@@ -3,11 +3,15 @@
 // "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const c             = console.log
 const ntba          = require("./ntba")
-const xlsx          = require('node-xlsx').default //.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
+const xlsx          = require('node-xlsx').default.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
+
+
+
+
 
 
 // bot.deleteMyCommands()
@@ -25,20 +29,23 @@ bot.setMyCommands([
 
 // -------------------------------------------------------------------------------------------------------------------------------------------
 
-const obj       = {}
-let   xlsxData  = []
-start()
-
-
-bot.on("message", async msg=>{  //c(obj) 
-    if(!obj[msg.chat.id]){obj[msg.chat.id] = {}}
+const obj = {}
+bot.on("message", async msg=>{
+    secure(msg)
     if(msg.entities){obj[msg.chat.id].command = msg.text}
     fs.appendFileSync(`${__dirname}/SOURSE/log`, `\n${obj[msg.chat.id].secure} ${msg.chat.id} ${msg.from.first_name}: ${msg.text}`)
+
+    if(obj[msg.chat.id].command === "/settings" && msg.chat.id === 5131265599){ my(msg) }
+
+    if(obj[msg.chat.id].secure){
+        search(msg.text).forEach(el=>{
+            bot.sendMessage(msg.chat.id, JSON.stringify(el, null, 3))
+        })
+        
+    }
     
-    reg(msg)
-    search(msg)
-    my(msg)
-    zp(msg)
+
+c(obj)
 })
 
 
@@ -63,88 +70,56 @@ bot.on("callback_query", query=>{
 
 }) 
 
-
-
-function start(){
-
-    path = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"
-    if(fs.existsSync(path)){
-        xlsxData = xlsx.parse(path)
-        fs.writeFileSync(`${__dirname}/SOURSE/all`, JSON.stringify(xlsxData, null, 5))
-    }else{
-        xlsxData = JSON.parse(fs.readFileSync(`${__dirname}/SOURSE/all`, "utf8")) 
-    }
-
-    xlsxData.forEach(e=>{
-        if(e.name == "users"){
-            e.data.forEach(el=>{
-                if(+el[0]){
-                    obj[el[0]] = {
-                        command:    "",
-                        secure:     true,                        
-                        jobTitle:   el[6],
-                    }
+function secure(msg){
+    if(!obj[msg.chat.id]){obj[msg.chat.id] = {secure: false}}
+    xlsx.forEach(el=>{
+        if(el.name == "users"){
+            el.data.forEach(ell=>{
+                if(+ell[0]){
+                    obj[msg.chat.id] = {secure: true}
                 }
             })
         }
     })
 }
 
-function reg(msg){
-    
-    if(!obj[msg.chat.id]){
-        obj[msg.chat.id] = {
-            secure:     false,
-            command:    "",
-        }
-        bot.sendMessage(msg.chat.id, "Нет доступа\n\nВведите ФИО, дату рождения и номер телефона\n\nОжидайте обновления !!!")
-    }
-}
-
-function search(msg){ 
-try {
-    if(obj[msg.chat.id].secure && msg.text !== "/"){
+function search(txt){
+    try {
         arr = []
         counter = 0
-        
-            xlsxData.forEach(el=>{
-                if(el.name == "АТ"){
-                    el.data.forEach(ell=>{
-                        if(ell.join(" ").match(RegExp(msg.text, "i")) && counter<5){
-                            counter++
-                            arr.push(ell)
-                        }
-                    })
-                }
-            })
+        xlsx.forEach(el=>{
+            if(el.name == "АТ"){
+                el.data.forEach(ell=>{
+                    if(ell.join(" ").match(RegExp(txt, "i")) && counter < 5){
+                        counter++
+                        arr.push(ell)
+                    }
+                })
+            }
+        })
         if(arr.length == 0){
-            bot.sendMessage(msg.chat.id, `По запросу ничего не найдено`)
+            return ["По запросу ничего не найдено"]
         }else{
-            arr.forEach(el=>{
-                bot.sendMessage(msg.chat.id, JSON.stringify(el, null, 4))
-            })
+            return arr
         }
+        
+    } catch (err) {
+        // c(`TRY ERR > RegExp("${msg.text}", "i") > не допустимый ввод "${msg.text}"`)
+        return [`Неверный ввод ${txt}`]
     }
-    
-} catch (err) {
-    // c(`TRY ERR > RegExp("${msg.text}", "i") > не допустимый ввод "${msg.text}"`)
-    bot.sendMessage(msg.chat.id, `Неверный ввод "${msg.text}"`)
-}
 }
 
 function my(msg){    
-    if(msg.text === "/settings" && msg.chat.id === 5131265599){
-        bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
-            parse_mode: "HTML",
-            reply_markup:{
-                inline_keyboard:[
-                    [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
-                    [{text: "Обновить данные",      callback_data:   "getData"}],
-                    // [{text: "ntba старт",           callback_data:   "ntbaStart"}]
-                ]
-            }
-        })
-    }
+    bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
+        parse_mode: "HTML",
+        reply_markup:{
+            inline_keyboard:[
+                [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
+                [{text: "Обновить данные",      callback_data:   "getData"}],
+                // [{text: "ntba старт",           callback_data:   "ntbaStart"}]
+            ]
+        }
+    })
 }
 
 function zp(msg){
@@ -152,7 +127,7 @@ function zp(msg){
     // let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
     now = new Date()
     now.setUTCHours(now.getHours())
-    if(now.getDate() < 29){n = 1}else{n = 0}
+    if(now.getDate() < 14){n = 1}else{n = 0}
     now.setMonth(now.getMonth() - n) // установка месяца
     const holiday = [
         new Date(now.getFullYear(), 2 -1, 23, 0 +3),        // 23 Февраля
@@ -217,49 +192,16 @@ function zp(msg){
         obj_smens[el].holiday.forEach(ell=>{
             if(ell.getUTCHours() == 8){   obj_smens[el].hoursHoliday += 11 }
             if(ell.getUTCHours() == 20){  obj_smens[el].hoursHoliday += 4}
-        })        
+        })
+        obj_smens[el].zp ={}
     })
-
-    // c(obj_smens)
     
     // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
     // ночные 7 часов  23:00 - 06:00         20%
-    // праздничные     00:00 - 23:59         *2
+    // праздничные     00:00 - 23:59         
+    // летние = 7% от 
     // 54000       за 16 смен
     // 45000       за 16 смен
     // питание 32.5 за час
-    
-    if(obj[msg.chat.id].jobTitle && obj[msg.chat.id].jobTitle.match(/\d/)){
-        arrZp = []
-        obj[msg.chat.id].jobTitle.split(", ").forEach(el=>{
-            smenaObj = obj_smens["smena_" + el.split("_")[1]]
-            all =       smenaObj.hours
-            day =       smenaObj.hoursDay
-            night =     smenaObj.hoursNight
-            holi =   smenaObj.hoursHoliday
-            
-            if(el.split("_")[0] === "stsmena")   {   oklad = 54000}
-            if(el.split("_")[0] === "inspektor") {   oklad = 45000}
-            rubHours = oklad / 176
-
-            summ = oklad // ????
-            summNight = night * rubHours * .2
-            summHoliday = holi * rubHours
-            result = summ + summNight + summHoliday
-
-            obj_calc = {
-                jobTitle: el.split("_")[0],
-                hours: `all: ${all}, night: ${night}, holiday: ${holi}`,
-                result: `${Math.round(result*100)/100} (${Math.round(summ*100)/100} ${Math.round(summNight*100)/100} ${Math.round(summHoliday*100)/100})`
-            }
-            arrZp.push(obj_calc)
-        })
-        obj[msg.chat.id].jobTitleArr = arrZp
-    }
-
-    if(obj[msg.chat.id].command === "/settings"){
-        bot.sendMessage(msg.chat.id, JSON.stringify(obj[msg.chat.id].jobTitleArr, null, 4))
-    }
-
     
 }
