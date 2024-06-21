@@ -31,21 +31,41 @@ bot.setMyCommands([
 
 const obj = {}
 bot.on("message", async msg=>{
+    if(!obj[msg.chat.id]){obj[msg.chat.id] = {secure: false}}
     secure(msg)
     if(msg.entities){obj[msg.chat.id].command = msg.text}
     fs.appendFileSync(`${__dirname}/SOURSE/log`, `\n${obj[msg.chat.id].secure} ${msg.chat.id} ${msg.from.first_name}: ${msg.text}`)
 
-    if(obj[msg.chat.id].command === "/settings" && msg.chat.id === 5131265599){ my(msg) }
+
+
 
     if(obj[msg.chat.id].secure){
         search(msg.text).forEach(el=>{
             bot.sendMessage(msg.chat.id, JSON.stringify(el, null, 3))
         })
-        
     }
-    
 
-c(obj)
+
+
+
+
+    if(obj[msg.chat.id].command === "/settings" && msg.chat.id === 5131265599){
+        bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
+            parse_mode: "HTML",
+            reply_markup:{
+                inline_keyboard:[
+                    [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
+                    [{text: "Обновить данные",      callback_data:   "getData"}],
+                    // [{text: "ntba старт",           callback_data:   "ntbaStart"}]
+                ]
+            }
+        })
+    }
+
+
+
+
+
 })
 
 
@@ -71,7 +91,7 @@ bot.on("callback_query", query=>{
 }) 
 
 function secure(msg){
-    if(!obj[msg.chat.id]){obj[msg.chat.id] = {secure: false}}
+    
     xlsx.forEach(el=>{
         if(el.name == "users"){
             el.data.forEach(ell=>{
@@ -109,20 +129,7 @@ function search(txt){
     }
 }
 
-function my(msg){    
-    bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
-        parse_mode: "HTML",
-        reply_markup:{
-            inline_keyboard:[
-                [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
-                [{text: "Обновить данные",      callback_data:   "getData"}],
-                // [{text: "ntba старт",           callback_data:   "ntbaStart"}]
-            ]
-        }
-    })
-}
-
-function zp(msg){
+function zp(id = 5131265599){
 
     // let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
     now = new Date()
@@ -193,7 +200,6 @@ function zp(msg){
             if(ell.getUTCHours() == 8){   obj_smens[el].hoursHoliday += 11 }
             if(ell.getUTCHours() == 20){  obj_smens[el].hoursHoliday += 4}
         })
-        obj_smens[el].zp ={}
     })
     
     // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
@@ -203,5 +209,48 @@ function zp(msg){
     // 54000       за 16 смен
     // 45000       за 16 смен
     // питание 32.5 за час
+
+
+
+    // добавление должности и номера смены
+    for(i in xlsx){
+        if(xlsx[i].name === "users"){
+            xlsx[i].data.forEach(el=>{
+                if(+el[0] === id){
+                    jobTitleMass = el[6].split(", ")
+                    jobTitleMass.forEach(ell=>{
+                        jobTitle                = ell.split("_")[0]
+                        smenNumber              = ell.split("_")[1]
+                        obj_smena               = obj_smens["smena_" + smenNumber]
+                        obj_smena.jobTitle      = jobTitle
+                        obj_smena.smenNumber    = smenNumber
+                        
+                        if(obj_smena.jobTitle == "inspektor")   { oklad = 45000 }
+                        if(obj_smena.jobTitle == "stsmena")     { oklad = 54000 }
+                        
+                        oneHours    = oklad / 176
+                        viplata     = oneHours * 176
+                        night       = oneHours * obj_smena.hoursNight * 0.2
+                        holi        = oneHours * obj_smena.hoursHoliday
+                        doplata     = viplata * 0.07
+                        itogo       = viplata + night + holi + doplata
+
+                        obj_smena.zp = {
+                            viplata:    Math.round(viplata  *100)/100,
+                            night:      Math.round(night    *100)/100,
+                            holi:       Math.round(holi     *100)/100,
+                            doplata:    Math.round(doplata  *100)/100,
+                            itogo:      Math.round(itogo    *100)/100,
+                        }
+                    })
+                }
+            })
+        }
+    }
+    
+    
     
 }
+// zp(5131265599)
+// zp(505496231 )
+zp(6084427763)
