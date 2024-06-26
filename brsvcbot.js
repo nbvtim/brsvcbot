@@ -9,11 +9,6 @@ const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
-
-
-
-
-
 // bot.deleteMyCommands()
 bot.setMyCommands([
 //     {command:"start",       description:"Старт"},
@@ -26,15 +21,12 @@ bot.setMyCommands([
 // bot.getMe().then(           (t) =>  {   c(t)    })
 // bot.on("polling_error", err=>c("err"))
 
-
-// -------------------------------------------------------------------------------------------------------------------------------------------
-
-const obj = {}
-bot.on("message", async msg=>{
+const obj = {}; zp()
+bot.on("message", async msg=>{ 
     if(!obj[msg.chat.id]){obj[msg.chat.id] = {secure: false}}
-    secure(msg)
     if(msg.entities){obj[msg.chat.id].command = msg.text}
     fs.appendFileSync(`${__dirname}/SOURSE/log`, `\n${obj[msg.chat.id].secure} ${msg.chat.id} ${msg.from.first_name}: ${msg.text}`)
+    
 
 
 
@@ -44,7 +36,9 @@ bot.on("message", async msg=>{
             bot.sendMessage(msg.chat.id, JSON.stringify(el, null, 3))
         })
     }
-
+    if(!obj[msg.chat.id].secure){
+        bot.sendMessage(msg.chat.id, `Нет допуска !!! \nВведите данные в формате: \n\t - Фамилия\n\t - Имя\n\t - Отчество\n\t - Дата рождения\n\t - Номер телефона\n\t - Должность`)
+    }
 
 
 
@@ -61,13 +55,7 @@ bot.on("message", async msg=>{
             }
         })
     }
-
-
-
-
-
 })
-
 
 bot.on("callback_query", query=>{
     //c(query)
@@ -83,25 +71,8 @@ bot.on("callback_query", query=>{
         start()
         bot.sendMessage(query.from.id, "Данные обновлены")
     }
-    if(query.data === "ntbaStart"){
-        ntba = require("./ntba")
-        bot.sendMessage(query.from.id, "ntba в работе")
-    }
 
-}) 
-
-function secure(msg){
-    
-    xlsx.forEach(el=>{
-        if(el.name == "users"){
-            el.data.forEach(ell=>{
-                if(+ell[0]){
-                    obj[msg.chat.id] = {secure: true}
-                }
-            })
-        }
-    })
-}
+})
 
 function search(txt){
     try {
@@ -129,7 +100,7 @@ function search(txt){
     }
 }
 
-function zp(id = 5131265599){
+function zp(){
 
     // let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
     now = new Date()
@@ -216,41 +187,38 @@ function zp(id = 5131265599){
     for(i in xlsx){
         if(xlsx[i].name === "users"){
             xlsx[i].data.forEach(el=>{
-                if(+el[0] === id){
-                    jobTitleMass = el[6].split(", ")
-                    jobTitleMass.forEach(ell=>{
-                        jobTitle                = ell.split("_")[0]
-                        smenNumber              = ell.split("_")[1]
-                        obj_smena               = obj_smens["smena_" + smenNumber]
-                        obj_smena.jobTitle      = jobTitle
-                        obj_smena.smenNumber    = smenNumber
-                        
-                        if(obj_smena.jobTitle == "inspektor")   { oklad = 45000 }
-                        if(obj_smena.jobTitle == "stsmena")     { oklad = 54000 }
-                        
-                        oneHours    = oklad    / 176
-                        viplata     = oneHours * 176
-                        night       = oneHours * obj_smena.hoursNight * 0.2
-                        holi        = oneHours * obj_smena.hoursHoliday
-                        doplata     = viplata  * 0.07
-                        itogo       = viplata  + night  + holi  + doplata
+                if(+el[0]){
+                    if(!obj[el[0]]){obj[el[0]] = {secure: false}}
+                    obj[el[0]].secure = true
 
-                        obj_smena.zp = {
-                            viplata     :    Math.round(    viplata     *100)/100,
-                            night       :    Math.round(    night       *100)/100,
-                            holi        :    Math.round(    holi        *100)/100,
-                            doplata     :    Math.round(    doplata     *100)/100,
-                            itogo       :    Math.round(    itogo       *100)/100,
-                        }
-                    })
+                //     jobTitleMass = el[6].split(", ")
+                //     jobTitleMass.forEach(ell=>{
+                //         jobTitle                = ell.split("_")[0]
+                //         smenNumber              = ell.split("_")[1]
+                //         obj_smena               = obj_smens["smena_" + smenNumber]
+                //         obj_smena.jobTitle      = jobTitle
+                //         obj_smena.smenNumber    = smenNumber
+                        
+                //         if(obj_smena.jobTitle == "inspektor")   { oklad = 45000 }
+                //         if(obj_smena.jobTitle == "stsmena")     { oklad = 54000 }
+                        
+                //         oneHours    = oklad    / 176
+                //         viplata     = oneHours * 176
+                //         night       = oneHours * obj_smena.hoursNight * 0.2
+                //         holi        = oneHours * obj_smena.hoursHoliday
+                //         doplata     = viplata  * 0.07
+                //         itogo       = viplata  + night  + holi  + doplata
+
+                //         obj_smena.zp = {
+                //             viplata     :    Math.round(    viplata     *100)/100,
+                //             night       :    Math.round(    night       *100)/100,
+                //             holi        :    Math.round(    holi        *100)/100,
+                //             doplata     :    Math.round(    doplata     *100)/100,
+                //             itogo       :    Math.round(    itogo       *100)/100,
+                //         }
+                //     })
                 }
             })
         }
     }
-    
-    
-    
 }
-// zp(5131265599)
-// zp(505496231 )
-zp(6084427763)
