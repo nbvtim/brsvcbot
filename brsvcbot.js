@@ -32,9 +32,10 @@ bot.on("message", async msg=>{
 
 
     if(obj[msg.chat.id].secure){
-        search(msg.text).forEach(el=>{
-            bot.sendMessage(msg.chat.id, JSON.stringify(el, null, 3))
-        })
+
+            search(msg.text).forEach(el=>{
+                bot.sendMessage(msg.chat.id, JSON.stringify(el, null, 3))
+            })
     }
     if(!obj[msg.chat.id].secure){
         bot.sendMessage(msg.chat.id, `Нет допуска !!! \nВведите данные в формате: \n\t - Фамилия\n\t - Имя\n\t - Отчество\n\t - Дата рождения\n\t - Номер телефона\n\t - Должность`)
@@ -187,9 +188,21 @@ function zp(){
     for(i in xlsx){
         if(xlsx[i].name === "users"){
             xlsx[i].data.forEach(el=>{
-                if(+el[0]){
+                if(+el[0] && el[6]){
                     if(!obj[el[0]]){obj[el[0]] = {secure: false}}
                     obj[el[0]].secure = true
+                    jobTitleMass = el[6].split(", ")
+
+                    zpObj = {}
+
+                    jobTitleMass.forEach(ell=>{
+                        zpObj[`jobTitl_${ell}`] = {
+                            jobTitl: ell,
+                            
+                        }
+                    })
+                    c(zpObj)
+
 
                 //     jobTitleMass = el[6].split(", ")
                 //     jobTitleMass.forEach(ell=>{
