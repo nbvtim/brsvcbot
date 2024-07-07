@@ -13,7 +13,8 @@ const fs            = require("fs")
 
 const express = require('express')()
 express.get('/', (req, res) => {
-    res.send(fs.readFileSync(`${__dirname}/SOURSE/index.html`))
+    txt = fs.readFileSync(`${__dirname}/SOURSE/index.html`, "utf8")
+    res.send(txt)
 })
 express.listen(3000, "0.0.0.0", () => {console.log(`express --> listen`)})
 
