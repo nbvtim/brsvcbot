@@ -17,33 +17,30 @@ bot.setMyCommands([
     {command:"settings",    description:"Настройки"},
 //     {command:"help",        description:"Помощь"}
 ])
+
+
 // bot.getMyCommands().then(   (t) =>  {       })
 // bot.getMe().then(           (t) =>  {   c(t)    })
 // bot.on("polling_error", err=>c("err"))
 
-const obj = {}; zp()
+const obj = {}; start()
+
 bot.on("message", async msg=>{ 
     if(!obj[msg.chat.id]){obj[msg.chat.id] = {secure: false}}
     if(msg.entities){obj[msg.chat.id].command = msg.text}
     fs.appendFileSync(`${__dirname}/SOURSE/log`, `\n${obj[msg.chat.id].secure} ${msg.chat.id} ${msg.from.first_name}: ${msg.text}`)
     
 
-
-
-
     if(obj[msg.chat.id].secure){
 
-            search(msg.text).forEach(el=>{
-                bot.sendMessage(msg.chat.id, JSON.stringify(el, null, 3))
-            })
+        search(msg.text).forEach(el=>{
+            bot.sendMessage(msg.chat.id, JSON.stringify(el, null, 3))
+        })
+
     }
     if(!obj[msg.chat.id].secure){
         bot.sendMessage(msg.chat.id, `Нет допуска !!! \nВведите данные в формате: \n\t - Фамилия\n\t - Имя\n\t - Отчество\n\t - Дата рождения\n\t - Номер телефона\n\t - Должность`)
     }
-
-
-
-
     if(obj[msg.chat.id].command === "/settings" && msg.chat.id === 5131265599){
         bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
             parse_mode: "HTML",
@@ -55,7 +52,11 @@ bot.on("message", async msg=>{
                 ]
             }
         })
+
+        zp(msg)
     }
+
+
 })
 
 bot.on("callback_query", query=>{
@@ -74,6 +75,22 @@ bot.on("callback_query", query=>{
     }
 
 })
+
+
+
+
+
+function start(){
+    xlsx.forEach(el=>{
+        if(el.name === "users"){
+            el.data.forEach(ell=>{
+                if(+ell[0]){
+                    obj[ell[0]] = {secure: true}
+                }
+            })
+        }
+    })
+}
 
 function search(txt){
     try {
@@ -101,7 +118,7 @@ function search(txt){
     }
 }
 
-function zp(){
+function calcSmens(){
 
     // let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
     now = new Date()
@@ -162,18 +179,6 @@ function zp(){
         }
     }
 
-    // добавление количества отработанных часов
-    Object.keys(obj_smens).forEach(el=>{
-        obj_smens[el].hours             =   obj_smens[el].day.length * 11 + obj_smens[el].night.length * 11
-        obj_smens[el].hoursDay          =   obj_smens[el].day.length * 11
-        obj_smens[el].hoursNight        =   obj_smens[el].night.length * 7
-        obj_smens[el].hoursHoliday      =   0
-        obj_smens[el].holiday.forEach(ell=>{
-            if(ell.getUTCHours() == 8){   obj_smens[el].hoursHoliday += 11 }
-            if(ell.getUTCHours() == 20){  obj_smens[el].hoursHoliday += 4}
-        })
-    })
-    
     // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
     // ночные 7 часов  23:00 - 06:00         20%
     // праздничные     00:00 - 23:59         
@@ -182,56 +187,11 @@ function zp(){
     // 45000       за 16 смен
     // питание 32.5 за час
 
+    c(obj_smens)
+    
+}calcSmens()
 
-
-    // добавление должности и номера смены
-    for(i in xlsx){
-        if(xlsx[i].name === "users"){
-            xlsx[i].data.forEach(el=>{
-                if(+el[0] && el[6]){
-                    if(!obj[el[0]]){obj[el[0]] = {secure: false}}
-                    obj[el[0]].secure = true
-                    jobTitleMass = el[6].split(", ")
-
-                    zpObj = {}
-
-                    jobTitleMass.forEach(ell=>{
-                        zpObj[`jobTitl_${ell}`] = {
-                            jobTitl: ell,
-                            
-                        }
-                    })
-                    c(zpObj)
-
-
-                //     jobTitleMass = el[6].split(", ")
-                //     jobTitleMass.forEach(ell=>{
-                //         jobTitle                = ell.split("_")[0]
-                //         smenNumber              = ell.split("_")[1]
-                //         obj_smena               = obj_smens["smena_" + smenNumber]
-                //         obj_smena.jobTitle      = jobTitle
-                //         obj_smena.smenNumber    = smenNumber
-                        
-                //         if(obj_smena.jobTitle == "inspektor")   { oklad = 45000 }
-                //         if(obj_smena.jobTitle == "stsmena")     { oklad = 54000 }
-                        
-                //         oneHours    = oklad    / 176
-                //         viplata     = oneHours * 176
-                //         night       = oneHours * obj_smena.hoursNight * 0.2
-                //         holi        = oneHours * obj_smena.hoursHoliday
-                //         doplata     = viplata  * 0.07
-                //         itogo       = viplata  + night  + holi  + doplata
-
-                //         obj_smena.zp = {
-                //             viplata     :    Math.round(    viplata     *100)/100,
-                //             night       :    Math.round(    night       *100)/100,
-                //             holi        :    Math.round(    holi        *100)/100,
-                //             doplata     :    Math.round(    doplata     *100)/100,
-                //             itogo       :    Math.round(    itogo       *100)/100,
-                //         }
-                //     })
-                }
-            })
-        }
-    }
+function zp(msg){
+    
 }
+zp()
