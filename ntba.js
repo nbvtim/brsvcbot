@@ -13,7 +13,7 @@ const fs            = require("fs")
 
 const express = require('express')()
 express.get('/', (req, res) => {
-    res.send("<input> КНОПКА </input> ")
+    res.send(fs.readFileSync(`${__dirname}/SOURSE/index.html`))
 })
 express.listen(3000, "0.0.0.0", () => {console.log(`express --> listen`)})
 
