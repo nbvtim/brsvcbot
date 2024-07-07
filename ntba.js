@@ -11,9 +11,9 @@ const fs            = require("fs")
 
 
 
-// const express = require('express')()
-// express.get('/', (req, res) => {
-//     res.send("<input> КНОПКА </input> ")
-// })
-// express.listen(3000, "0.0.0.0", () => {console.log(`express --> listen`)})
+const express = require('express')()
+express.get('/', (req, res) => {
+    res.send("<input> КНОПКА </input> ")
+})
+express.listen(3000, "0.0.0.0", () => {console.log(`express --> listen`)})
 
