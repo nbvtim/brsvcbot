@@ -2,7 +2,7 @@
 // "6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w"
 // "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const c             = console.log
-// require("./ntba")
+require("./ntba")
 const xlsx          = require('node-xlsx').default.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
 const fs            = require('fs')
 const cp            = require('child_process')
@@ -26,13 +26,8 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 // const obj = {}; start()
 
 bot.on("message", async msg=>{ 
-    c(JSON.stringify(msg))
-    fs.appendFileSync(`${__dirname}/SOURSE/log`, `\n${JSON.stringify(msg)}`)
-
-
-
-
-
+    fs.appendFileSync   (`${__dirname}/SOURSE/log`,         `\n${JSON.stringify(msg)}`)
+    fs.writeFileSync    (`${__dirname}/SOURSE/index.html`,  "<pre>" + fs.readFileSync(`${__dirname}/SOURSE/log`, "utf8") + "</pre>")
 
 
 
@@ -51,40 +46,40 @@ bot.on("message", async msg=>{
     // if(!obj[msg.chat.id].secure){
     //     bot.sendMessage(msg.chat.id, `Нет допуска !!! \nВведите данные в формате: \n\t - Фамилия\n\t - Имя\n\t - Отчество\n\t - Дата рождения\n\t - Номер телефона\n\t - Должность`)
     // }
-    // if(obj[msg.chat.id].command === "/settings" && msg.chat.id === 5131265599){
-    //     bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
-    //         parse_mode: "HTML",
-    //         reply_markup:{
-    //             inline_keyboard:[
-    //                 [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
-    //                 [{text: "Обновить данные",      callback_data:   "getData"}],
-    //                 // [{text: "ntba старт",           callback_data:   "ntbaStart"}]
-    //             ]
-    //         }
-    //     })
-
-    //     zp(msg)
-    // }
+    if(msg.text === "/" && msg.chat.id === 5131265599){
+        bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
+            parse_mode: "HTML",
+            reply_markup:{
+                inline_keyboard:[
+                    [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
+                    [{text: "Обновить данные",      callback_data:   "getData"}],
+                    [{text: "Показать log",         callback_data:   "log"}]
+                ]
+            }
+        })
+    }
 
 
 })
 
-// bot.on("callback_query", query=>{
-//     //c(query)
-//     if(query.data === "t"){ 
-//         cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
-//         bot.sendMessage(query.from.id, `Сессия доступна по этой <a href="https://tmate.io/t/nbv/pc">ССЫЛКЕ</a>`, {parse_mode:"HTML"})
-//     }
-//     if(query.data === "pkill tmate"){
-//         cp.spawnSync('pkill', ['tmate'])
-//         bot.sendMessage(query.from.id, "Сессия tmate остановлена")
-//     }
-//     if(query.data === "getData"){
-//         start()
-//         bot.sendMessage(query.from.id, "Данные обновлены")
-//     }
+bot.on("callback_query", query=>{
+    //c(query)
+    if(query.data === "t"){ 
+        cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
+        bot.sendMessage(query.from.id, `Сессия доступна по этой <a href="https://tmate.io/t/nbv/pc">ССЫЛКЕ</a>`, {parse_mode:"HTML"})
+    }
+    if(query.data === "pkill tmate"){
+        cp.spawnSync('pkill', ['tmate'])
+        bot.sendMessage(query.from.id, "Сессия tmate остановлена")
+    }
+    // if(query.data === "getData"){
+    //     bot.sendMessage(query.from.id, "Данные обновлены")
+    // }
+    if(query.data === "log"){
+        bot.sendMessage(query.from.id, "a;slkdjklashdkjsahdkjahskjdhksjahdkjskah")
+    }
 
-// })
+})
 
 
 
