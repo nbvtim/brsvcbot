@@ -14,4 +14,4 @@ const express = require('express')()
 express.get('/', (req, res) => {
     res.send(html)
 })
-express.listen(65535, "127.255.255.254", () => {c(`express --> listen`)})
+express.listen(65535, "127.255.255.254", () => {c(`http://127.255.255.254:65535/`)})
