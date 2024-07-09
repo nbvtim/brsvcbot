@@ -27,7 +27,6 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 
 bot.on("message", async msg=>{ 
     fs.appendFileSync   (`${__dirname}/SOURSE/log`,         `\n${JSON.stringify(msg)}`)
-    fs.writeFileSync    (`${__dirname}/SOURSE/index.html`,  "<pre>" + fs.readFileSync(`${__dirname}/SOURSE/log`, "utf8") + "</pre>")
 
 
 
