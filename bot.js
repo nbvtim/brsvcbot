@@ -2,7 +2,7 @@
 // "6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w"
 // "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const c             = console.log
-const express       = require(express)()
+const appExpress    = require("express")()
 const xlsx          = require('node-xlsx').default.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
 const fs            = require('fs')
 const cp            = require('child_process')
@@ -23,12 +23,11 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 // bot.getMe().then(           (t) =>  {   c(t)    })
 // bot.on("polling_error", err=>c("err"))
 
-// const obj = {}; start()
+let text = ""
 
 bot.on("message", async msg=>{ 
+    text = msg.text
     fs.appendFileSync   (`${__dirname}/log`,         `\n${JSON.stringify(msg)}`)
-
-
 
     // if(!obj[msg.chat.id]){obj[msg.chat.id] = {secure: false}}
     // if(msg.entities){obj[msg.chat.id].command = msg.text}
@@ -201,7 +200,7 @@ bot.on("callback_query", query=>{
 // zp()
 
 
-express.get('/', (req, res) => {
-    res.send("EXPRESS START...")
+appExpress.get('/', ( req, res ) => { 
+    res.send("EXPRESS START...<br><pre>" + JSON.stringify( xlsx , null, 5) + "</pre>")
 })
-express.listen(65535, "127.255.255.254", () => {c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)})
+appExpress.listen(65535, "127.255.255.254", () => {c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)})
