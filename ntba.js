@@ -9,10 +9,9 @@ const fs            = require("fs")
     
 // })
 
-let html = fs.readFileSync(`${__dirname}/SOURSE/index.html`, "utf8")
+let html = fs.readFileSync(`${__dirname}/SITE/index.html`, "utf8")
 const express = require('express')()
 express.get('/', (req, res) => {
     res.send(html)
-    c(req.body)
 })
 express.listen(65535, "127.255.255.254", () => {c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)})

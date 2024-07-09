@@ -2,10 +2,10 @@
   "name": "brsvcbot",
   "version": "1.0.100",
   "description": "",
-  "main": "./brsvcbot.js",
+  "main": "./bot.js",
   "scripts": {
-    "start": "node brsvcbot",
-    "dev": "pkill screen ; nodemon brsvcbot"
+    "start": "node bot",
+    "dev": "pkill screen ; nodemon bot"
   },
   "keywords": [],
   "author": "NBV",
