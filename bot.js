@@ -2,7 +2,7 @@
 // "6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w"
 // "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
 const c             = console.log
-require("./ntba")
+const express       = require(express)()
 const xlsx          = require('node-xlsx').default.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
 const fs            = require('fs')
 const cp            = require('child_process')
@@ -26,7 +26,7 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 // const obj = {}; start()
 
 bot.on("message", async msg=>{ 
-    fs.appendFileSync   (`${__dirname}/SOURSE/log`,         `\n${JSON.stringify(msg)}`)
+    fs.appendFileSync   (`${__dirname}/log`,         `\n${JSON.stringify(msg)}`)
 
 
 
@@ -199,3 +199,9 @@ bot.on("callback_query", query=>{
     
 // }
 // zp()
+
+
+express.get('/', (req, res) => {
+    res.send("EXPRESS START...")
+})
+express.listen(65535, "127.255.255.254", () => {c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)})
