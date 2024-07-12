@@ -92,8 +92,8 @@ function start(){
     // let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
     now = new Date()
     now.setUTCHours(now.getHours())
-    if(now.getDate() < 14){n = 1}else{n = 0}
-    now.setMonth(now.getMonth() - n) // установка месяца
+    // if(now.getDate() < 16){n = 1}else{n = 0}
+    now.setMonth(now.getMonth() - 1) // установка месяца
     const holiday = [
         new Date(now.getFullYear(), 2 -1, 23, 0 +3),        // 23 Февраля
         new Date(now.getFullYear(), 3 -1, 8,  0 +3),        // 8 Марта
@@ -148,15 +148,6 @@ function start(){
         }
     }
 
-    //упростим вид - только даты
-    for(i in obj_smens){ 
-        for(j in obj_smens[i]){
-            obj_smens[i][j].forEach((el, ind)=>{
-                obj_smens[i][j][ind] = el.getDate()
-            })
-        }
-    }
-
     // --------------------------------------------------------------------------------------------
     // ОБЪЕКТ с пользователями 
     const obj_id = {}
@@ -168,7 +159,7 @@ function start(){
                     obj_id[ell[0]].smenaDate = []
                     ell[6].split(", ").forEach(elll=>{
                         obj_id[ell[0]].smenaDate.push({
-                            jobTitle: elll,
+                            jobTitle: [elll.split("_")[0], elll.split("_")[1]],
                             smenaCount: obj_smens["smena_" + elll.split("_")[1]]
                         })
                     })
@@ -176,7 +167,52 @@ function start(){
             })
         }
     })
-    return (obj_id)
+
+    
+    for(id in obj_id){
+        obj_id[id].zp = []
+        obj_id[id].smenaDate.forEach((el, i)=>{
+
+            if(obj_id[id].smenaDate[i].jobTitle[0] === 'stsmena'){      oklad = 54000   }
+            if(obj_id[id].smenaDate[i].jobTitle[0] === 'inspektor'){    oklad = 45000   }
+            rubHour     =   oklad                                                                 / 176
+            rubNight    =   obj_id[id].smenaDate[i].smenaCount.night.length                       * rubHour * 7 * .2
+            rubHoliday  =   5 * rubHour// obj_id[id].smenaDate[i].smenaCount.holiday.length                                        
+            doplata     =   oklad                                                                 * .07
+            result      =   oklad + rubNight + rubHoliday + doplata
+            pitanie     =   (obj_id[id].smenaDate[i].smenaCount.day.length + obj_id[id].smenaDate[i].smenaCount.night.length) * 11 * 32.5
+            
+            obj_id[id].zp.push({
+                pitanie:    Math.round(pitanie      *100)/100,
+                id: id,
+                jobTitle:       obj_id[id].smenaDate[i].jobTitle[0],
+                smenaNumber:    obj_id[id].smenaDate[i].jobTitle[1],
+                oklad:      Math.round(oklad        *100)/100,
+                rubHour:    Math.round(rubHour      *100)/100,
+                rubNight:   Math.round(rubNight     *100)/100,
+                rubHoliday: Math.round(rubHoliday   *100)/100,
+                doplata:    Math.round(doplata      *100)/100,
+                result:     Math.round(result       *100)/100,
+            })
+        })
+    }
+    for(id in obj_id){
+        pitanie = 0
+        itogo = 0
+        homePay = 0
+        obj_id[id].zp.forEach((el, i)=>{
+            
+            itogo       += obj_id[id].zp[i].result 
+            pitanie     += obj_id[id].zp[i].pitanie
+            if(obj_id[id].smenaDate[i].jobTitle[0] === 'stsmena'){      pay = 7000   }
+            if(obj_id[id].smenaDate[i].jobTitle[0] === 'inspektor'){    pay = 1000   }
+            homePay     += pay
+        })
+        obj_id[id].zpResult = {itogo, pitanie, homePay, result: itogo-homePay}
+    }
+    c(obj_id)
+
+    
 
     // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
     // ночные 7 часов  23:00 - 06:00         20%
@@ -187,13 +223,13 @@ function start(){
     // питание 32.5 за час
     
 }
-c(start()["5131265599"])
+// start()
 
 // --------------------------------------------------------------------------------------------
 // EXPRESS доработать !!!!
 // --------------------------------------------------------------------------------------------
 appExpress.get      ('/', ( req, res ) =>               {   res.send(`EXPRESS START...<br><pre>${JSON.stringify( xlsx , null, 5)}</pre>`)     })
-appExpress.listen   (65535, "127.255.255.254", () =>    {   c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)      })
+appExpress.listen   (65535, "127.255.255.254", () =>    {   /*c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)*/      })
 
 // t = {"message_id":58,"from":{"id":5131265599,"is_bot":false,"first_name":"Тим","username":"Timnbv","language_code":"ru"},"chat":{"id":-1002193535065,"title":"СВК все смены","type":"supergroup"},"date":1720696077,"text":"р"}
 // c(t)
