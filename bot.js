@@ -7,6 +7,7 @@ const xlsx          = require('node-xlsx').default.parse("/mnt/c/Users/User/Desk
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
+const { text } = require("express")
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
 // bot.deleteMyCommands()
@@ -22,11 +23,15 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 // bot.getMe().then(           (t) =>  {   c(t)    })
 // bot.on("polling_error", err=>c("err"))
 
+
+
 // --------------------------------------------------------------------------------------------
 // БОТ ОЖИДАЕТ ВВОДА ОТ ПОЛЬЗОВАТЕЛЯ
 // --------------------------------------------------------------------------------------------
 bot.on("message", async msg=>{ 
     fs.appendFileSync   (`${__dirname}/log`, `\n${JSON.stringify(msg)}`)
+    
+
 
     if(msg.text === "/" && msg.chat.id === 5131265599){
         bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
@@ -41,12 +46,16 @@ bot.on("message", async msg=>{
         })
     }
 
+
+
 })
+
+
 
 // --------------------------------------------------------------------------------------------
 // БОТ ОБРАБАТЫВАЕТ ЗАПРОСЫ С КЛАВИАТУРЫ 
 // --------------------------------------------------------------------------------------------
-bot.on("callback_query", query=>{
+bot.on("callback_query", query=>{ 
     //c(query)
     if(query.data === "t"){ 
         cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
@@ -59,11 +68,18 @@ bot.on("callback_query", query=>{
     // if(query.data === "getData"){
     //     bot.sendMessage(query.from.id, "Данные обновлены")
     // }
-    if(query.data === "log"){
-        bot.sendMessage(query.from.id, "настроить!!!")
+    if(query.data === "log"){  // Текст отправляемого сообщения, 1-4096 символов после разбора сущностей
+        txt = fs.readFileSync("./log", "utf8").length
+        
+        // bot.sendMessage(query.from.id, txt)
     }
 
 })
+
+
+
+
+
 
 // --------------------------------------------------------------------------------------------
 // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
@@ -71,22 +87,6 @@ bot.on("callback_query", query=>{
 
 // НАЧАЛЬНАЯ ФУНКЦИЯ
 function start(){
-
-    // --------------------------------------------------------------------------------------------
-    // ОБЪЕКТ с пользователями 
-    obj_id = {}
-    xlsx.forEach(el=>{
-        if(el.name === "users"){
-            el.data.forEach(el=>{
-                if(+el[0]  && el[6]){
-                    obj_id[el[0]] = {
-                        jobTitle: el[6]
-                    }
-                }
-            })
-        }
-    })
-
     // --------------------------------------------------------------------------------------------
     // РАСЧЕТ РАБОЧИХ СМЕН В МЕСЯЦЕ ПОСМЕННО 
     // let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
@@ -148,7 +148,35 @@ function start(){
         }
     }
 
-    
+    //упростим вид - только даты
+    for(i in obj_smens){ 
+        for(j in obj_smens[i]){
+            obj_smens[i][j].forEach((el, ind)=>{
+                obj_smens[i][j][ind] = el.getDate()
+            })
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // ОБЪЕКТ с пользователями 
+    const obj_id = {}
+    xlsx.forEach(el=>{
+        if(el.name === "users"){
+            el.data.forEach(ell=>{
+                if(+ell[0]  && ell[6] && ell[6].match(/\d/)){
+                    obj_id[ell[0]] = {} 
+                    obj_id[ell[0]].smenaDate = []
+                    ell[6].split(", ").forEach(elll=>{
+                        obj_id[ell[0]].smenaDate.push({
+                            jobTitle: elll,
+                            smenaCount: obj_smens["smena_" + elll.split("_")[1]]
+                        })
+                    })
+                }
+            })
+        }
+    })
+    return (obj_id)
 
     // 16 смен * 11 часов = 176 - закрывают в месяц если без прогулов
     // ночные 7 часов  23:00 - 06:00         20%
@@ -159,12 +187,13 @@ function start(){
     // питание 32.5 за час
     
 }
-start()
+c(start()["5131265599"])
 
 // --------------------------------------------------------------------------------------------
 // EXPRESS доработать !!!!
 // --------------------------------------------------------------------------------------------
-appExpress.get('/', ( req, res ) => { 
-    res.send(`EXPRESS START...<br><pre>${JSON.stringify( xlsx , null, 5)}</pre>`)
-})
-appExpress.listen(65535, "127.255.255.254", () => {c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)})
+appExpress.get      ('/', ( req, res ) =>               {   res.send(`EXPRESS START...<br><pre>${JSON.stringify( xlsx , null, 5)}</pre>`)     })
+appExpress.listen   (65535, "127.255.255.254", () =>    {   c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)      })
+
+// t = {"message_id":58,"from":{"id":5131265599,"is_bot":false,"first_name":"Тим","username":"Timnbv","language_code":"ru"},"chat":{"id":-1002193535065,"title":"СВК все смены","type":"supergroup"},"date":1720696077,"text":"р"}
+// c(t)
