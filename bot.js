@@ -29,8 +29,6 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 // --------------------------------------------------------------------------------------------
 bot.on("message", async msg=>{ 
     fs.appendFileSync   (`${__dirname}/log`, `\n${JSON.stringify(msg)}`)
-    
-
 
     if(msg.text === "/" && msg.chat.id === 5131265599){
         bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
