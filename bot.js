@@ -7,6 +7,7 @@ const xlsx          = require('node-xlsx').default.parse("/mnt/c/Users/User/Desk
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
+const { env } = require("process")
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
 // bot.deleteMyCommands()
