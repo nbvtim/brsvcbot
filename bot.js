@@ -1,6 +1,6 @@
 
-// "6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w"
-// "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"
+// "6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w" - ntba
+// "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"  
 const c             = console.log
 const appExpress    = require("express")()
 const xlsx          = require('node-xlsx').default.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
