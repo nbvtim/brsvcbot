@@ -7,7 +7,6 @@ const xlsx          = require('node-xlsx').default.parse("/mnt/c/Users/User/Desk
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
-const { text } = require("express")
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
 // bot.deleteMyCommands()
@@ -44,6 +43,7 @@ bot.on("message", async msg=>{
                 ]
             }
         })
+        bot.sendMessage(msg.chat.id, JSON.stringify(start()[msg.chat.id].zpResult, null, 4))
     }
 
 
@@ -92,8 +92,8 @@ function start(){
     // let daysInMounth = 32 - new Date(now.getFullYear(), now.getMonth(), 32).getDate()
     now = new Date()
     now.setUTCHours(now.getHours())
-    // if(now.getDate() < 16){n = 1}else{n = 0}
-    now.setMonth(now.getMonth() - 1) // установка месяца
+    if(now.getDate() < 16){n = 1}else{n = 0}
+    now.setMonth(now.getMonth() - n) // установка месяца
     const holiday = [
         new Date(now.getFullYear(), 2 -1, 23, 0 +3),        // 23 Февраля
         new Date(now.getFullYear(), 3 -1, 8,  0 +3),        // 8 Марта
@@ -168,7 +168,6 @@ function start(){
         }
     })
 
-    
     for(id in obj_id){
         obj_id[id].zp = []
         obj_id[id].smenaDate.forEach((el, i)=>{
@@ -200,17 +199,33 @@ function start(){
         pitanie = 0
         itogo = 0
         homePay = 0
+        calc = {}
         obj_id[id].zp.forEach((el, i)=>{
-            
+            calc[el.jobTitle+" "+el.smenaNumber] = {
+                rubHour:    el.rubHour,
+                rubNight:   el.rubNight,
+                rubHoliday: el.rubHoliday,
+                doplata:    el.doplata,
+                result:     el.result
+            }
+
             itogo       += obj_id[id].zp[i].result 
             pitanie     += obj_id[id].zp[i].pitanie
             if(obj_id[id].smenaDate[i].jobTitle[0] === 'stsmena'){      pay = 7000   }
             if(obj_id[id].smenaDate[i].jobTitle[0] === 'inspektor'){    pay = 1000   }
             homePay     += pay
+
+
         })
-        obj_id[id].zpResult = {itogo, pitanie, homePay, result: itogo-homePay}
+        obj_id[id].zpResult = {
+            calc,
+            itogo, 
+            pitanie, 
+            homePay, 
+            result: itogo - homePay
+        }
     }
-    c(obj_id)
+    return(obj_id)
 
     
 
@@ -223,13 +238,13 @@ function start(){
     // питание 32.5 за час
     
 }
-// start()
+
+
+
+
 
 // --------------------------------------------------------------------------------------------
 // EXPRESS доработать !!!!
 // --------------------------------------------------------------------------------------------
-appExpress.get      ('/', ( req, res ) =>               {   res.send(`EXPRESS START...<br><pre>${JSON.stringify( xlsx , null, 5)}</pre>`)     })
-appExpress.listen   (65535, "127.255.255.254", () =>    {   /*c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)*/      })
-
-// t = {"message_id":58,"from":{"id":5131265599,"is_bot":false,"first_name":"Тим","username":"Timnbv","language_code":"ru"},"chat":{"id":-1002193535065,"title":"СВК все смены","type":"supergroup"},"date":1720696077,"text":"р"}
-// c(t)
+// appExpress.get      ('/', ( req, res ) =>               {   res.send(`EXPRESS START...<br><pre>${JSON.stringify( xlsx , null, 5)}</pre>`)     })
+// appExpress.listen   (65535, "127.255.255.254", () =>    {   /*c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)*/      })
