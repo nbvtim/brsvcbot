@@ -78,7 +78,7 @@ bot.on("callback_query", query=>{
     }
     if(query.data === "log"){  // Текст отправляемого сообщения, 1-4096 символов после разбора сущностей
         txt = fs.readFileSync("./log", "utf8")
-        bot.sendMessage(query.from.id, txt, {})
+        bot.sendMessage(query.from.id, txt, {parse_mode:"HTML"})
     }
 
 })
