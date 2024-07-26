@@ -47,8 +47,8 @@ bot.on("message", async msg=>{
         if(msg.entities){obj[msg.chat.id].command = msg.text}
         // c(obj)
 
-        
-        if(msg.text === "/settings" && msg.chat.id === 5131265599){
+
+        if(obj[msg.chat.id].command === "/settings" && msg.chat.id === 5131265599){
             bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
                 parse_mode: "HTML",
                 reply_markup:{
