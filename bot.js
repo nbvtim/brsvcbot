@@ -41,8 +41,13 @@ bot.on("message", async msg=>{
     // c(msg)
     fs.appendFileSync   (`${__dirname}/log`, `\n${msg.chat.id}_${msg.from.first_name}: ${msg.text}`)
 
+
     if(obj[msg.chat.id]){ // Если пользователь есть в базе то бот будет работать
 
+        if(msg.entities){obj[msg.chat.id].command = msg.text}
+        // c(obj)
+
+        
         if(msg.text === "/settings" && msg.chat.id === 5131265599){
             bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
                 parse_mode: "HTML",
@@ -55,7 +60,18 @@ bot.on("message", async msg=>{
             })
         }
 
+
     }
+
+
+    if(!obj[msg.chat.id]){ // Если пользователь есть в базе то бот будет предлагать регистрацию
+
+
+        // 
+
+        
+    }
+
 
     
 
