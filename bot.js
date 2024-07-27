@@ -57,7 +57,6 @@ bot.on("message", async msg=>{
                             // re = RegExp(msg.text)
                             // c(typeof re)
                             // c(ell.join(", ").match(re))
-                            
                         })
                     }
                 })
