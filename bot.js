@@ -7,12 +7,13 @@ const xlsx          = require('node-xlsx').default.parse("/mnt/c/Users/User/Desk
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
+const { text } = require("express")
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
 // bot.deleteMyCommands()
 bot.setMyCommands([
     {command:"start",       description:"Старт"},
-    // {command:"auto",        description:"Автотранспорнт"},
+    {command:"auto",        description:"Автотранспорнт"},
     // {command:"zp",          description:"Зарплата"},
     // {command:"key",         description:"Ключи"},
     {command:"settings",    description:"Настройки"},
@@ -28,7 +29,7 @@ const obj = {}
 xlsx.forEach(el=>{
     if(el.name === "users"){
         el.data.forEach(el=>{ 
-            if(+el[0]) obj[el[0]] = {}
+            if(+el[0]) {obj[el[0]] = {}}
         })
     }
 })
@@ -43,11 +44,27 @@ bot.on("message", async msg=>{
     
 
     if(obj[msg.chat.id]){ // Если пользователь есть в базе то бот будет работать
-
         if(msg.entities){obj[msg.chat.id].command = msg.text}
-        // c(obj)
 
+// Поиск по автотранспорту
+        if(obj[msg.chat.id].command === "/auto"){
+            if(msg.text === "/auto") {
+                bot.sendMessage(msg.chat.id, `Режим поиска по автотранспорту`)
+            }else{
+                xlsx.forEach(el=>{
+                    if(el.name === "АТ"){
+                        el.data.forEach(ell=>{ 
+                            // re = RegExp(msg.text)
+                            // c(typeof re)
+                            // c(ell.join(", ").match(re))
+                            
+                        })
+                    }
+                })
+            }
+        }
 
+// Мои настройки
         if(obj[msg.chat.id].command === "/settings" && msg.chat.id === 5131265599){
             bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
                 parse_mode: "HTML",
@@ -73,8 +90,7 @@ bot.on("message", async msg=>{
     }
 
 
-    
-
+// c(obj)
 })
 
 
@@ -192,3 +208,9 @@ function calcSmens(){
 // --------------------------------------------------------------------------------------------
 // appExpress.get      ('/', ( req, res ) =>               {   res.send(`EXPRESS START...<br><pre>${JSON.stringify( xlsx , null, 5)}</pre>`)     })
 // appExpress.listen   (65535, "127.255.255.254", () =>    {   /*c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)*/      })
+
+
+
+
+// + ? \ * ( ) [ 
+// c(new RegExp("+"))
