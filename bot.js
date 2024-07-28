@@ -7,7 +7,6 @@ const xlsx          = require('node-xlsx').default.parse("/mnt/c/Users/User/Desk
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
-const { text } = require("express")
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
 // bot.deleteMyCommands()
@@ -42,24 +41,35 @@ bot.on("message", async msg=>{
     // c(msg)
     fs.appendFileSync   (`${__dirname}/log`, `\n${msg.chat.id}_${msg.from.first_name}: ${msg.text}`)
     
-
-    if(obj[msg.chat.id]){ // Если пользователь есть в базе то бот будет работать
+// Если пользователь есть в базе то бот будет работать
+    if(obj[msg.chat.id]){ 
         if(msg.entities){obj[msg.chat.id].command = msg.text}
+        if(!obj[msg.chat.id].command){   bot.sendMessage(msg.chat.id, `Выберите пункт меню`)   }
+
 
 // Поиск по автотранспорту
         if(obj[msg.chat.id].command === "/auto"){
             if(msg.text === "/auto") {
                 bot.sendMessage(msg.chat.id, `Режим поиска по автотранспорту`)
             }else{
-                xlsx.forEach(el=>{
-                    if(el.name === "АТ"){
-                        el.data.forEach(ell=>{ 
-                            // re = RegExp(msg.text)
-                            // c(typeof re)
-                            // c(ell.join(", ").match(re))
-                        })
+                count = 0
+                try {   // + ? \ * ( ) [ 
+                    xlsx.forEach(el=>{
+                        if(el.name === "АТ"){
+                            el.data.forEach(ell=>{ 
+                                if(ell.join(" , ").match(RegExp(msg.text, "i")) && count < 5){
+                                    bot.sendMessage(msg.chat.id, JSON.stringify(ell, null, 5))
+                                    count++
+                                }
+                            })
+                        }
+                    })
+                    if(count === 0){
+                        bot.sendMessage(msg.chat.id, `По запросу совпадений нет`)
                     }
-                })
+                } catch (err) {
+                    bot.sendMessage(msg.chat.id, `Ошибка`)
+                }
             }
         }
 
@@ -79,13 +89,9 @@ bot.on("message", async msg=>{
 
     }
 
-
-    if(!obj[msg.chat.id]){ // Если пользователь есть в базе то бот будет предлагать регистрацию
-
-
+// Если пользователь есть в базе то бот будет предлагать регистрацию
+    if(!obj[msg.chat.id]){ 
         bot.sendMessage(msg.chat.id, `Нет доступа !!!\nДля предоставления доступа отправьте:\n- Ф.И.О.\n- номер телефона\n- дату рождения`)
-
-        
     }
 
 
@@ -211,5 +217,3 @@ function calcSmens(){
 
 
 
-// + ? \ * ( ) [ 
-// c(new RegExp("+"))
