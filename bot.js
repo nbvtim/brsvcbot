@@ -53,7 +53,7 @@ bot.on("message", async msg=>{
                 bot.sendMessage(msg.chat.id, `Режим поиска по автотранспорту`)
             }else{
                 count = 0
-                try {   // + ? \ * ( ) [ 
+                try {   // + ? \ * ( ) [  -  для RegExp ошибка
                     xlsx.forEach(el=>{
                         if(el.name === "АТ"){
                             el.data.forEach(ell=>{ 
