@@ -11,10 +11,10 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 
 // bot.deleteMyCommands()
 bot.setMyCommands([
-    {command:"start",       description:"Старт"},
+    // {command:"start",       description:"Старт"},
     {command:"auto",        description:"Автотранспорнт"},
-    // {command:"zp",          description:"Зарплата"},
-    // {command:"key",         description:"Ключи"},
+    {command:"zp",          description:"Зарплата"},
+    {command:"key",         description:"Ключи"},
     {command:"settings",    description:"Настройки"},
     // {command:"help",        description:"Помощь"}
 ])
@@ -24,14 +24,12 @@ bot.setMyCommands([
 // bot.on("polling_error", err=>c("err"))
 
 
+
 const obj = {}
-xlsx.forEach(el=>{
-    if(el.name === "users"){
-        el.data.forEach(el=>{ 
-            if(+el[0]) {obj[el[0]] = {}}
-        })
-    }
+xlsx_get("users").forEach(el=>{ 
+    if(+el[0]) {obj[el[0]] = {}}
 })
+
 
 
 // --------------------------------------------------------------------------------------------
@@ -46,22 +44,31 @@ bot.on("message", async msg=>{
         if(msg.entities){obj[msg.chat.id].command = msg.text}
         if(!obj[msg.chat.id].command){   bot.sendMessage(msg.chat.id, `Выберите пункт меню`)   }
 
+        // Расчет з/п
+        if(obj[msg.chat.id].command === "/zp"){
+            if(msg.text === "/zp") {
+                bot.sendMessage(msg.chat.id, `Режим расчета з/п`)
+            }else{
+                //---------------------------------------------------
+                //---------------------------------------------------
+                bot.sendMessage(msg.chat.id, `Раздел в разработке`)
+                //---------------------------------------------------
+                //---------------------------------------------------
+            }
+            
+        }
 
-// Поиск по автотранспорту
+        // Поиск по автотранспорту
         if(obj[msg.chat.id].command === "/auto"){
             if(msg.text === "/auto") {
                 bot.sendMessage(msg.chat.id, `Режим поиска по автотранспорту`)
             }else{
                 count = 0
                 try {   // + ? \ * ( ) [  -  для RegExp ошибка
-                    xlsx.forEach(el=>{
-                        if(el.name === "АТ"){
-                            el.data.forEach(ell=>{ 
-                                if(ell.join(" , ").match(RegExp(msg.text, "i")) && count < 5){
-                                    bot.sendMessage(msg.chat.id, JSON.stringify(ell, null, 5))
-                                    count++
-                                }
-                            })
+                    xlsx_get("АТ").forEach(ell=>{ 
+                        if(ell.join(" , ").match(RegExp(msg.text, "i")) && count < 5){
+                            bot.sendMessage(msg.chat.id, JSON.stringify(ell, null, 5))
+                            count++
                         }
                     })
                     if(count === 0){
@@ -73,7 +80,29 @@ bot.on("message", async msg=>{
             }
         }
 
-// Мои настройки
+        // Поиск по ключам
+        if(obj[msg.chat.id].command === "/key"){
+            if(msg.text === "/key") {
+                bot.sendMessage(msg.chat.id,   `Режим поиска по ключам`)
+            }else{
+                count = 0
+                try {   // + ? \ * ( ) [  -  для RegExp ошибка
+                    xlsx_get("Ключи").forEach(el=>{ 
+                        if(el.join(" , ").match(RegExp(msg.text, "i")) && count < 5){
+                            bot.sendMessage(msg.chat.id,   JSON.stringify(el, null, 5))
+                            count++
+                        }
+                    })
+                    if(count === 0){
+                        bot.sendMessage(msg.chat.id,   `По запросу совпадений нет`)
+                    }
+                } catch (err) {
+                    bot.sendMessage(msg.chat.id,   `Ошибка try catch`)
+                }
+            }
+        }
+
+        // Мои настройки
         if(obj[msg.chat.id].command === "/settings" && msg.chat.id === 5131265599){
             bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
                 parse_mode: "HTML",
@@ -85,7 +114,6 @@ bot.on("message", async msg=>{
                 }
             })
         }
-
 
     }
 
@@ -126,8 +154,6 @@ bot.on("callback_query", query=>{
 // --------------------------------------------------------------------------------------------
 // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 // --------------------------------------------------------------------------------------------
-
-// НАЧАЛЬНАЯ ФУНКЦИЯ
 function calcSmens(){
     // --------------------------------------------------------------------------------------------
     // РАСЧЕТ РАБОЧИХ СМЕН В МЕСЯЦЕ ПОСМЕННО 
@@ -202,6 +228,16 @@ function calcSmens(){
     
 }
 
+function xlsx_get(name){ //  АТ  Ключи   users   nbv
+    let data
+    xlsx.forEach(el=>{
+        if(el.name === name){
+            data = el.data
+        }
+    })
+    return data
+}
+
 
 
 
@@ -214,4 +250,46 @@ function calcSmens(){
 
 
 
+function zp(){
+    msgtext     = "16 8 4"
+    msgchatid   = "5131265599" // 5610447299 5131265599
 
+    allSmens    = msgtext.split(" ")[0]
+    night       = msgtext.split(" ")[1]
+    holiHours   = msgtext.split(" ")[2]
+
+    jobTitle    = ""
+    massZP      = []
+    
+    xlsx_get("users").forEach(el=>{     c(el[0], el[6])
+        if(el[0] == msgchatid){
+            jobTitle = el[6]
+        }
+    })
+
+    jobTitle.split(", ").forEach(el=>{
+        jobTitleName = el.split("_")[0]
+        jobTitleNumb = el.split("_")[1]
+        if(jobTitleName && jobTitleNumb){
+
+            if(jobTitleName === "stsmena")      {oklad = 54000}
+            if(jobTitleName === "inspektor")    {oklad = 45000}
+            rubOneHour     = oklad / 176
+            rubOneDay      = oklad / 16
+            rubOneNight    = rubOneDay + rubOneHour * 7 * 0.2
+
+            result         = rubOneDay*allSmens  +   night*rubOneHour*7*0.2  +   holiHours*rubOneHour
+
+            massZP.push({
+                jobTitleName, jobTitleNumb, oklad, rubOneHour, rubOneDay, rubOneNight, calkZP:{    allSmens, night, holiHours, result    }
+            })
+
+        } else {
+            c(`Расчет з/п не удался`)
+        }
+
+    })
+    c(massZP)
+    
+}
+zp()
