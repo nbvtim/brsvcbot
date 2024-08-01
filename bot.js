@@ -27,7 +27,7 @@ bot.setMyCommands([
 
 const obj = {}
 xlsx_get("users").forEach(el=>{ 
-    if(+el[0]) {obj[el[0]] = {}}
+    if(+el[0]) {obj[el[0]] = {xlsxUsers: el}}
 })
 
 
@@ -47,7 +47,13 @@ bot.on("message", async msg=>{
         // /start
         if(obj[msg.chat.id].command === "/start"){
             if(msg.text === "/start") {
-                bot.getMyCommands().then(   (t) =>  {  bot.sendMessage(msg.chat.id,  "/start\n /auto\n /key\n /zp\n /settings", {reply_markup:{remove_keyboard:true}})})
+                bot.getMyCommands().then(   (t) =>  {
+                    txt=""
+                    t.forEach(el=>{
+                        txt += `/${el.command} - ${el.description}\n`
+                    })
+                    bot.sendMessage(msg.chat.id,  txt, {reply_markup:{remove_keyboard:true}})
+                })
             }else{
                 bot.sendMessage(msg.chat.id, `Выберите пункт меню`)
             }
@@ -56,7 +62,7 @@ bot.on("message", async msg=>{
         // Поиск по автотранспорту
         if(obj[msg.chat.id].command === "/auto"){
             if(msg.text === "/auto") {
-                bot.sendMessage(msg.chat.id, `Режим поиска по автотранспорту`)
+                bot.sendMessage(msg.chat.id, `Режим поиска по автотранспорту`, {reply_markup:{remove_keyboard:true}})
             }else{
                 count = 0
                 try {   // + ? \ * ( ) [  -  для RegExp ошибка
@@ -78,7 +84,7 @@ bot.on("message", async msg=>{
         // Поиск по ключам
         if(obj[msg.chat.id].command === "/key"){
             if(msg.text === "/key") {
-                bot.sendMessage(msg.chat.id,   `Режим поиска по ключам`)
+                bot.sendMessage(msg.chat.id,   `Режим поиска по ключам`, {reply_markup:{remove_keyboard:true}})
             }else{
                 count = 0
                 try {   // + ? \ * ( ) [  -  для RegExp ошибка
@@ -155,7 +161,8 @@ bot.on("message", async msg=>{
         if(obj[msg.chat.id].command === "/settings" && msg.chat.id === 5131265599){
             bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
                 parse_mode: "HTML",
-                reply_markup:{
+                remove_keyboard: true,
+                reply_markup:{ 
                     inline_keyboard:[
                         [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
                         [{text: "Показать log",         callback_data:   "log"}]
@@ -190,7 +197,14 @@ bot.on("callback_query", query=>{
     }
     if(query.data === "log"){  // Текст отправляемого сообщения, 1-4096 символов после разбора сущностей
         txt = fs.readFileSync("./log", "utf8")
-        bot.sendMessage(query.from.id, txt.length, {parse_mode:"HTML"})
+        if(txt.length < 4096){
+            bot.sendMessage(query.from.id, txt, {
+                link_preview_options: {is_disabled: true}//   -    не работает !!!!     
+            })
+        }else{
+            bot.sendMessage(query.from.id, txt.length, {parse_mode:"HTML"})
+        }
+        
     }
 
 })
@@ -280,9 +294,7 @@ function calcSmens(){
 function xlsx_get(name){ //  АТ  Ключи   users   nbv
     let data
     xlsx.forEach(el=>{
-        if(el.name === name){
-            data = el.data
-        }
+        if(el.name === name){   data = el.data   }
     })
     return data
 }
