@@ -11,10 +11,10 @@ const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXO
 
 // bot.deleteMyCommands()
 bot.setMyCommands([
-    // {command:"start",       description:"Старт"},
+    {command:"start",       description:"Старт"},
     {command:"auto",        description:"Автотранспорнт"},
-    {command:"zp",          description:"Зарплата"},
     {command:"key",         description:"Ключи"},
+    {command:"zp",          description:"Зарплата"},
     {command:"settings",    description:"Настройки"},
     // {command:"help",        description:"Помощь"}
 ])
@@ -43,54 +43,14 @@ bot.on("message", async msg=>{
     if(obj[msg.chat.id]){ 
         if(msg.entities){obj[msg.chat.id].command = msg.text}
         if(!obj[msg.chat.id].command){   bot.sendMessage(msg.chat.id, `Выберите пункт меню`)   }
-
-        // Расчет з/п
-        if(obj[msg.chat.id].command === "/zp"){
-            if(msg.text === "/zp") {
-                bot.sendMessage(msg.chat.id, `- количество смен в месяце (если отработаны все смены вводим 16 даже если по графику в месяце 15 смен)\n- количество фактически отработанных ночных смен\n- количество праздничных часов\nПример:45 16 8 0`, {
-                    // reply_markup:{
-                    //     keyboard:[
-                    //         [{text: "45 16 8 0"}, {text: "54 16 8 0"}],
-                    //         [{text: "45 15 8 0"}, {text: "54 15 8 0"}],
-                    //         [{text: "45 15 7 0"}, {text: "54 15 7 0"}],
-                    //     ],
-                    // }
-                    
-                })
-
+        
+        // /start
+        if(obj[msg.chat.id].command === "/start"){
+            if(msg.text === "/start") {
+                bot.getMyCommands().then(   (t) =>  {  bot.sendMessage(msg.chat.id,  "/start\n /auto\n /key\n /zp\n /settings", {reply_markup:{remove_keyboard:true}})})
             }else{
-
-                msgtextMass     =  msg.text.split(" ")
-                oklad           = +msgtextMass[0]*1000
-                allSmens        = +msgtextMass[1]
-                nightSmens      = +msgtextMass[2]
-                holiHours       = +msgtextMass[3]
-            
-                rubOneHour      = oklad / 176
-                rubOneDay       = oklad / 16
-                rubOneNight     = rubOneDay + rubOneHour * 7 * 0.2
-
-                kviplate        = rubOneDay*allSmens
-                night           = nightSmens*rubOneHour*7*0.2
-                letnie          = kviplate*.07
-                holiday         = holiHours*rubOneHour
-                result          = kviplate      +       night      +       holiday        +       letnie
-
-                bot.sendMessage(msg.chat.id, JSON.stringify({
-                    "оклад":                    Math.round(oklad        * 100) / 100,
-                    "оплата за 1 час":          Math.round(rubOneHour   * 100) / 100,
-                    "оплата за 1 день":         Math.round(rubOneDay    * 100) / 100,
-                    "оплата за 1 ночь":         Math.round(rubOneNight  * 100) / 100,
-                    "закрыто часов д / н":      `${allSmens*11} / ${nightSmens*7}`,
-                    "к выплате":                Math.round(kviplate     * 100) / 100,
-                    "ночные":                   Math.round(night        * 100) / 100,
-                    "доплата (летние)":         Math.round(letnie       * 100) / 100,
-                    "доплата (праздничные)":    Math.round(holiday      * 100) / 100,
-                    "итого":                    Math.round(result       * 100) / 100,
-                }, null, 4))
-
+                bot.sendMessage(msg.chat.id, `Выберите пункт меню`)
             }
-            
         }
 
         // Поиск по автотранспорту
@@ -135,6 +95,60 @@ bot.on("message", async msg=>{
                     bot.sendMessage(msg.chat.id,   `Ошибка try catch`)
                 }
             }
+        }
+                
+        // Расчет з/п
+        if(obj[msg.chat.id].command === "/zp"){
+            if(msg.text === "/zp") {
+                bot.sendMessage(msg.chat.id, `- сумма оклада (нужно разделить на 1000) \n- количество смен в месяце (если отработаны все смены вводим 16 даже если по графику в месяце 15 смен)\n- количество фактически отработанных ночных смен\n- количество праздничных часов\nПример: 45 16 8 0`, {
+                    reply_markup:{
+                        keyboard:[
+                            [{text: "45 16 8 0"}, {text: "54 16 8 0"}],
+                            [{text: "45 15 8 0"}, {text: "54 15 8 0"}],
+                            [{text: "45 15 7 0"}, {text: "54 15 7 0"}],
+                        ],
+                        input_field_placeholder:"Быстрый ввод", 
+                        // resize_keyboard: true,
+                        // remove_keyboard: true,
+                        // one_time_keyboard: true
+                        // force_reply: true
+                    }
+
+                })
+
+            }else{
+
+                msgtextMass     =  msg.text.split(" ")
+                oklad           = +msgtextMass[0]*1000
+                allSmens        = +msgtextMass[1]
+                nightSmens      = +msgtextMass[2]
+                holiHours       = +msgtextMass[3]
+            
+                rubOneHour      = oklad / 176
+                rubOneDay       = oklad / 16
+                rubOneNight     = rubOneDay + rubOneHour * 7 * 0.2
+
+                kviplate        = rubOneDay*allSmens
+                night           = nightSmens*rubOneHour*7*0.2
+                letnie          = kviplate*.07
+                holiday         = holiHours*rubOneHour
+                result          = kviplate      +       night      +       holiday        +       letnie
+
+                bot.sendMessage(msg.chat.id, JSON.stringify({
+                    "оклад":                    Math.round(oklad        * 100) / 100,
+                    "оплата за 1 час":          Math.round(rubOneHour   * 100) / 100,
+                    "оплата за 1 день":         Math.round(rubOneDay    * 100) / 100,
+                    "оплата за 1 ночь":         Math.round(rubOneNight  * 100) / 100,
+                    "закрыто часов д / н":      `${allSmens*11} / ${nightSmens*7}`,
+                    "к выплате":                Math.round(kviplate     * 100) / 100,
+                    "ночные":                   Math.round(night        * 100) / 100,
+                    "доплата (летние)":         Math.round(letnie       * 100) / 100,
+                    "доплата (праздничные)":    Math.round(holiday      * 100) / 100,
+                    "итого":                    Math.round(result       * 100) / 100,
+                }, null, 4))
+
+            }
+            
         }
 
         // Мои настройки
