@@ -47,13 +47,48 @@ bot.on("message", async msg=>{
         // Расчет з/п
         if(obj[msg.chat.id].command === "/zp"){
             if(msg.text === "/zp") {
-                bot.sendMessage(msg.chat.id, `Режим расчета з/п`)
+                bot.sendMessage(msg.chat.id, `- количество смен в месяце (если отработаны все смены вводим 16 даже если по графику в месяце 15 смен)\n- количество фактически отработанных ночных смен\n- количество праздничных часов\nПример: 16 8 0`)
             }else{
-                //---------------------------------------------------
-                //---------------------------------------------------
-                bot.sendMessage(msg.chat.id, `Раздел в разработке`)
-                //---------------------------------------------------
-                //---------------------------------------------------
+
+                msgtextMass     =  msg.text.split(" ")
+                allSmens        = +msgtextMass[0]
+                nightSmens      = +msgtextMass[1]
+                holiHours       = +msgtextMass[2]
+            
+                xlsx_get("users").forEach(el=>{
+                    if(el[6]){
+                        el[6].split(", ").forEach(ell=>{
+                            if((ell.split("_")[0] === "stsmena" || ell.split("_")[0] === "inspektor") && el[0] == msg.chat.id){
+            
+                                if(ell.split("_")[0] === "stsmena")     {oklad = 54000}
+                                if(ell.split("_")[0] === "inspektor")   {oklad = 45000}
+            
+                                rubOneHour      = oklad / 176
+                                rubOneDay       = oklad / 16
+                                rubOneNight     = rubOneDay + rubOneHour * 7 * 0.2
+            
+                                kviplate        = rubOneDay*allSmens
+                                night           = nightSmens*rubOneHour*7*0.2
+                                letnie          = kviplate*.07
+                                holiday         = holiHours*rubOneHour
+                                result          = kviplate      +       night      +       holiday        +       letnie
+            
+                                bot.sendMessage(msg.chat.id, JSON.stringify({
+                                    "оклад":                    Math.round(oklad        * 100) / 100,
+                                    "оплата за 1 час":          Math.round(rubOneHour   * 100) / 100,
+                                    "оплата за 1 день":         Math.round(rubOneDay    * 100) / 100,
+                                    "оплата за 1 ночь":         Math.round(rubOneNight  * 100) / 100,
+                                    "закрыто часов д / н":      `${allSmens*11} / ${nightSmens*7}`,
+                                    "к выплате":                Math.round(kviplate     * 100) / 100,
+                                    "ночные":                   Math.round(night        * 100) / 100,
+                                    "доплата (летние)":         Math.round(letnie       * 100) / 100,
+                                    "доплата (праздничные)":    Math.round(holiday      * 100) / 100,
+                                    "итого":                    Math.round(result       * 100) / 100,
+                                }, null, 4))
+                            }
+                        })
+                    }
+                })
             }
             
         }
@@ -247,49 +282,3 @@ function xlsx_get(name){ //  АТ  Ключи   users   nbv
 // --------------------------------------------------------------------------------------------
 // appExpress.get      ('/', ( req, res ) =>               {   res.send(`EXPRESS START...<br><pre>${JSON.stringify( xlsx , null, 5)}</pre>`)     })
 // appExpress.listen   (65535, "127.255.255.254", () =>    {   /*c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)*/      })
-
-
-
-function zp(){
-    msgtext     = "16 8 4"
-    msgchatid   = "5131265599" // 5610447299 5131265599
-
-    allSmens    = msgtext.split(" ")[0]
-    night       = msgtext.split(" ")[1]
-    holiHours   = msgtext.split(" ")[2]
-
-    jobTitle    = ""
-    massZP      = []
-    
-    xlsx_get("users").forEach(el=>{     c(el[0], el[6])
-        if(el[0] == msgchatid){
-            jobTitle = el[6]
-        }
-    })
-
-    jobTitle.split(", ").forEach(el=>{
-        jobTitleName = el.split("_")[0]
-        jobTitleNumb = el.split("_")[1]
-        if(jobTitleName && jobTitleNumb){
-
-            if(jobTitleName === "stsmena")      {oklad = 54000}
-            if(jobTitleName === "inspektor")    {oklad = 45000}
-            rubOneHour     = oklad / 176
-            rubOneDay      = oklad / 16
-            rubOneNight    = rubOneDay + rubOneHour * 7 * 0.2
-
-            result         = rubOneDay*allSmens  +   night*rubOneHour*7*0.2  +   holiHours*rubOneHour
-
-            massZP.push({
-                jobTitleName, jobTitleNumb, oklad, rubOneHour, rubOneDay, rubOneNight, calkZP:{    allSmens, night, holiHours, result    }
-            })
-
-        } else {
-            c(`Расчет з/п не удался`)
-        }
-
-    })
-    c(massZP)
-    
-}
-zp()
