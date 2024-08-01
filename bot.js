@@ -47,48 +47,48 @@ bot.on("message", async msg=>{
         // Расчет з/п
         if(obj[msg.chat.id].command === "/zp"){
             if(msg.text === "/zp") {
-                bot.sendMessage(msg.chat.id, `- количество смен в месяце (если отработаны все смены вводим 16 даже если по графику в месяце 15 смен)\n- количество фактически отработанных ночных смен\n- количество праздничных часов\nПример: 16 8 0`)
+                bot.sendMessage(msg.chat.id, `- количество смен в месяце (если отработаны все смены вводим 16 даже если по графику в месяце 15 смен)\n- количество фактически отработанных ночных смен\n- количество праздничных часов\nПример:45 16 8 0`, {
+                    // reply_markup:{
+                    //     keyboard:[
+                    //         [{text: "45 16 8 0"}, {text: "54 16 8 0"}],
+                    //         [{text: "45 15 8 0"}, {text: "54 15 8 0"}],
+                    //         [{text: "45 15 7 0"}, {text: "54 15 7 0"}],
+                    //     ],
+                    // }
+                    
+                })
+
             }else{
 
                 msgtextMass     =  msg.text.split(" ")
-                allSmens        = +msgtextMass[0]
-                nightSmens      = +msgtextMass[1]
-                holiHours       = +msgtextMass[2]
+                oklad           = +msgtextMass[0]*1000
+                allSmens        = +msgtextMass[1]
+                nightSmens      = +msgtextMass[2]
+                holiHours       = +msgtextMass[3]
             
-                xlsx_get("users").forEach(el=>{
-                    if(el[6]){
-                        el[6].split(", ").forEach(ell=>{
-                            if((ell.split("_")[0] === "stsmena" || ell.split("_")[0] === "inspektor") && el[0] == msg.chat.id){
-            
-                                if(ell.split("_")[0] === "stsmena")     {oklad = 54000}
-                                if(ell.split("_")[0] === "inspektor")   {oklad = 45000}
-            
-                                rubOneHour      = oklad / 176
-                                rubOneDay       = oklad / 16
-                                rubOneNight     = rubOneDay + rubOneHour * 7 * 0.2
-            
-                                kviplate        = rubOneDay*allSmens
-                                night           = nightSmens*rubOneHour*7*0.2
-                                letnie          = kviplate*.07
-                                holiday         = holiHours*rubOneHour
-                                result          = kviplate      +       night      +       holiday        +       letnie
-            
-                                bot.sendMessage(msg.chat.id, JSON.stringify({
-                                    "оклад":                    Math.round(oklad        * 100) / 100,
-                                    "оплата за 1 час":          Math.round(rubOneHour   * 100) / 100,
-                                    "оплата за 1 день":         Math.round(rubOneDay    * 100) / 100,
-                                    "оплата за 1 ночь":         Math.round(rubOneNight  * 100) / 100,
-                                    "закрыто часов д / н":      `${allSmens*11} / ${nightSmens*7}`,
-                                    "к выплате":                Math.round(kviplate     * 100) / 100,
-                                    "ночные":                   Math.round(night        * 100) / 100,
-                                    "доплата (летние)":         Math.round(letnie       * 100) / 100,
-                                    "доплата (праздничные)":    Math.round(holiday      * 100) / 100,
-                                    "итого":                    Math.round(result       * 100) / 100,
-                                }, null, 4))
-                            }
-                        })
-                    }
-                })
+                rubOneHour      = oklad / 176
+                rubOneDay       = oklad / 16
+                rubOneNight     = rubOneDay + rubOneHour * 7 * 0.2
+
+                kviplate        = rubOneDay*allSmens
+                night           = nightSmens*rubOneHour*7*0.2
+                letnie          = kviplate*.07
+                holiday         = holiHours*rubOneHour
+                result          = kviplate      +       night      +       holiday        +       letnie
+
+                bot.sendMessage(msg.chat.id, JSON.stringify({
+                    "оклад":                    Math.round(oklad        * 100) / 100,
+                    "оплата за 1 час":          Math.round(rubOneHour   * 100) / 100,
+                    "оплата за 1 день":         Math.round(rubOneDay    * 100) / 100,
+                    "оплата за 1 ночь":         Math.round(rubOneNight  * 100) / 100,
+                    "закрыто часов д / н":      `${allSmens*11} / ${nightSmens*7}`,
+                    "к выплате":                Math.round(kviplate     * 100) / 100,
+                    "ночные":                   Math.round(night        * 100) / 100,
+                    "доплата (летние)":         Math.round(letnie       * 100) / 100,
+                    "доплата (праздничные)":    Math.round(holiday      * 100) / 100,
+                    "итого":                    Math.round(result       * 100) / 100,
+                }, null, 4))
+
             }
             
         }
