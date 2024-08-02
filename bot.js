@@ -100,18 +100,18 @@ bot.on("message", async msg=>{
         if(obj[msg.chat.id].command === "/zp"){
             if(msg.text === "/zp") {
                 bot.sendMessage(msg.chat.id, `- сумма оклада (нужно разделить на 1000) \n- количество смен в месяце (если отработаны все смены вводим 16 даже если по графику в месяце 15 смен)\n- количество фактически отработанных ночных смен\n- количество праздничных часов\nПример: 45 16 8 0`, {
-                    reply_markup:{
-                        keyboard:[
-                            [{text: "45 16 8 0"}, {text: "54 16 8 0"}],
-                            [{text: "45 15 8 0"}, {text: "54 15 8 0"}],
-                            [{text: "45 15 7 0"}, {text: "54 15 7 0"}],
-                        ],
-                        input_field_placeholder:"Быстрый ввод", 
-                        // resize_keyboard: true,
-                        // remove_keyboard: true,
-                        // one_time_keyboard: true
-                        // force_reply: true
-                    }
+                    // reply_markup:{
+                    //     keyboard:[
+                    //         [{text: "45 16 8 0"}, {text: "54 16 8 0"}],
+                    //         [{text: "45 15 8 0"}, {text: "54 15 8 0"}],
+                    //         [{text: "45 15 7 0"}, {text: "54 15 7 0"}],
+                    //     ],
+                    //     input_field_placeholder:"Быстрый ввод", 
+                    //     // resize_keyboard: true,
+                    //     // remove_keyboard: true,
+                    //     // one_time_keyboard: true
+                    //     // force_reply: true
+                    // }
 
                 })
 
@@ -286,7 +286,7 @@ function calcSmens(){
 
 function xlsx_get(name){ //  АТ  Ключи   users   nbv
     if(!obj.xlsx){
-        if(fs.existsSync("/mnt/c/Use rs/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")){
+        if(fs.existsSync("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")){
             obj.xlsx = require('node-xlsx').default.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
             fs.writeFileSync(`${__dirname}/data`, JSON.stringify(obj.xlsx, null))
         }else{
