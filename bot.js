@@ -3,7 +3,6 @@
 // "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"  
 const c             = console.log
 const appExpress    = require("express")()
-const xlsx          = require('node-xlsx').default.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
@@ -23,20 +22,14 @@ bot.setMyCommands([
 // bot.getMe().then(           (t) =>  {   c(t)    })
 // bot.on("polling_error", err=>c("err"))
 
-
-
-const obj = {}
-xlsx_get("users").forEach(el=>{ 
-    if(+el[0]) {obj[el[0]] = {xlsxUsers: el}}
-})
-
-
+const obj = {}; xlsx_get()
 
 // --------------------------------------------------------------------------------------------
 // БОТ ОЖИДАЕТ ВВОДА ОТ ПОЛЬЗОВАТЕЛЯ
 // --------------------------------------------------------------------------------------------
 bot.on("message", async msg=>{ 
     // c(msg)
+    // c(obj[msg.chat.id])
     fs.appendFileSync   (`${__dirname}/log`, `\n${msg.chat.id}_${msg.from.first_name}: ${msg.text}`)
     
 // Если пользователь есть в базе то бот будет работать
@@ -292,16 +285,31 @@ function calcSmens(){
 }
 
 function xlsx_get(name){ //  АТ  Ключи   users   nbv
-    let data
-    xlsx.forEach(el=>{
-        if(el.name === name){   data = el.data   }
+    if(!obj.xlsx){
+        if(fs.existsSync("/mnt/c/Use rs/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")){
+            obj.xlsx = require('node-xlsx').default.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
+            fs.writeFileSync(`${__dirname}/data`, JSON.stringify(obj.xlsx, null))
+        }else{
+            obj.xlsx = JSON.parse(fs.readFileSync(`${__dirname}/data`, "utf8"))
+        }
+        obj.xlsx.forEach(el=>{
+            if(el.name === "users"){
+                el.data.forEach(ell=>{
+                    if(+ell[0]) {obj[ell[0]] = {xlsxUsers: ell}}
+                })
+            }
+        })
+    }
+
+    data = []
+    obj.xlsx.forEach(el=>{
+        if(el.name == name){
+           data = el.data
+        }
     })
     return data
+
 }
-
-
-
-
 
 // --------------------------------------------------------------------------------------------
 // EXPRESS доработать !!!!
