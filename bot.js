@@ -23,230 +23,6 @@ bot.setMyCommands([
 // bot.getMe().then(           (t) =>  {   c(t)    })
 // bot.on("polling_error", err=>c("err"))
 
-const obj = {}; xlsx_get()
-
-// --------------------------------------------------------------------------------------------
-// БОТ ОЖИДАЕТ ВВОДА ОТ ПОЛЬЗОВАТЕЛЯ
-// --------------------------------------------------------------------------------------------
-bot.on("message", async msg=>{ 
-    // c(msg)
-    // c(obj[msg.chat.id])
-    fs.appendFileSync   (`${__dirname}/log`, `\n${msg.chat.id}_${msg.from.first_name}: ${msg.text}`)
-    
-// Если пользователь есть в базе то бот будет работать
-    if(obj[msg.chat.id]){ 
-        if(msg.entities){obj[msg.chat.id].command = msg.text}
-        if(!obj[msg.chat.id].command){   bot.sendMessage(msg.chat.id, `Выберите пункт меню`)   }
-        
-        // /start
-        if(obj[msg.chat.id].command === "/start"){
-            if(msg.text === "/start") {
-                bot.getMyCommands().then(   (t) =>  {
-                    txt=""
-                    t.forEach(el=>{
-                        txt += `/${el.command} - ${el.description}\n`
-                    })
-                    bot.sendMessage(msg.chat.id,  txt, {reply_markup:{remove_keyboard:true}})
-                })
-            }else{
-                bot.sendMessage(msg.chat.id, `Выберите пункт меню`)
-            }
-        }
-
-        // Поиск по автотранспорту
-        if(obj[msg.chat.id].command === "/auto"){
-            if(msg.text === "/auto") {
-                bot.sendMessage(msg.chat.id, `Режим поиска по автотранспорту`, {reply_markup:{remove_keyboard:true}})
-            }else{
-                count = 0
-                try {   // + ? \ * ( ) [  -  для RegExp ошибка
-                    xlsx_get("АТ").forEach(ell=>{ 
-                        if(ell.join(" , ").match(RegExp(msg.text, "i")) && count < 5){
-                            bot.sendMessage(msg.chat.id, JSON.stringify(ell, null, 5))
-                            count++
-                        }
-                    })
-                    if(count === 0){
-                        bot.sendMessage(msg.chat.id, `По запросу совпадений нет`)
-                    }
-                } catch (err) {
-                    bot.sendMessage(msg.chat.id, `Ошибка try catch`)
-                }
-            }
-        }
-
-        // Поиск по ключам
-        if(obj[msg.chat.id].command === "/key"){
-            if(msg.text === "/key") {
-                bot.sendMessage(msg.chat.id,   `Режим поиска по ключам`, {reply_markup:{remove_keyboard:true}})
-            }else{
-                count = 0
-                try {   // + ? \ * ( ) [  -  для RegExp ошибка
-                    xlsx_get("Ключи").forEach(el=>{ 
-                        if(el.join(" , ").match(RegExp(msg.text, "i")) && count < 5){
-                            bot.sendMessage(msg.chat.id,   JSON.stringify(el, null, 5))
-                            count++
-                        }
-                    })
-                    if(count === 0){
-                        bot.sendMessage(msg.chat.id,   `По запросу совпадений нет`)
-                    }
-                } catch (err) {
-                    bot.sendMessage(msg.chat.id,   `Ошибка try catch`)
-                }
-            }
-        }
-                
-        // Расчет з/п
-        if(obj[msg.chat.id].command === "/zp"){
-            if(msg.text === "/zp") {
-                bot.sendMessage(msg.chat.id, `- сумма оклада (нужно разделить на 1000) \n- количество смен в месяце (если отработаны все смены вводим 16 даже если по графику в месяце 15 смен)\n- количество фактически отработанных ночных смен\n- количество праздничных часов\nПример: 45 16 8 0`, {
-                    // reply_markup:{
-                    //     keyboard:[
-                    //         [{text: "45 16 8 0"}, {text: "54 16 8 0"}],
-                    //         [{text: "45 15 8 0"}, {text: "54 15 8 0"}],
-                    //         [{text: "45 15 7 0"}, {text: "54 15 7 0"}],
-                    //     ],
-                    //     input_field_placeholder:"Быстрый ввод", 
-                    //     // resize_keyboard: true,
-                    //     // remove_keyboard: true,
-                    //     // one_time_keyboard: true
-                    //     // force_reply: true
-                    // }
-
-                })
-
-            }else{
-
-                msgtextMass     =  msg.text.split(" ")
-                oklad           = +msgtextMass[0]*1000
-                allSmens        = +msgtextMass[1]
-                nightSmens      = +msgtextMass[2]
-                holiHours       = +msgtextMass[3]
-            
-                rubOneHour      = oklad / 176
-                rubOneDay       = oklad / 16
-                rubOneNight     = rubOneDay + rubOneHour * 7 * 0.2
-
-                kviplate        = rubOneDay*allSmens
-                night           = nightSmens*rubOneHour*7*0.2
-                letnie          = kviplate*.07
-                holiday         = holiHours*rubOneHour
-                result          = kviplate      +       night      +       holiday        +       letnie
-
-                bot.sendMessage(msg.chat.id, JSON.stringify({
-                    "оклад":                    Math.round(oklad        * 100) / 100,
-                    "оплата за 1 час":          Math.round(rubOneHour   * 100) / 100,
-                    "оплата за 1 день":         Math.round(rubOneDay    * 100) / 100,
-                    "оплата за 1 ночь":         Math.round(rubOneNight  * 100) / 100,
-                    "закрыто часов д / н":      `${allSmens*11} / ${nightSmens*7}`,
-                    "к выплате":                Math.round(kviplate     * 100) / 100,
-                    "ночные":                   Math.round(night        * 100) / 100,
-                    "доплата (летние)":         Math.round(letnie       * 100) / 100,
-                    "доплата (праздничные)":    Math.round(holiday      * 100) / 100,
-                    "итого":                    Math.round(result       * 100) / 100,
-                }, null, 4))
-
-            }
-            
-        }
-
-        // Мои настройки
-        if(obj[msg.chat.id].command === "/settings" && msg.chat.id === 5131265599){
-            bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
-                parse_mode: "HTML",
-                remove_keyboard: true,
-                reply_markup:{ 
-                    inline_keyboard:[
-                        [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
-                        [{text: "Показать log",         callback_data:   "log"}]
-                    ]
-                }
-            })
-        }
-
-    }
-
-// Если пользователя нет в базе то бот будет предлагать регистрацию
-    if(!obj[msg.chat.id]){ 
-        bot.sendMessage(msg.chat.id, `Нет доступа !!!\nДля предоставления доступа отправьте:\n- Ф.И.О.\n- номер телефона\n- дату рождения`)
-    }
-// c(obj)
-})
-
-
-
-// --------------------------------------------------------------------------------------------
-// БОТ ОБРАБАТЫВАЕТ ЗАПРОСЫ С КЛАВИАТУРЫ 
-// --------------------------------------------------------------------------------------------
-bot.on("callback_query", query=>{ 
-    // c(query)
-    if(query.data === "t"){ 
-        cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
-        bot.sendMessage(query.from.id, `Сессия доступна по этой <a href="https://tmate.io/t/nbv/pc">ССЫЛКЕ</a>`, {parse_mode:"HTML"})
-    }
-    if(query.data === "pkill tmate"){
-        cp.spawnSync('pkill', ['tmate'])
-        bot.sendMessage(query.from.id, "Сессия tmate остановлена")
-    }
-    if(query.data === "log"){  // Текст отправляемого сообщения, 1-4096 символов после разбора сущностей
-        txt = fs.readFileSync("./log", "utf8")
-        if(txt.length < 4096){
-            bot.sendMessage(query.from.id, txt, {
-                link_preview_options: {is_disabled: true}//   -    не работает !!!!     
-            })
-        }else{
-            bot.sendMessage(query.from.id, txt.length, {parse_mode:"HTML"})
-        }
-        
-    }
-
-})
-
-
-
-
-
-
-// --------------------------------------------------------------------------------------------
-// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-// --------------------------------------------------------------------------------------------
-
-
-function xlsx_get(name){ //  АТ  Ключи   users   nbv
-    if(!obj.xlsx){
-        if(fs.existsSync("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")){
-            obj.xlsx = xlsx.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx")
-            fs.writeFileSync(`${__dirname}/data`, JSON.stringify(obj.xlsx, null))
-        }else{
-            obj.xlsx = JSON.parse(fs.readFileSync(`${__dirname}/data`, "utf8"))
-        }
-        obj.xlsx.forEach(el=>{
-            if(el.name === "users"){
-                el.data.forEach(ell=>{
-                    if(+ell[0]) {obj[ell[0]] = {xlsxUsers: ell}}
-                })
-            }
-        })
-    }
-
-    data = []
-    obj.xlsx.forEach(el=>{
-        if(el.name == name){
-           data = el.data
-        }
-    })
-    return data
-
-}
-
-// --------------------------------------------------------------------------------------------
-// EXPRESS доработать !!!!
-// --------------------------------------------------------------------------------------------
-// appExpress.get      ('/', ( req, res ) =>               {   res.send(`EXPRESS START...<br><pre>${JSON.stringify( xlsx , null, 5)}</pre>`)     })
-// appExpress.listen   (65535, "127.255.255.254", () =>    {   /*c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)*/      })
-
-
 const nbv = {
     
     search:     function(list, txt){
@@ -257,7 +33,7 @@ const nbv = {
                 fs.writeFileSync(`${__dirname}/data`, JSON.stringify(this.xlsx, null))
                 // c("Данные записанны, файл создан")
             }else{
-                obj.xlsx = JSON.parse(fs.readFileSync(`${__dirname}/data`, "utf8"))
+                this.xlsx = JSON.parse(fs.readFileSync(`${__dirname}/data`, "utf8"))
             }
             this.xlsx.forEach(el=>{
                 if(el.name === "users"){
@@ -279,13 +55,22 @@ const nbv = {
                         try {   // + ? \ * ( ) [  -  для RegExp ошибка
                             if(ell.join(" ").match(RegExp(       txt,"i"))  && step < 5){   out.push(ell); step++}
                         } catch (err) {
-                            if(ell.join(" ").match(RegExp("\\" + txt,"i"))  && step < 5){   out.push(ell); step++}
+                            positions = []
+                            txt = txt.split('')
+                            txt.forEach((el, i)=>{
+                                try {
+                                    RegExp(el)
+                                } catch (error) {
+                                    txt[i] = "\\"+txt[i]
+                                }
+                            })
+                            txt = txt.join("")
+                            if(ell.join(" ").match(RegExp(       txt,"i"))  && step < 5){   out.push(ell); step++}
                         }
                     })
                 }else{
                     out = el.data
                 }
-                
             }
         })
         return out
@@ -366,3 +151,210 @@ const nbv = {
     },
 
 }
+
+// --------------------------------------------------------------------------------------------
+// БОТ ОЖИДАЕТ ВВОДА ОТ ПОЛЬЗОВАТЕЛЯ
+// --------------------------------------------------------------------------------------------
+bot.on("message", async msg=>{ 
+    // c(msg)
+    fs.appendFileSync   (`${__dirname}/log`, `\n${msg.chat.id}_${msg.from.first_name}: ${msg.text}`)
+    if(!nbv[msg.chat.id]){nbv.search()}
+    
+// Если пользователь есть в базе то бот будет работать
+    if(nbv[msg.chat.id]){ 
+        if(msg.entities){   nbv[msg.chat.id].command = msg.text     }
+        if(!nbv[msg.chat.id].command){   bot.sendMessage(msg.chat.id, `Выберите пункт меню`)   }
+
+        // /start
+        if(nbv[msg.chat.id].command === "/start"){
+            if(msg.text === "/start") {
+                bot.getMyCommands().then(   (t) =>  {
+                    txt=""
+                    t.forEach(el=>{
+                        txt += `/${el.command} - ${el.description}\n`
+                    })
+                    bot.sendMessage(msg.chat.id,  txt, {reply_markup:{remove_keyboard:true}})
+                })
+            }else{
+                bot.sendMessage(msg.chat.id, `Выберите пункт меню`)
+            }
+        }
+
+        // Поиск по автотранспорту
+        if(nbv[msg.chat.id].command === "/auto"){
+            if(msg.text === "/auto") {
+                bot.sendMessage(    msg.chat.id, `Режим поиска по автотранспорту`   )
+            }else{
+                search = nbv.search("АТ", msg.text)
+                if(search.length === 0){    bot.sendMessage(    msg.chat.id, `По запросу "${msg.text}" совпадений не найдено`   )   }
+                if(search.length >   0){
+                    search.forEach(el=>{
+                        bot.sendMessage(    msg.chat.id, JSON.stringify(el,null,4)   )
+                    })
+                }
+            }
+        }
+
+        // Поиск по ключам
+        if(nbv[msg.chat.id].command === "/key"){
+            if(msg.text === "/key") {
+                bot.sendMessage(    msg.chat.id, `Режим поиска по ключам`   )
+            }else{
+                search = nbv.search("Ключи", msg.text)
+                if(search.length === 0){    bot.sendMessage(    msg.chat.id, `По запросу "${msg.text}" совпадений не найдено`   )   }
+                if(search.length >   0){
+                    search.forEach(el=>{
+                        bot.sendMessage(    msg.chat.id, JSON.stringify(el,null,4)   )
+                    })
+                }
+            }
+        }
+                
+        // Расчет з/п
+        if(nbv[msg.chat.id].command === "/zp"){
+            if(msg.text === "/zp") {
+                bot.sendMessage(msg.chat.id, `- сумма оклада (нужно разделить на 1000) \n- количество смен в месяце (если отработаны все смены вводим 16 даже если по графику в месяце 15 смен)\n- количество фактически отработанных ночных смен\n- количество праздничных часов\nПример: 45 16 8 0`, {
+                    // reply_markup:{
+                    //     keyboard:[
+                    //         [{text: "45 16 8 0"}, {text: "54 16 8 0"}],
+                    //         [{text: "45 15 8 0"}, {text: "54 15 8 0"}],
+                    //         [{text: "45 15 7 0"}, {text: "54 15 7 0"}],
+                    //     ],
+                    //     input_field_placeholder:"Быстрый ввод", 
+                    //     // resize_keyboard: true,
+                    //     // remove_keyboard: true,
+                    //     // one_time_keyboard: true
+                    //     // force_reply: true
+                    // }
+
+                })
+
+            }else{
+
+                msgtextMass     =  msg.text.split(" ")
+                oklad           = +msgtextMass[0]*1000
+                allSmens        = +msgtextMass[1]
+                nightSmens      = +msgtextMass[2]
+                holiHours       = +msgtextMass[3]
+            
+                rubOneHour      = oklad / 176
+                rubOneDay       = oklad / 16
+                rubOneNight     = rubOneDay + rubOneHour * 7 * 0.2
+
+                kviplate        = rubOneDay*allSmens
+                night           = nightSmens*rubOneHour*7*0.2
+                letnie          = kviplate*.07
+                holiday         = holiHours*rubOneHour
+                result          = kviplate      +       night      +       holiday        +       letnie
+
+                bot.sendMessage(msg.chat.id, JSON.stringify({
+                    "оклад":                    Math.round(oklad        * 100) / 100,
+                    "оплата за 1 час":          Math.round(rubOneHour   * 100) / 100,
+                    "оплата за 1 день":         Math.round(rubOneDay    * 100) / 100,
+                    "оплата за 1 ночь":         Math.round(rubOneNight  * 100) / 100,
+                    "закрыто часов д / н":      `${allSmens*11} / ${nightSmens*7}`,
+                    "к выплате":                Math.round(kviplate     * 100) / 100,
+                    "ночные":                   Math.round(night        * 100) / 100,
+                    "доплата (летние)":         Math.round(letnie       * 100) / 100,
+                    "доплата (праздничные)":    Math.round(holiday      * 100) / 100,
+                    "итого":                    Math.round(result       * 100) / 100,
+                }, null, 4))
+
+            }
+            
+        }
+
+        // Мои настройки
+        if(nbv[msg.chat.id].command === "/settings" && msg.chat.id === 5131265599){
+            bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
+                parse_mode: "HTML",
+                remove_keyboard: true,
+                reply_markup:{ 
+                    inline_keyboard:[
+                        [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
+                        [{text: "Показать log",         callback_data:   "log"}]
+                    ]
+                }
+            })
+        }
+
+    }
+
+// Если пользователя нет в базе то бот будет предлагать регистрацию
+    if(!nbv[msg.chat.id]){
+        if(!nbv.reg) {nbv.reg = { }}
+        if(!nbv.reg[msg.chat.id]) { 
+            nbv.reg[msg.chat.id] = {
+                "Фамилия":          "",
+                "Имя":              "",
+                "Отчечтво":         "",
+                "Номер телефона":   "",
+                "Дата рождения":    ""
+            }
+            c(nbv.reg[msg.chat.id])
+            
+        }else{
+
+            for(i in nbv.reg[msg.chat.id]){
+                if(nbv.reg[msg.chat.id][i] === ""){
+                    c(`Введите параметр { ${i} }`)
+                    if(msg.text.length > 4 && msg.text.match(/[А-я]/)){
+                        nbv.reg[msg.chat.id][i] = msg.text
+                    }
+                    c(nbv.reg[msg.chat.id])
+
+                    break
+                }
+            }
+        
+        }
+
+
+        
+        
+    }
+
+
+})
+
+
+
+// --------------------------------------------------------------------------------------------
+// БОТ ОБРАБАТЫВАЕТ ЗАПРОСЫ С КЛАВИАТУРЫ 
+// --------------------------------------------------------------------------------------------
+bot.on("callback_query", query=>{ 
+    // c(query)
+    if(query.data === "t"){ 
+        cp.exec("tmate -k tmk-B9DVq6DFEkpcOQKWDwSDccfJRL -n pc -F")
+        bot.sendMessage(query.from.id, `Сессия доступна по этой <a href="https://tmate.io/t/nbv/pc">ССЫЛКЕ</a>`, {parse_mode:"HTML"})
+    }
+    if(query.data === "pkill tmate"){
+        cp.spawnSync('pkill', ['tmate'])
+        bot.sendMessage(query.from.id, "Сессия tmate остановлена")
+    }
+    if(query.data === "log"){  // Текст отправляемого сообщения, 1-4096 символов после разбора сущностей
+        txt = fs.readFileSync("./log", "utf8")
+        if(txt.length < 4096){
+            bot.sendMessage(query.from.id, txt, {
+                link_preview_options: {is_disabled: true}//   -    не работает !!!!     
+            })
+        }else{
+            bot.sendMessage(query.from.id, txt.length, {parse_mode:"HTML"})
+        }
+        
+    }
+
+})
+
+
+
+
+
+
+
+
+// --------------------------------------------------------------------------------------------
+// EXPRESS доработать !!!!
+// --------------------------------------------------------------------------------------------
+// appExpress.get      ('/', ( req, res ) =>               {   res.send(`EXPRESS START...<br><pre>${JSON.stringify( xlsx , null, 5)}</pre>`)     })
+// appExpress.listen   (65535, "127.255.255.254", () =>    {   /*c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)*/      })
