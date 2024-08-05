@@ -282,6 +282,8 @@ bot.on("message", async msg=>{
 
 // Если пользователя нет в базе то бот будет предлагать регистрацию
     if(!nbv[msg.chat.id]){
+        // bot.sendMessage(msg.chat.id, `"Фамилия", "Имя", "Отчечтво", "Номер телефона", "Дата рождения"`)
+
         if(!nbv.reg) {nbv.reg = { }}
         if(!nbv.reg[msg.chat.id]) { 
             nbv.reg[msg.chat.id] = {
@@ -291,18 +293,17 @@ bot.on("message", async msg=>{
                 "Номер телефона":   "",
                 "Дата рождения":    ""
             }
-            c(nbv.reg[msg.chat.id])
+            await bot.sendMessage(msg.chat.id, JSON.stringify(nbv.reg[msg.chat.id],null,4) + "\nЗаполните форму ")
             
         }else{
 
             for(i in nbv.reg[msg.chat.id]){
                 if(nbv.reg[msg.chat.id][i] === ""){
-                    c(`Введите параметр { ${i} }`)
-                    if(msg.text.length > 4 && msg.text.match(/[А-я]/)){
+                    await bot.sendMessage(msg.chat.id, `Введите параметр { ${i} }`)
+                    if(i == "Фамилия" && msg.text.length > 4 && msg.text.match(/[А-я]/)){
                         nbv.reg[msg.chat.id][i] = msg.text
                     }
-                    c(nbv.reg[msg.chat.id])
-
+                    await bot.sendMessage(msg.chat.id, JSON.stringify(nbv.reg[msg.chat.id],null,4))
                     break
                 }
             }
@@ -310,7 +311,6 @@ bot.on("message", async msg=>{
         }
 
 
-        
         
     }
 
