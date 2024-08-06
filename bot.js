@@ -1,6 +1,6 @@
 
-// "6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w"         - ntba
-// "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"  
+// "6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w"         - ntbabot
+// "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"         - brsvcbot
 const c             = console.log
 const xlsx          = require('node-xlsx')
 const appExpress    = require("express")()
