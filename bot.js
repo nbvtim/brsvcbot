@@ -37,9 +37,9 @@ const nbv = {
                     el.data.forEach(ell=>{
                         m = []
                         ell.forEach(elll=>{
-                            // if(!elll.value){
-                            //     m.push("")
-                            // }
+                            if(!elll.value){
+                                m.push("")
+                            }
                             if(elll.value){
                                 m.push(elll.value)
                             }
