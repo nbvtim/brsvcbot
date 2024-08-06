@@ -2,14 +2,14 @@
 // "6997016766:AAGEyqHbedZPqMT060glZYweCgKDkrBVC_w"         - ntba
 // "6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E"  
 const c             = console.log
-const xlsx          = require('node-xlsx').default
+const xlsx          = require('node-xlsx')
 const appExpress    = require("express")()
 const fs            = require('fs')
 const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
-
+/*
 // bot.deleteMyCommands()
 bot.setMyCommands([
     {command:"start",       description:"Старт"},
@@ -351,11 +351,12 @@ bot.on("callback_query", query=>{
 
 
 
-
-
-
 // --------------------------------------------------------------------------------------------
 // EXPRESS доработать !!!!
 // --------------------------------------------------------------------------------------------
 // appExpress.get      ('/', ( req, res ) =>               {   res.send(`EXPRESS START...<br><pre>${JSON.stringify( xlsx , null, 5)}</pre>`)     })
-// appExpress.listen   (65535, "127.255.255.254", () =>    {   /*c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)*/      })
+// appExpress.listen   (65535, "127.255.255.254", () =>    {   
+//     c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)
+// })
+
+*/
