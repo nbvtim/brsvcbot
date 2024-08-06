@@ -9,7 +9,7 @@ const cp            = require('child_process')
 const TelegramApi   = require('node-telegram-bot-api')
 const bot           = new TelegramApi ("6608143923:AAExMM5ymFM3A7DA0oDGX-Ko8lGXOOH9g3E", {polling: true})
 
-/*
+
 // bot.deleteMyCommands()
 bot.setMyCommands([
     {command:"start",       description:"Старт"},
@@ -29,13 +29,30 @@ const nbv = {
     search:     function(list, txt){
         pathXLSX = "/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx"
         if(!this.xlsx){
+
             if(fs.existsSync(pathXLSX)){
-                this.xlsx = xlsx.parse(pathXLSX)
+                let myXLSX = []
+                xlsx.parse("/mnt/c/Users/User/Desktop/ДОКУМЕНТЫ/1 смена СВК/ОПИСИ/all.xlsx").worksheets.forEach((el, i) => {
+                    myXLSX.push({name: el.name, data: []})
+                    el.data.forEach(ell=>{
+                        m = []
+                        ell.forEach(elll=>{
+                            if(!elll.value){
+                                m.push("")
+                            }
+                            if(elll.value){
+                                m.push(elll.value)
+                            }
+                        })
+                        myXLSX[i].data.push(m)
+                    })
+                })
+                this.xlsx = myXLSX
                 fs.writeFileSync(`${__dirname}/data`, JSON.stringify(this.xlsx, null))
-                // c("Данные записанны, файл создан")
             }else{
                 this.xlsx = JSON.parse(fs.readFileSync(`${__dirname}/data`, "utf8"))
             }
+
             this.xlsx.forEach(el=>{
                 if(el.name === "users"){
                     el.data.forEach(ell=>{
@@ -157,7 +174,7 @@ const nbv = {
 // БОТ ОЖИДАЕТ ВВОДА ОТ ПОЛЬЗОВАТЕЛЯ
 // --------------------------------------------------------------------------------------------
 bot.on("message", async msg=>{ 
-    // c(msg)
+    
     fs.appendFileSync   (`${__dirname}/log`, `\n${msg.chat.id}_${msg.from.first_name}: ${msg.text}`)
     if(!nbv[msg.chat.id]){nbv.search()}
     
@@ -283,36 +300,7 @@ bot.on("message", async msg=>{
 
 // Если пользователя нет в базе то бот будет предлагать регистрацию
     if(!nbv[msg.chat.id]){
-        // bot.sendMessage(msg.chat.id, `"Фамилия", "Имя", "Отчечтво", "Номер телефона", "Дата рождения"`)
-
-        if(!nbv.reg) {nbv.reg = { }}
-        if(!nbv.reg[msg.chat.id]) { 
-            nbv.reg[msg.chat.id] = {
-                "Фамилия":          "",
-                "Имя":              "",
-                "Отчечтво":         "",
-                "Номер телефона":   "",
-                "Дата рождения":    ""
-            }
-            await bot.sendMessage(msg.chat.id, JSON.stringify(nbv.reg[msg.chat.id],null,4) + "\nЗаполните форму ")
-            
-        }else{
-
-            for(i in nbv.reg[msg.chat.id]){
-                if(nbv.reg[msg.chat.id][i] === ""){
-                    await bot.sendMessage(msg.chat.id, `Введите параметр { ${i} }`)
-                    if(i == "Фамилия" && msg.text.length > 4 && msg.text.match(/[А-я]/)){
-                        nbv.reg[msg.chat.id][i] = msg.text
-                    }
-                    await bot.sendMessage(msg.chat.id, JSON.stringify(nbv.reg[msg.chat.id],null,4))
-                    break
-                }
-            }
-        
-        }
-
-
-        
+        bot.sendMessage(msg.chat.id, `Для предоставления доступа необходимо ввести\n"Фамилия", "Имя", "Отчечтво", "Номер телефона", "Дата рождения"`)
     }
 
 
@@ -358,5 +346,3 @@ bot.on("callback_query", query=>{
 // appExpress.listen   (65535, "127.255.255.254", () =>    {   
 //     c(`\tEXPRESS LISTEN\n\thttp://127.255.255.254:65535/`)
 // })
-
-*/
