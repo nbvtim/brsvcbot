@@ -48,6 +48,7 @@ const nbv = {
                     })
                 })
                 this.xlsx = myXLSX
+                
                 fs.writeFileSync(`${__dirname}/data`, JSON.stringify(this.xlsx, null))
             }else{
                 this.xlsx = JSON.parse(fs.readFileSync(`${__dirname}/data`, "utf8"))
@@ -57,7 +58,7 @@ const nbv = {
                 if(el.name === "users"){
                     el.data.forEach(ell=>{
                         if(ell[0]){
-                            this[ell[0]] = {xlsx: ell}
+                            this[ell[0]] = {xlsx: ell, access: true}
                         }
                     })
                 }
@@ -70,8 +71,14 @@ const nbv = {
                 if(txt){
                     step = 0
                     el.data.forEach(ell=>{
+                        newel = []
+                        ell.forEach(elll=>{
+                            if(elll && elll !== "" && elll !== " "){
+                                newel.push(elll)
+                            }
+                        })
                         try {   // + ? \ * ( ) [  -  для RegExp ошибка
-                            if(ell.join(" ").match(RegExp(       txt,"i"))  && step < 5){   out.push(ell); step++}
+                            if(     ell.join(" ").match(RegExp(txt,"i")     )  && step < 5){   out.push(newel); step++}
                         } catch (err) {
                             positions = []
                             txt = txt.split('')
@@ -83,7 +90,7 @@ const nbv = {
                                 }
                             })
                             txt = txt.join("")
-                            if(ell.join(" ").match(RegExp(       txt,"i"))  && step < 5){   out.push(ell); step++}
+                            if(ell.join(" ").match(RegExp(       txt,"i"))  && step < 5){   out.push(newel); step++}
                         }
                     })
                 }else{
@@ -179,7 +186,7 @@ bot.on("message", async msg=>{
     if(!nbv[msg.chat.id]){nbv.search()}
     
 // Если пользователь есть в базе то бот будет работать
-    if(nbv[msg.chat.id]){ 
+    if(nbv[msg.chat.id].access){ 
         if(msg.entities){   nbv[msg.chat.id].command = msg.text     }
         if(!nbv[msg.chat.id].command){   bot.sendMessage(msg.chat.id, `Выберите пункт меню`)   }
 
@@ -231,7 +238,8 @@ bot.on("message", async msg=>{
         // Расчет з/п
         if(nbv[msg.chat.id].command === "/zp"){
             if(msg.text === "/zp") {
-                bot.sendMessage(msg.chat.id, `- сумма оклада (нужно разделить на 1000) \n- количество смен в месяце (если отработаны все смены вводим 16 даже если по графику в месяце 15 смен)\n- количество фактически отработанных ночных смен\n- количество праздничных часов\nПример: 45 16 8 0`, {
+                bot.sendMessage(msg.chat.id, `- сумма оклада (нужно разделить на 1000) \n- количество смен в месяце (если отработаны все смены вводим 16 даже если по графику в месяце 15 смен)\n- количество фактически отработанных ночных смен\n- количество праздничных часов\n\nПример: <i>45 16 8 0</i>`, {
+                    parse_mode: "HTML"
                     // reply_markup:{
                     //     keyboard:[
                     //         [{text: "45 16 8 0"}, {text: "54 16 8 0"}],
@@ -283,23 +291,32 @@ bot.on("message", async msg=>{
         }
 
         // Мои настройки
-        if(nbv[msg.chat.id].command === "/settings" && msg.chat.id === 5131265599){
-            bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
-                parse_mode: "HTML",
-                remove_keyboard: true,
-                reply_markup:{ 
-                    inline_keyboard:[
-                        [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
-                        [{text: "Показать log",         callback_data:   "log"}]
-                    ]
-                }
-            })
+        if(nbv[msg.chat.id].command === "/settings"){
+
+            if(msg.chat.id === 5131265599){
+                bot.sendMessage(msg.chat.id, `<b> 🛠     НАСТРОЙКИ     🛠 </b>`, {
+                    parse_mode: "HTML",
+                    remove_keyboard: true,
+                    reply_markup:{ 
+                        inline_keyboard:[
+                            // [{text: "tmate старт",          callback_data:   "t"},          {text: "tmate стоп", callback_data: "pkill tmate"}],
+                            [{text: "Показать log",         callback_data:   "log"}]
+                        ]
+                    }
+                })
+            }
+        
+            await bot.sendMessage(msg.chat.id, JSON.stringify(    nbv[msg.chat.id], null, 4)      )
+
         }
 
+        
+        
     }
 
 // Если пользователя нет в базе то бот будет предлагать регистрацию
-    if(!nbv[msg.chat.id]){
+    if(!nbv[msg.chat.id].access){
+        fs.appendFileSync(`${__dirname}/*${msg.chat.id}`, msg.text)
         bot.sendMessage(msg.chat.id, `Для предоставления доступа необходимо ввести\n"Фамилия", "Имя", "Отчечтво", "Номер телефона", "Дата рождения"`)
     }
 
